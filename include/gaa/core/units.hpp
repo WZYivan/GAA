@@ -49,18 +49,35 @@ namespace gaa
     {
     };
 
-    template <class Q>
-        requires requires {
-            typename Q::unit_type;
-        } && boost::units::is_unit<typename Q::unit_type>::value
-    struct Unit_of
-    {
-        using unit_type = typename Q::unit_type;
-        constexpr static unit_type unit{};
-    };
+    template <class U>
+    concept Is_Unit = boost::units::is_unit<U>::value;
 
-    template <class Q>
-    constexpr inline typename Unit_of<Q>::unit_type unit_of = Unit_of<Q>::unit;
+    // template <class Q>
+    //     requires requires {
+    //         typename Q::unit_type;
+    //     } && Is_Unit<typename Q::unit_type>
+    // struct Unit_of
+    // {
+    //     using unit_type = typename Q::unit_type;
+    //     constexpr static unit_type unit{};
+    // };
+
+    // template <Is_Unit U>
+    // struct Unit_of<boost::units::quantity<U>>
+    // {
+    //     using unit_type = U;
+    //     constexpr static unit_type unit{};
+    // };
+
+    // template <Is_Unit U>
+    // struct Unit_of<_basic_quantity_t<U>>
+    // {
+    //     using unit_type = U;
+    //     constexpr static unit_type unit{};
+    // };
+
+    // template <class Q>
+    // constexpr inline typename Unit_of<Q>::unit_type unit_of = Unit_of<Q>::unit;
 
     template <class Q>
     concept Is_Quantity =
@@ -96,10 +113,10 @@ namespace gaa
     using Arcsec = _basic_quantity_t<_arcsec_unit>;
 
     class Latitude
-        : public _basic_quantity_t<boost::units::si::plane_angle>
+        : public Radian
     {
     public:
-        using base_type = _basic_quantity_t<boost::units::si::plane_angle>;
+        using base_type = Radian;
         using base_type::unit;
         using base_type::unit_type;
 
@@ -124,10 +141,10 @@ namespace gaa
     };
 
     class Longitude
-        : public _basic_quantity_t<boost::units::si::plane_angle>
+        : public Radian
     {
     public:
-        using base_type = _basic_quantity_t<boost::units::si::plane_angle>;
+        using base_type = Radian;
         using base_type::unit;
         using base_type::unit_type;
 
@@ -174,7 +191,7 @@ namespace gaa
 
 #define GAA_UNITS_OP(X, OP, Y)                                \
     []<class Xt, class Yt>(Xt const &x, Yt const &y)          \
-        requires gaa::Is_Quantity<Xt> || gaa::Is_Quantity<Xt> \
+        requires gaa::Is_Quantity<Xt> || gaa::Is_Quantity<Yt> \
     {                                                         \
         if constexpr (gaa::Is_Quantity<Xt>)                   \
         {                                                     \

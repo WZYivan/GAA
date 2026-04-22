@@ -4,6 +4,7 @@
 
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/message.hpp>
+#include <gaa/core/units.hpp>
 
 namespace gaa
 {
@@ -48,11 +49,16 @@ namespace gaa
 
     struct Geodetic_coordinate
     {
-        double latitude, longitude;
+        Latitude latitude;
+        Longitude longitude;
         Ellipsoid const &ellipsoid;
 
         ~Geodetic_coordinate() = default;
         Geodetic_coordinate(double lat, double lon, Ellipsoid const &e)
+            : latitude(lat), longitude(lon), ellipsoid(e)
+        {
+        }
+        Geodetic_coordinate(Latitude lat, Longitude lon, Ellipsoid const &e)
             : latitude(lat), longitude(lon), ellipsoid(e)
         {
         }
@@ -148,7 +154,7 @@ namespace gaa
         double t, nu_2, w, v;
 
         ~Latitude_auxiliary_constants() = default;
-        Latitude_auxiliary_constants(double latitude, Ellipsoid const &ellipsoid);
+        Latitude_auxiliary_constants(Latitude latitude, Ellipsoid const &ellipsoid);
     };
 
     class Ellipsoid
@@ -172,13 +178,15 @@ namespace gaa
         ~Ellipsoid() = default;
 
         Geodetic_coordinate coordinate(double lat, double lon) const;
+        Geodetic_coordinate coordinate(Latitude lat, Longitude lon) const;
+
         bool operator==(Ellipsoid const &other) const;
         bool operator!=(Ellipsoid const &other) const;
 
         std::tuple<double, double, double> principle_curvature_radius(double lat) const;
         double meridian_arc_length(double lat) const;
         double meridian_arc_bottom_latitude(double len) const;
-        Latitude_auxiliary_constants lat_aux(double lat) const;
+        Latitude_auxiliary_constants lat_aux(Latitude lat) const;
 
         data_type const &data() const;
         _ellipsoid_geometry_access_t geometry() const;

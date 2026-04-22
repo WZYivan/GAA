@@ -237,6 +237,11 @@ namespace gaa
         return Geodetic_coordinate(lat, lon, *this);
     }
 
+    Geodetic_coordinate Ellipsoid::coordinate(Latitude lat, Longitude lon) const
+    {
+        return Geodetic_coordinate(lat, lon, *this);
+    }
+
     bool Ellipsoid::operator==(Ellipsoid const &other) const
     {
         return this->m_identifier == other.m_identifier;
@@ -322,19 +327,17 @@ namespace gaa
         return rad;
     }
 
-    Latitude_auxiliary_constants Ellipsoid::lat_aux(double lat) const
+    Latitude_auxiliary_constants Ellipsoid::lat_aux(Latitude lat) const
     {
         return Latitude_auxiliary_constants(lat, *this);
     }
 
-    Latitude_auxiliary_constants::Latitude_auxiliary_constants(double latitude, Ellipsoid const &ellipsoid)
+    Latitude_auxiliary_constants::Latitude_auxiliary_constants(Latitude latitude, Ellipsoid const &ellipsoid)
     {
-        GAA_latitude_assert(latitude);
-
         auto const &geometry = ellipsoid.geometry();
-        t = std::tan(latitude);
-        nu_2 = geometry.e2_2() * std::pow(std::cos(latitude), 2);
-        w = std::sqrt(1 - geometry.e1_2() * std::pow(std::sin(latitude), 2));
+        t = std::tan(latitude.value());
+        nu_2 = geometry.e2_2() * std::pow(std::cos(latitude.value()), 2);
+        w = std::sqrt(1 - geometry.e1_2() * std::pow(std::sin(latitude.value()), 2));
         v = std::sqrt(1 + nu_2);
     }
 }

@@ -26,7 +26,7 @@ namespace gaa
         ~_gauss_lemma_coeff_t() = default;
         _gauss_lemma_coeff_t(double Bm, Ellipsoid const &ellipsoid)
         {
-            auto lat_const = ellipsoid.lat_aux(Bm);
+            auto lat_const = ellipsoid.lat_aux(Latitude(Bm));
             double
                 V = lat_const.v,
                 t = lat_const.t,
@@ -86,25 +86,22 @@ namespace gaa
         }
     }
 
-    Geodetic_solve_result Gauss_lemma_solver::solve(double latitude, double longitude, double s, double angle, kwargs args) const
+    Geodetic_solve_result Gauss_lemma_solver::solve(Latitude latitude, Longitude longitude, double s, Radian angle, kwargs args) const
     {
-        GAA_latitude_assert(latitude);
-        GAA_longitude_assert(longitude);
         GAA_distance_assert(s);
-        GAA_azimuth_assert(angle);
 
-        double B = latitude, L = longitude, S = s;
+        double B = latitude.value(), L = longitude.value(), S = s;
         double converge_threshold = args._has_converge_threshold() ? args.converge_threshold() : 1e-5;
 
         auto [outer_M, outer_N, _unused_R] = ellipsoid.principle_curvature_radius(B);
 
-        double dB0 = rho2 / outer_M * std::cos(angle);
-        double dL0 = rho2 / outer_N * std::sin(angle) * (1.0 / std::cos(B));
+        double dB0 = rho2 / outer_M * std::cos(angle.value());
+        double dL0 = rho2 / outer_N * std::sin(angle.value()) * (1.0 / std::cos(B));
         double dA0 = dL0 * std::sin(B);
 
         double
             Bm = rad2sec(B) + dB0 / 2.0,
-            Am = rad2sec(angle) + dA0 / 2.0;
+            Am = rad2sec(angle.value()) + dA0 / 2.0;
 
         double dB{}, dL{}, dA{}, dBp{}, dLp{}, dAp{};
 
@@ -114,7 +111,7 @@ namespace gaa
             dLp = dL;
             dAp = dA;
 
-            auto lc = ellipsoid.lat_aux(sec2rad(Bm));
+            auto lc = ellipsoid.lat_aux(Latitude(sec2rad(Bm)));
             auto [M, N, R] = ellipsoid.principle_curvature_radius(sec2rad(Bm));
             double
                 N2 = std::pow(N, 2),
@@ -137,7 +134,7 @@ namespace gaa
             dA = p / N * S * sinA * t * (1 + S2 / (24 * N2) * (cosA2 * (2 + 7 * n2 + 9 * t2 * n2 + 5 * n4) + sinA2 * (2 + t2 + 2 * n2)));
 
             Bm = rad2sec(B) + dB / 2.0;
-            Am = rad2sec(angle) + dA / 2.0;
+            Am = rad2sec(angle.value()) + dA / 2.0;
         } while (
             !((std::abs(dB - dBp) < converge_threshold) &&
               (std::abs(dL - dLp) < converge_threshold) &&
@@ -146,22 +143,17 @@ namespace gaa
         double L_tar = L + sec2rad(dL);
         double B_tar = B + sec2rad(dB);
         double d180s = 180 * 3600, d180r = deg2rad(180);
-        double rangle = angle + sec2rad(dA + (angle < d180r ? 1 : -1) * d180s); // <-- units
+        double rangle = angle.value() + sec2rad(dA + (angle.value() < d180r ? 1 : -1) * d180s); // <-- units
         return Geodetic_solve_result{
-            .latitude = B_tar,
-            .longitude = L_tar,
-            .rangle = rangle,
+            .latitude = Latitude(B_tar),
+            .longitude = Longitude(L_tar),
+            .rangle = Radian(rangle),
             .ellipsoid = ellipsoid};
     }
 
-    Geodetic_rsolve_result Gauss_lemma_solver::rsolve(double lat1, double lon1, double lat2, double lon2) const
+    Geodetic_rsolve_result Gauss_lemma_solver::rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2) const
     {
-        GAA_latitude_assert(lat1);
-        GAA_latitude_assert(lat2);
-        GAA_longitude_assert(lon1);
-        GAA_longitude_assert(lon2);
-
-        double B1 = lat1, B2 = lat2, L1 = lon1, L2 = lon2;
+        double B1 = lat1.value(), B2 = lat2.value(), L1 = lon1.value(), L2 = lon2.value();
         double
             dLs = rad2sec(L2 - L1),
             dBs = rad2sec(B2 - B1);
@@ -186,8 +178,8 @@ namespace gaa
             d180s = 180 * 3600,
             A21 = Am + dAs / 2.0 + (A12 < d180s ? 1 : -1) * d180s;
         return Geodetic_rsolve_result{
-            .angle = sec2rad(A12),
-            .rangle = sec2rad(A21),
+            .angle = Radian(sec2rad(A12)),
+            .rangle = Radian(sec2rad(A21)),
             .s = S,
             .ellipsoid = ellipsoid};
     }

@@ -9,12 +9,12 @@ namespace gaa
     {
         Ellipsoid const &ellipsoid;
 
-        Geodetic_solve_result solve(double latitude, double longitude, double s, double angle, kwargs args = {}) const;
-        Geodetic_solve_result solve(double lat1, double lon1, double s, double angle) const
+        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Radian angle, kwargs args = {}) const;
+        Geodetic_solve_result solve(Latitude lat1, Longitude lon1, double s, Radian angle) const
         {
             return this->solve(lat1, lon1, s, angle, kw{});
         }
-        Geodetic_rsolve_result rsolve(double lat1, double lon1, double lat2, double lon2) const;
+        Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2) const;
 
         ~Gauss_lemma_solver() = default;
         Gauss_lemma_solver(Ellipsoid const &e)
@@ -23,37 +23,51 @@ namespace gaa
         }
     };
 
-    struct _gauss_lemma_solver_solve_fn
+    struct _gauss_lemma_solve_fn_gc
     {
-        double s_lat1, angle_lon1;
+
+        double s;
+        Radian angle;
         kwargs args;
 
         Geodetic_solve_result operator()(Geodetic_coordinate const &gc) const
         {
-            return Gauss_lemma_solver(gc.ellipsoid).solve(gc.latitude, gc.longitude, s_lat1, angle_lon1, args);
-        }
-
-        Geodetic_solve_result operator()(Geodetic_rsolve_result const &r) const
-        {
-            return Gauss_lemma_solver(r.ellipsoid).solve(s_lat1, angle_lon1, r.s, r.angle, args);
+            return Gauss_lemma_solver(gc.ellipsoid).solve(gc.latitude, gc.longitude, s, angle, args);
         }
     };
 
-    GAA_weak_channel((Geodetic_solve_result), (Geodetic_coordinate), const &gc, (_gauss_lemma_solver_solve_fn), const &fn)
+    struct _gauss_lemma_solve_fn_grr
+    {
+        Latitude lat1;
+        Longitude lon1;
+        kwargs args;
+
+        Geodetic_solve_result operator()(Geodetic_rsolve_result const &r) const
+        {
+            return Gauss_lemma_solver(r.ellipsoid).solve(lat1, lon1, r.s, r.angle, args);
+        }
+    };
+
+    GAA_weak_channel((Geodetic_solve_result), (Geodetic_coordinate), const &gc, (_gauss_lemma_solve_fn_gc), const &fn)
     {
         return fn(gc);
     }
 
-    GAA_weak_channel((Geodetic_solve_result), (Geodetic_rsolve_result), const &r, (_gauss_lemma_solver_solve_fn), const &fn)
+    GAA_weak_channel((Geodetic_solve_result), (Geodetic_rsolve_result), const &r, (_gauss_lemma_solve_fn_grr), const &fn)
     {
         return fn(r);
     }
 
     struct _gauss_lemma_solve
     {
-        _gauss_lemma_solver_solve_fn operator()(double s_lat1, double angle_lon1, kwargs args = {}) const
+        _gauss_lemma_solve_fn_grr operator()(Latitude lat1, Longitude lon1, kwargs args = {}) const
         {
-            return _gauss_lemma_solver_solve_fn{s_lat1, angle_lon1, args};
+            return {lat1, lon1, args};
+        }
+
+        _gauss_lemma_solve_fn_gc operator()(double s, Radian angle, kwargs args = {}) const
+        {
+            return {s, angle, args};
         }
     };
 
@@ -61,7 +75,8 @@ namespace gaa
 
     struct _gauss_lemma_rsolve_fn
     {
-        double lat1_2, lon1_2;
+        Latitude lat1_2;
+        Longitude lon1_2;
 
         Geodetic_rsolve_result operator()(Geodetic_solve_result const &r) const
         {
@@ -87,7 +102,7 @@ namespace gaa
 
     struct _gauss_lemma_rsolve
     {
-        _gauss_lemma_rsolve_fn operator()(double lat1_2, double lon1_2) const
+        _gauss_lemma_rsolve_fn operator()(Latitude lat1_2, Longitude lon1_2) const
         {
             return _gauss_lemma_rsolve_fn{lat1_2, lon1_2};
         }

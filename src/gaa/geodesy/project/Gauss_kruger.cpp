@@ -121,10 +121,10 @@ namespace gaa
 
     Gauss_kruger_project_coordinate Gauss_kruger_project::eval(Geodetic_coordinate const &gc) const
     {
-        double L = gc.longitude;
-        double B = gc.latitude;
+        double L = gc.longitude.value();
+        double B = gc.latitude.value();
         auto const &ellipsoid = gc.ellipsoid;
-        auto aux = ellipsoid.lat_aux(B);
+        auto aux = ellipsoid.lat_aux(gc.latitude);
 
         double t = aux.t,
                t2 = std::pow(t, 2),
@@ -174,7 +174,7 @@ namespace gaa
 
         double Bf = ellipsoid.meridian_arc_bottom_latitude(x);
         auto [Mf, Nf, Rf] = ellipsoid.principle_curvature_radius(Bf);
-        auto aux = ellipsoid.lat_aux(Bf);
+        auto aux = ellipsoid.lat_aux(Latitude(Bf));
 
         double tf = aux.t, nf2 = aux.nu_2;
         double tf2 = std::pow(tf, 2),

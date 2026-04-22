@@ -138,23 +138,20 @@ namespace gaa
         }
     }
 
-    Geodetic_solve_result Bessel_solver::solve(double latitude, double longitude, double s, double angle) const
+    Geodetic_solve_result Bessel_solver::solve(Latitude latitude, Longitude longitude, double s, Radian angle) const
     {
-        GAA_latitude_assert(latitude);
-        GAA_longitude_assert(longitude);
         GAA_distance_assert(s);
-        GAA_azimuth_assert(angle);
 
         auto lc = ellipsoid.lat_aux(latitude);
         double
             W1 = lc.w,
             e2 = ellipsoid.geometry().e1_2(),
-            sinB1 = std::sin(latitude),
-            cosB1 = std::cos(latitude),
+            sinB1 = std::sin(latitude.value()),
+            cosB1 = std::cos(latitude.value()),
             sinu1 = sinB1 * std::sqrt(1 - e2) / W1,
             cosu1 = cosB1 / W1,
-            sinA1 = std::sin(angle),
-            cosA1 = std::cos(angle),
+            sinA1 = std::sin(angle.value()),
+            cosA1 = std::cos(angle.value()),
             sinA0 = cosu1 * sinA1,
             sinA0p2 = std::pow(sinA0, 2),
             cosA0p2 = 1 - sinA0p2,
@@ -190,30 +187,26 @@ namespace gaa
             tan_lambda = std::tan(lambda);
         lambda = _bessel_adjust_lambda(lambda, sinA1, tan_lambda);
         double
-            L2 = longitude + lambda - delta,
+            L2 = longitude.value() + lambda - delta,
             A2 = std::atan(
                 cosu1 * sinA1 / (cosu1 * cos_sigma * cosA1 - sinu1 * sin_sigma)),
             tanA2 = std::tan(A2);
         A2 = _bessel_adjust_A2(A2, sinA1, tanA2);
 
         return Geodetic_solve_result{
-            .latitude = B2,
-            .longitude = L2,
-            .rangle = A2,
+            .latitude = Latitude(B2),
+            .longitude = Longitude(L2),
+            .rangle = Radian(A2),
             .ellipsoid = ellipsoid,
         };
     }
 
-    Geodetic_rsolve_result Bessel_solver::rsolve(double lat1, double lon1, double lat2, double lon2, kwargs args) const
+    Geodetic_rsolve_result Bessel_solver::rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2, kwargs args) const
     {
-        GAA_latitude_assert(lat1);
-        GAA_latitude_assert(lat2);
-        GAA_longitude_assert(lon1);
-        GAA_longitude_assert(lon2);
-
         double converge_threshold = args._has_converge_threshold() ? args.converge_threshold() : 1e-5;
 
-        double B1 = lat1, B2 = lat2, L1 = lon1, L2 = lon2;
+        Latitude const &B1 = lat1, B2 = lat2;
+        Longitude const &L1 = lon1, L2 = lon2;
         auto
             lc1 = ellipsoid.lat_aux(B1),
             lc2 = ellipsoid.lat_aux(B2);
@@ -221,17 +214,17 @@ namespace gaa
         double
             W1 = lc1.w,
             W2 = lc2.w,
-            sinB1 = std::sin(B1),
-            cosB1 = std::cos(B1),
-            sinB2 = std::sin(B2),
-            cosB2 = std::cos(B2),
+            sinB1 = std::sin(B1.value()),
+            cosB1 = std::cos(B1.value()),
+            sinB2 = std::sin(B2.value()),
+            cosB2 = std::cos(B2.value()),
             e2 = ellipsoid.geometry().e1_2(),
             sqrt_1_s_e2 = std::sqrt(1 - e2),
             sinu1 = sinB1 * sqrt_1_s_e2 / W1,
             sinu2 = sinB2 * sqrt_1_s_e2 / W2,
             cosu1 = cosB1 / W1,
             cosu2 = cosB2 / W2,
-            L = L2 - L1,
+            L = (L2 - L1).value(),
             a1 = sinu1 * sinu2,
             a2 = cosu1 * cosu2,
             b1 = cosu1 * sinu2,
@@ -311,8 +304,8 @@ namespace gaa
         A2 = (A1 < d180r ? 1 : -1) * d180r + A2;
 
         return Geodetic_rsolve_result{
-            .angle = A1,
-            .rangle = A2,
+            .angle = Radian(A1),
+            .rangle = Radian(A2),
             .s = S,
             .ellipsoid = ellipsoid};
     }

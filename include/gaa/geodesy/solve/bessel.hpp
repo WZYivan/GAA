@@ -9,9 +9,9 @@ namespace gaa
     {
         Ellipsoid const &ellipsoid;
 
-        Geodetic_solve_result solve(double latitude, double longitude, double s, double angle) const;
-        Geodetic_rsolve_result rsolve(double lat1, double lon1, double lat2, double lon2, kwargs args = {}) const;
-        Geodetic_rsolve_result rsolve(double lat1, double lon1, double lat2, double lon2) const
+        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Radian angle) const;
+        Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2, kwargs args = {}) const;
+        Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2) const
         {
             return this->rsolve(lat1, lon1, lat2, lon2, kw{});
         }
@@ -23,36 +23,48 @@ namespace gaa
         }
     };
 
-    struct _bessel_solve_fn
+    struct _bessel_solve_fn_gc
     {
-        double s_lat1, angle_lon1;
+        double s;
+        Radian angle;
 
         Geodetic_solve_result operator()(Geodetic_coordinate const &gc) const
         {
-            return Bessel_solver(gc.ellipsoid).solve(gc.latitude, gc.longitude, s_lat1, angle_lon1);
-        }
-
-        Geodetic_solve_result operator()(Geodetic_rsolve_result const &r) const
-        {
-            return Bessel_solver(r.ellipsoid).solve(s_lat1, angle_lon1, r.s, r.angle);
+            return Bessel_solver(gc.ellipsoid).solve(gc.latitude, gc.longitude, s, angle);
         }
     };
 
-    GAA_weak_channel((Geodetic_solve_result), (Geodetic_coordinate), const &gc, (_bessel_solve_fn), const &fn)
+    struct _bessel_solve_fn_grr
+    {
+        Latitude lat1;
+        Longitude lon1;
+
+        Geodetic_solve_result operator()(Geodetic_rsolve_result const &r) const
+        {
+            return Bessel_solver(r.ellipsoid).solve(lat1, lon1, r.s, r.angle);
+        }
+    };
+
+    GAA_weak_channel((Geodetic_solve_result), (Geodetic_coordinate), const &gc, (_bessel_solve_fn_gc), const &fn)
     {
         return fn(gc);
     }
 
-    GAA_weak_channel((Geodetic_solve_result), (Geodetic_rsolve_result), const &r, (_bessel_solve_fn), const &fn)
+    GAA_weak_channel((Geodetic_solve_result), (Geodetic_rsolve_result), const &r, (_bessel_solve_fn_grr), const &fn)
     {
         return fn(r);
     }
 
     struct _bessel_solve
     {
-        _bessel_solve_fn operator()(double s_lat1, double angle_lon1) const
+        _bessel_solve_fn_gc operator()(double s, Radian angle) const
         {
-            return _bessel_solve_fn{s_lat1, angle_lon1};
+            return {s, angle};
+        }
+
+        _bessel_solve_fn_grr operator()(Latitude lat1, Longitude lon1) const
+        {
+            return {lat1, lon1};
         }
     };
 
@@ -60,7 +72,8 @@ namespace gaa
 
     struct _bessel_rsolve_fn
     {
-        double lat1_2, lon1_2;
+        Latitude lat1_2;
+        Longitude lon1_2;
         kwargs args;
 
         Geodetic_rsolve_result operator()(Geodetic_solve_result const &r) const
@@ -86,7 +99,7 @@ namespace gaa
 
     struct _bessel_rsolve
     {
-        _bessel_rsolve_fn operator()(double lat1_2, double lon1_2, kwargs args = {}) const
+        _bessel_rsolve_fn operator()(Latitude lat1_2, Longitude lon1_2, kwargs args = {}) const
         {
             return _bessel_rsolve_fn{lat1_2, lon1_2, args};
         }
