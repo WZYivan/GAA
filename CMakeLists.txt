@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 3.20)
+
+project(GAA LANGUAGES C CXX)
+
+set(CMAKE_CXX_EXTENSIONS ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED 23)
+
+option(GAA_DEV ON)
+option(GAA_TEST OFF)
+option(GAA_STRICT ON)
+option(GAA_VERY_STRICT OFF)
+
+find_package(Boost REQUIRED COMPONENTS headers)
+find_package(Eigen3 REQUIRED NO_MODULE)
+
+set(GAA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(GAA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
+
+add_subdirectory(src)
+
+if(GAA_DEV)
+    add_subdirectory(dev)
+endif()
