@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(GAA_DEV ON)
 option(GAA_TEST OFF)
+option(GAA_MODULE OFF)
 option(GAA_STRICT ON)
 option(GAA_VERY_STRICT OFF)
 
@@ -24,4 +25,13 @@ add_subdirectory(src)
 
 if(GAA_DEV)
     add_subdirectory(dev)
+endif()
+
+if(GAA_MODULE)
+    add_subdirectory(module)
+endif()
+
+if(GAA_TEST)
+    enable_testing()
+    add_subdirectory(test)
 endif()

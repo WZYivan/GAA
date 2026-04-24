@@ -19,3 +19,13 @@ namespace gaa
 #else
 #define gaa_assert(EXPR, ...) assert(EXPR)
 #endif
+
+#ifndef GAA_ENABLE_MODULE
+#define GAA_EXPORT
+#define GAA_MODULE
+#define GAA_EXPORT_MODULE(NAME)
+#else
+#define GAA_EXPORT export
+#define GAA_MODULE module
+#define GAA_EXPORT_MODULE(NAME) GAA_EXPORT GAA_MODULE NAME
+#endif
