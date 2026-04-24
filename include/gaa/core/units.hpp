@@ -25,9 +25,9 @@ namespace gaa
     {
     public:
         using Traits = _quantity_traits<Unit>;
-        using Traits::base_type;
+        using typename Traits::base_type;
         using Traits::unit;
-        using Traits::unit_type;
+        using typename Traits::unit_type;
         using quantity = boost::units::quantity<Unit>;
 
     public:
@@ -93,6 +93,7 @@ namespace gaa
 
     using Radian = _basic_quantity_t<boost::units::si::plane_angle>;
     using Arcdeg = _basic_quantity_t<boost::units::degree::plane_angle>;
+    using Azimuth = Radian;
 
     using _arcmin_base_unit = boost::units::scaled_base_unit<
         boost::units::angle::degree_base_unit,

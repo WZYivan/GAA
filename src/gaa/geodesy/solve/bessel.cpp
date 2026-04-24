@@ -138,7 +138,7 @@ namespace gaa
         }
     }
 
-    Geodetic_solve_result Bessel_solver::solve(Latitude latitude, Longitude longitude, double s, Radian angle) const
+    Geodetic_solve_result Bessel_solver::solve(Latitude latitude, Longitude longitude, double s, Azimuth angle) const
     {
         GAA_distance_assert(s);
 
@@ -196,7 +196,7 @@ namespace gaa
         return Geodetic_solve_result{
             .latitude = Latitude(B2),
             .longitude = Longitude(L2),
-            .rangle = Radian(A2),
+            .rangle = Azimuth(A2),
             .ellipsoid = ellipsoid,
         };
     }
@@ -304,8 +304,8 @@ namespace gaa
         A2 = (A1 < d180r ? 1 : -1) * d180r + A2;
 
         return Geodetic_rsolve_result{
-            .angle = Radian(A1),
-            .rangle = Radian(A2),
+            .angle = Azimuth(A1),
+            .rangle = Azimuth(A2),
             .s = S,
             .ellipsoid = ellipsoid};
     }

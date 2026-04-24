@@ -9,7 +9,7 @@ namespace gaa
     {
         Ellipsoid const &ellipsoid;
 
-        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Radian angle) const;
+        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Azimuth angle) const;
         Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2, kwargs args = {}) const;
         Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2, Longitude lon2) const
         {
@@ -26,7 +26,7 @@ namespace gaa
     struct _bessel_solve_fn_gc
     {
         double s;
-        Radian angle;
+        Azimuth angle;
 
         Geodetic_solve_result operator()(Geodetic_coordinate const &gc) const
         {
@@ -57,7 +57,7 @@ namespace gaa
 
     struct _bessel_solve
     {
-        _bessel_solve_fn_gc operator()(double s, Radian angle) const
+        _bessel_solve_fn_gc operator()(double s, Azimuth angle) const
         {
             return {s, angle};
         }

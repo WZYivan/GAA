@@ -14,7 +14,7 @@ namespace gaa
             Xpr_1::ColsAtCompileTime != Eigen::Dynamic &&
             (Xpr_1::RowsAtCompileTime == 1 || Xpr_1::ColsAtCompileTime == 1))
     {
-        constexpr auto Size = m_1.RowsAtCompileTime == 1 ? m_1.ColsAtCompileTime : m_1.RowsAtCompileTime;
+        constexpr auto Size = Xpr_1::RowsAtCompileTime == 1 ? Xpr_1::ColsAtCompileTime : Xpr_1::RowsAtCompileTime;
         return [&]<std::size_t... I>(std::index_sequence<I...>)
         {
             return std::make_tuple(m_1[I]...);

@@ -8,7 +8,7 @@
 namespace gaa
 {
     // template <class Ephemeris>
-    std::tuple<double, double, double> sv_pos_from_broadcast(rinex::v302::Nav_ephemeris_bds const &eph, double t)
+    inline std::tuple<double, double, double> sv_pos_from_broadcast(rinex::v302::Nav_ephemeris_bds const &eph, double t)
     // requires requires {
     //     eph.sqrtA;
     // }

@@ -9,8 +9,8 @@ namespace gaa
     {
         Ellipsoid const &ellipsoid;
 
-        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Radian angle, kwargs args = {}) const;
-        Geodetic_solve_result solve(Latitude lat1, Longitude lon1, double s, Radian angle) const
+        Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s, Azimuth angle, kwargs args = {}) const;
+        Geodetic_solve_result solve(Latitude lat1, Longitude lon1, double s, Azimuth angle) const
         {
             return this->solve(lat1, lon1, s, angle, kw{});
         }
@@ -27,7 +27,7 @@ namespace gaa
     {
 
         double s;
-        Radian angle;
+        Azimuth angle;
         kwargs args;
 
         Geodetic_solve_result operator()(Geodetic_coordinate const &gc) const
@@ -65,7 +65,7 @@ namespace gaa
             return {lat1, lon1, args};
         }
 
-        _gauss_lemma_solve_fn_gc operator()(double s, Radian angle, kwargs args = {}) const
+        _gauss_lemma_solve_fn_gc operator()(double s, Azimuth angle, kwargs args = {}) const
         {
             return {s, angle, args};
         }

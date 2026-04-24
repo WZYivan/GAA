@@ -18,7 +18,7 @@ namespace gaa
             M = M + 12;
         }
 
-        return int(365.25 * Y) + int(30.6001 * (M + 1)) + D + int(H + m / 60 + S / 3600) / 24 + 1720981.5;
+        return int(365.25 * Y) + int(30.6001 * (M + 1)) + D + int(H + m / 60.0 + S / 3600.0) / 24.0 + 1720981.5;
     }
 
     double const

@@ -73,7 +73,7 @@ namespace gaa
     {                                                                                      \
     private:                                                                               \
         using _sender_in_building_t = GAA_PP_STRIP_PARAM SENDER_TYPE;                      \
-        using _accepter_in_building_t = GAA_PP_STRIP_PARAM ACCEPTER_TYPE;
+        using _accepter_in_building_t = GAA_PP_STRIP_PARAM ACCEPTER_TYPE
 
 #define GAA_channel_acknowledge(SENDER_ARG, ACCEPTER_ARG) \
 public:                                                   \

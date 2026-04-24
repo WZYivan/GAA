@@ -8,14 +8,14 @@ namespace gaa
     {
         Latitude latitude;
         Longitude longitude;
-        Radian rangle;
+        Azimuth rangle;
         Ellipsoid const &ellipsoid;
     };
 
     struct Geodetic_rsolve_result
     {
-        Radian angle;
-        Radian rangle;
+        Azimuth angle;
+        Azimuth rangle;
         double s;
         Ellipsoid const &ellipsoid;
     };

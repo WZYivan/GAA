@@ -86,7 +86,7 @@ namespace gaa
         }
     }
 
-    Geodetic_solve_result Gauss_lemma_solver::solve(Latitude latitude, Longitude longitude, double s, Radian angle, kwargs args) const
+    Geodetic_solve_result Gauss_lemma_solver::solve(Latitude latitude, Longitude longitude, double s, Azimuth angle, kwargs args) const
     {
         GAA_distance_assert(s);
 
@@ -147,7 +147,7 @@ namespace gaa
         return Geodetic_solve_result{
             .latitude = Latitude(B_tar),
             .longitude = Longitude(L_tar),
-            .rangle = Radian(rangle),
+            .rangle = Azimuth(rangle),
             .ellipsoid = ellipsoid};
     }
 
@@ -178,8 +178,8 @@ namespace gaa
             d180s = 180 * 3600,
             A21 = Am + dAs / 2.0 + (A12 < d180s ? 1 : -1) * d180s;
         return Geodetic_rsolve_result{
-            .angle = Radian(sec2rad(A12)),
-            .rangle = Radian(sec2rad(A21)),
+            .angle = Azimuth(sec2rad(A12)),
+            .rangle = Azimuth(sec2rad(A21)),
             .s = S,
             .ellipsoid = ellipsoid};
     }
