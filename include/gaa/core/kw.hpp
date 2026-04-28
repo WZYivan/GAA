@@ -129,10 +129,15 @@ namespace gaa::_kw
 #define GAA_KW_ref(TYPE, NAME) GAA_KW_arg(NAME)
 #define GAA_KW_cref(TYPE, NAME) GAA_KW_arg(NAME)
 
+    
+
     class Args
     {
     public:
         using map_type = std::map<tags, std::any>;
+
+        template <tags... required_tags>
+        friend class Required_tags_validator;
 
     private:
         map_type m_map;
@@ -170,10 +175,43 @@ namespace gaa::_kw
 #undef GAA_KW_value
 #undef GAA_KW_ref
 #undef GAA_KW_cref
+
+    template <tags... required_tags>
+    class Required_tags_validator
+    {
+    public:
+        using wrapped_type = Args;
+    
+    private:
+        wrapped_type const & m_args;
+
+        template <tags tag>
+        void validate()
+        {
+            gaa_assert(m_args.template _has<tag>(), "Required arg is not given");
+        }
+    
+    public:
+        ~Required_tags_validator() = default;
+        Required_tags_validator(wrapped_type const & args) 
+        : m_args(args)
+        {
+            (validate<required_tags>(), ...) ;
+        }
+
+        wrapped_type const & unwrap() const 
+        {
+            return m_args;
+        }
+    };
 }
 
 namespace gaa
 {
+    using kw_tags = _kw::tags;
     using kw = _kw::Args;
     using kwargs = kw const &;
+
+    template <kw_tags... required_tags>
+    using kwargs_require = _kw::Required_tags_validator<required_tags...>;
 }
