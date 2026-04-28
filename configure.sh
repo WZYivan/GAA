@@ -7,4 +7,5 @@ cmake .. \
     -DCMAKE_C_COMPILER=gcc \
     -DGAA_DEV=ON \
     -DGAA_TEST=ON \
-    -DGAA_MODULE=OFF  
+    -DGAA_MODULE=OFF \
+    -DGAA_WITH_R=ON

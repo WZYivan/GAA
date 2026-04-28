@@ -1,10 +1,10 @@
 #pragma once
 
-#define GAA_BUILD_TYPE "Debug"
-#define GAA_VERSION "1.0.0"
+#define GAA_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+#define GAA_VERSION "@GAA_VERSION@"
 
-#define GAA_R_RHOME "/usr/local/lib/R"
-#define GAA_WITH_R 1
+#define GAA_R_RHOME "@R_RHOME@"
+#define GAA_WITH_R @cfg_GAA_WITH_R@
 
 #ifndef GAA_exit_fail
 #define GAA_exit_fail std::abort

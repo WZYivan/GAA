@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(GAA LANGUAGES C CXX)
+project(GAA LANGUAGES C CXX VERSION 1.0.0)
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -11,15 +13,25 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(GAA_DEV ON)
 option(GAA_TEST OFF)
 option(GAA_MODULE OFF)
+option(GAA_WITH_R ON)
 option(GAA_STRICT ON)
 option(GAA_VERY_STRICT OFF)
 
+
 find_package(Boost REQUIRED COMPONENTS headers)
 find_package(Eigen3 REQUIRED NO_MODULE)
+if(GAA_WITH_R)
+    include(gaaFindRLang)
+    include(gaaFindRPackage)
+    gaaFindRPackage(Rcpp)
+    gaaFindRPackage(RInside)
+endif()
 
 set(GAA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(GAA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
+
+include(gaaConfig)
 
 add_subdirectory(src)
 
