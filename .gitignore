@@ -1,9 +1,18 @@
+# system section
 .vscode/*
 .ref/*
 build/*
-dev/*
 .cache/*
+
+# in-dev section
+dev/*
 module/*
 dev/module/*
 
+# private section
+
 .clangd
+.clang-format
+.clang-format-llvm
+TODO.md 
+configure.sh
