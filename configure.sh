@@ -3,9 +3,10 @@
 cmake .. \
     -G "Unix Makefiles" \
     -DCMAKE_BUILD_TYPE=Debug \
-    -DCMAKE_CXX_COMPILER=g++\
+    -DCMAKE_CXX_COMPILER=g++ \
     -DCMAKE_C_COMPILER=gcc \
+    -DCMAKE_INSTALL_PREFIX=/tmp \
     -DGAA_DEV=ON \
     -DGAA_TEST=ON \
     -DGAA_MODULE=OFF \
-    -DGAA_WITH_R=ON
+    -DGAA_WITH_R=ON 

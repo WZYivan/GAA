@@ -1,7 +1,7 @@
 file(GLOB_RECURSE GAA_SRC_FILES ${GAA_SRC_DIR}/**/*.cpp)
 
 add_library(gaa SHARED ${GAA_SRC_FILES})
-target_include_directories(gaa PUBLIC ${GAA_INCLUDE_DIR})
+target_include_directories(gaa PUBLIC $<BUILD_INTERFACE:${GAA_INCLUDE_DIR}>)
 target_link_libraries(gaa PUBLIC Boost::headers Eigen3::Eigen)
 
 if(GAA_WITH_R)

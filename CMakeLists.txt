@@ -46,7 +46,6 @@ add_subdirectory(src)
 include(gaaInstall)
 include(gaaUninstall)
 include(gaaCMakeConfig)
-include(gaaPackageConfig)
 
 if(GAA_DEV)
     add_subdirectory(dev)
