@@ -9,6 +9,8 @@
 #include <boost/units/systems/angle/degrees.hpp>
 #include <boost/units/systems/si/plane_angle.hpp>
 
+#include <gaa/core/math.hpp>
+
 namespace gaa {
 
 template <class Unit> struct _quantity_traits {
@@ -108,16 +110,16 @@ public:
   using base_type::unit_type;
 
 private:
-  bool validate() {
-    return Arcdeg(std::abs(this->value())) <= 90 * Arcdeg::unit;
-  }
+  bool validate() { return std::abs(this->value()) <= deg2rad(90); }
 
 public:
   ~Latitude() = default;
   explicit Latitude(double val) : base_type(val) { validate(); }
 
   template <Compatible_Quantity<base_type> Q>
-  Latitude(Q const &q) : base_type(q) {
+  Latitude(Q const &q)
+      : base_type(
+            boost::units::quantity<boost::units::si::plane_angle>(q).value()) {
     validate();
   }
 };
@@ -129,16 +131,16 @@ public:
   using base_type::unit_type;
 
 private:
-  bool validate() {
-    return Arcdeg(std::abs(this->value())) <= 90 * Arcdeg::unit;
-  }
+  bool validate() { return std::abs(this->value()) <= deg2rad(180); }
 
 public:
   ~Longitude() = default;
   explicit Longitude(double val) : base_type(val) { validate(); }
 
   template <Compatible_Quantity<base_type> Q>
-  Longitude(Q const &q) : base_type(q) {
+  Longitude(Q const &q)
+      : base_type(
+            boost::units::quantity<boost::units::si::plane_angle>(q).value()) {
     validate();
   }
 };
@@ -158,7 +160,10 @@ template <class Q> double rad(Q const &q) {
 extern double rad(Radian const &r);
 extern double rad(Latitude const &lat);
 extern double rad(Longitude const &lon);
+
 extern Radian rad(double r);
+extern Latitude lat(double r);
+extern Longitude lon(double r);
 
 inline Radian operator""_rad(long double r) {
   return rad(static_cast<double>(r));
