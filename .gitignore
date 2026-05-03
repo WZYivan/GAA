@@ -5,9 +5,7 @@ build/*
 .cache/*
 
 # in-dev section
-dev/*
 module/*
-dev/module/*
 data/*
 
 # private section
