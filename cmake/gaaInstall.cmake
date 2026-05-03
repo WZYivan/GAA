@@ -1,0 +1,2 @@
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/gaa DESTINATION include)
+install(TARGETS gaa LIBRARY DESTINATION lib)

@@ -25,6 +25,14 @@ if(GAA_WITH_R)
     include(gaaFindRPackage)
     gaaFindRPackage(Rcpp)
     gaaFindRPackage(RInside)
+
+    if(NOT Rcpp_FOUND)
+        message(FATAL_ERROR "R package Rcpp is REQUIRED but not found")
+    endif()
+
+    if(NOT RInside_FOUND)
+        message(FATAL_ERROR "R package RInside is REQUIRED but not found")
+    endif()
 endif()
 
 set(GAA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
@@ -34,6 +42,11 @@ set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
 include(gaaConfig)
 
 add_subdirectory(src)
+
+include(gaaInstall)
+include(gaaUninstall)
+include(gaaCMakeConfig)
+include(gaaPackageConfig)
 
 if(GAA_DEV)
     add_subdirectory(dev)

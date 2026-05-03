@@ -7,7 +7,7 @@ target_link_libraries(gaa PUBLIC Boost::headers Eigen3::Eigen)
 if(GAA_WITH_R)
     target_include_directories(gaa PUBLIC ${Rcpp_INCLUDE_DIR} ${RInside_INCLUDE_DIR})
     target_compile_options(gaa PUBLIC ${R_CPPFLAGS})
-    target_link_libraries(gaa PUBLIC ${R_LDFLAGS} ${RInside_LDFLAGS})
+    target_link_libraries(gaa PUBLIC ${R_LDFLAGS} ${Rcpp_LDFLAGS} ${RInside_LDFLAGS})
 endif()
 
 
