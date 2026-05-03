@@ -1,11 +1,15 @@
-#include <numbers>
-
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
 
 namespace gaa {
 bool within_abs(double x, double y, double epsilon) {
-  return std::abs(x - y) < epsilon;
+  return std::abs(std::abs(x) - std::abs(y)) < epsilon;
+}
+
+bool within_abs_pct(double x, double y, double pct) {
+  double max = x > y ? x : y;
+  double min = x < y ? x : y;
+  return 1 - std::abs(min) / std::abs(max) <= pct;
 }
 
 double round(double x) {

@@ -8,6 +8,7 @@
 
 namespace gaa {
 extern bool within_abs(double x, double y, double epsilon = 1e-10);
+extern bool within_abs_pct(double x, double y, double pct = 0.05);
 extern double round(double x);
 extern double cut(double x, int precision);
 extern double deg2rad(double);

@@ -8,9 +8,9 @@ build/*
 dev/*
 module/*
 dev/module/*
+data/*
 
 # private section
-
 .clangd
 .clang-format
 .clang-format-llvm
