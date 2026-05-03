@@ -155,6 +155,15 @@ template <class Q> double rad(Q const &q) {
   }
 }
 
+extern double rad(Radian const &r);
+extern double rad(Latitude const &lat);
+extern double rad(Longitude const &lon);
+extern Radian rad(double r);
+
+inline Radian operator""_rad(long double r) {
+  return rad(static_cast<double>(r));
+}
+
 #define GAA_UNITS_OP(X, OP, Y)                                                 \
   []<class Xt, class Yt>(Xt const &x, Yt const &y)                             \
     requires gaa::Is_Quantity<Xt> || gaa::Is_Quantity<Yt>                      \

@@ -6,10 +6,6 @@
 #define GAA_R_RHOME "/usr/local/lib/R"
 #define GAA_WITH_R 1
 
-#ifndef GAA_exit_fail
-#define GAA_exit_fail std::abort
-#endif
-
-#ifndef GAA_default_eigen_matrix
-#define GAA_default_eigen_matrix Eigen::MatrixXd
+#ifndef GAA_AFTER_ASSERTION_FAIL
+#define GAA_AFTER_ASSERTION_FAIL std::abort
 #endif

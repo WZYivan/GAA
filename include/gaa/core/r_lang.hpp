@@ -3,20 +3,28 @@
 #include <gaa/core/config.hpp>
 
 #if !(GAA_WITH_R)
-#error                                                                         \
-    "GAA is configured without R, it's impossible to embed R, please rebuild GAA"
+#warning                                                                       \
+    "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible"
 #else
 
 #include <concepts>
 #include <cstddef>
+#include <memory>
 #include <vector>
 
 #include <RInside.h>
 #include <Rcpp.h>
 
-#define GAA_INIT_R(INTERPRETER) RInside INTERPRETER
+#include <gaa/core/keywords.hpp>
 
 namespace gaa {
+
+inline static std::unique_ptr<RInside> r_interp_ptr;
+
+extern void init_r_interp();
+extern void end_r_interp();
+extern RInside &r_interp();
+
 namespace R = ::Rcpp;
 
 using _rcpp_Vector_not_supported_type = void;
