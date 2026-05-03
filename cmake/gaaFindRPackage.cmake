@@ -12,6 +12,7 @@
 #   include(gaaFindPackage)
 #   gaaFindPackage(Rcpp)
 #   target_include_directories(my_target PRIVATE ${Rcpp_INCLUDE_DIR})
+#   target_link_libraries(my_target PUBLIC ${Rcpp_LDFLAGS})
 
 function(gaaFindRPackage R_PACKAGE_NAME)
     if(NOT R_EXECUTABLE)
@@ -67,7 +68,9 @@ function(gaaFindRPackage R_PACKAGE_NAME)
 
         message(STATUS "Found R package ${R_PACKAGE_NAME} lib: ${_lib_name}")
 
-        set(${R_PACKAGE_NAME}_LDFLAGS "-L${_libdir} -Wl,-rpath=${_libdir} -l:${_lib_name}" PARENT_SCOPE)        
+        set(${R_PACKAGE_NAME}_LDFLAGS "-L${_libdir} -Wl,-rpath=${_libdir} -l:${_lib_name}" PARENT_SCOPE)     
+    else()
+        set(${R_PACKAGE_NAME}_LDFLAGS "" PARENT_SCOPE)        
     endif()
 
     
