@@ -2,6 +2,7 @@
 #include <gaa/geodesy/ellipsoids.hpp>
 #include <gaa/geodesy/project/Gauss_kruger.hpp>
 #include <gaa/geodesy/solve.hpp>
+#include <numbers>
 #include <print>
 
 #define BOOST_TEST_MODULE GeodesyTest
@@ -12,7 +13,7 @@
 #include <boost/test/included/unit_test.hpp>
 #endif
 
-double rad2sec(double rad) { return rad * 180.0 / M_PI * 3600.0; }
+double rad2sec(double rad) { return rad * 180.0 / std::numbers::pi * 3600.0; }
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(gaa::Ellipsoid)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(gaa::Latitude)

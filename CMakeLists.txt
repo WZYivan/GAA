@@ -60,6 +60,7 @@ include(gaaConfig)
 
 add_subdirectory(src)
 
+include(gaaExport)
 include(gaaInstall)
 include(gaaUninstall)
 include(gaaCMakeConfig)

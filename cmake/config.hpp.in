@@ -28,3 +28,5 @@
 #ifndef GAA_AFTER_ASSERTION_FAIL
 #define GAA_AFTER_ASSERTION_FAIL std::abort
 #endif
+
+#include <gaa/core/export.hpp>

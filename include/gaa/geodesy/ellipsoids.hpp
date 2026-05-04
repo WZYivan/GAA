@@ -164,7 +164,9 @@ public:
   _ellipsoid_gravity_access_t gravity() const;
 };
 
-extern Ellipsoid const cgcs2000, wgs84, krassovsky;
+extern Ellipsoid const GAA_API cgcs2000;
+extern Ellipsoid const GAA_API wgs84;
+extern Ellipsoid const GAA_API krassovsky;
 
 template <class T>
 concept Reference_To_Ellipsoid = requires(T t) {
