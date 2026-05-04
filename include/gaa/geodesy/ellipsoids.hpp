@@ -1,5 +1,6 @@
 #pragma once
 
+#include <numbers>
 #include <tuple>
 
 #include <gaa/core/keywords.hpp>
@@ -172,7 +173,6 @@ concept Reference_To_Ellipsoid = requires(T t) {
   { t.ellipsoid() } -> std::convertible_to<Ellipsoid>;
 };
 } // namespace gaa
-
 #define GAA_latitude_assert(LATITUDE)                                          \
   gaa_assert(std::abs(LATITUDE) <= std::numbers::pi / 2.0,                     \
              "Latitude(rad) out of range [-90, 90] deg")
