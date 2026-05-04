@@ -2,7 +2,12 @@ file(GLOB_RECURSE GAA_SRC_FILES ${GAA_SRC_DIR}/**/*.cpp)
 
 add_library(gaa SHARED ${GAA_SRC_FILES})
 target_include_directories(gaa PUBLIC $<BUILD_INTERFACE:${GAA_INCLUDE_DIR}>)
-target_link_libraries(gaa PUBLIC Boost::headers Eigen3::Eigen)
+
+if(GAA_USE_PRIVATE_3RD)
+    include(gaaPrivate3rd)
+else()
+    target_link_libraries(gaa PUBLIC Boost::headers Eigen3::Eigen)
+endif()
 
 if(GAA_WITH_R)
     target_include_directories(gaa PUBLIC ${Rcpp_INCLUDE_DIR} ${RInside_INCLUDE_DIR})
@@ -12,7 +17,7 @@ endif()
 
 
 if(MSVC)
-    message(WARNING "never test in MSVC")
+    message(WARNING "no compiler flags for MSVC")
 else()
     if(GAA_STRICT)
     target_compile_options(gaa PRIVATE 
