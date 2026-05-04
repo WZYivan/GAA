@@ -1,3 +1,5 @@
+#include <numbers>
+
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
 
