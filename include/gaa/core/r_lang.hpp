@@ -7,8 +7,8 @@
 #warning                                                                       \
     "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible"
 #elif (GAA_MSVC)
-#pragma message                                                                \
-    "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible"
+#pragma message(                                                               \
+    "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible")
 #endif
 #else
 
