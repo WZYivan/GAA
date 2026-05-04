@@ -19,8 +19,7 @@ endif()
 if(MSVC)
     target_compile_options(gaa PUBLIC 
         /Zc:preprocessor
-        /Zc:__cplusplus
-        "/std:c++${CMAKE_CXX_STANDARD}preview")
+        /Zc:__cplusplus)
     target_compile_options(gaa PUBLIC /wd4819)
 else()
     if(GAA_STRICT)
