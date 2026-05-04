@@ -3,10 +3,10 @@
 #include <gaa/core/config.hpp>
 
 #if !(GAA_WITH_R)
-#if defined(__GNUC__) || defined(__clang__)
+#if GAA_GNU || GAA_CLANG
 #warning                                                                       \
     "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible"
-#elif defined(_MSC_VER)
+#elif GAA_MSVC
 #pragma message
 #endif
 #else
