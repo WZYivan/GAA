@@ -21,6 +21,7 @@ if(MSVC)
         /Zc:preprocessor
         /Zc:__cplusplus
         "/std:c++${CMAKE_CXX_STANDARD}preview")
+    target_compile_options(gaa PUBLIC /wd4819)
 else()
     if(GAA_STRICT)
     target_compile_options(gaa PRIVATE 
