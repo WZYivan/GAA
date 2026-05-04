@@ -17,7 +17,7 @@ endif()
 
 
 if(MSVC)
-    message(WARNING "no compiler flags for MSVC")
+    target_compile_options(gaa PUBLIC /Zc:preprocessor)
 else()
     if(GAA_STRICT)
     target_compile_options(gaa PRIVATE 
