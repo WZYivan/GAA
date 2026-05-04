@@ -1,6 +1,7 @@
 #include <gaa/core/r_lang.hpp>
 
 int main(int argc, char **argv) {
+#if GAA_WITH_R
   gaa::init_r_interp();
 
   std::vector<double> dbls{1.1, 2.3, 4.5};
@@ -13,4 +14,5 @@ int main(int argc, char **argv) {
 
   // SEGMATATION FAULT cause R is endded
   auto _ = Rcpp::NumericVector::create(1);
+#endif
 }

@@ -1,6 +1,7 @@
-#include "RInside.h"
-#include "gaa/core/keywords.hpp"
 #include <gaa/core/r_lang.hpp>
+
+#if GAA_WITH_R
+
 #include <memory>
 
 namespace gaa {
@@ -14,3 +15,5 @@ RInside &r_interp() {
   return *r_interp_ptr;
 }
 } // namespace gaa
+
+#endif

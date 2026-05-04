@@ -1,8 +1,10 @@
 # system section
 .vscode/*
 .ref/*
-build/*
 .cache/*
+.xmake/*
+build/*
+xbuild/*
 
 # in-dev section
 module/*

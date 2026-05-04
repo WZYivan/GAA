@@ -1,10 +1,10 @@
 #pragma once
 
-#define GAA_BUILD_TYPE "@CMAKE_BUILD_TYPE@"
+#define GAA_BUILD_TYPE "@GAA_BUILD_TYPE@"
 #define GAA_VERSION "@GAA_VERSION@"
 
 #define GAA_R_RHOME "@R_RHOME@"
-#define GAA_WITH_R @cfg_GAA_WITH_R@
+#define GAA_WITH_R @IS_GAA_WITH_R@
 
 #ifndef GAA_AFTER_ASSERTION_FAIL
 #define GAA_AFTER_ASSERTION_FAIL std::abort
