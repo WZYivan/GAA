@@ -16,3 +16,4 @@ data/*
 .clang-format-llvm
 TODO.md 
 configure.sh
+tokei.sh
