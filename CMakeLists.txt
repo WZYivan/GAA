@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
+if(WIN32 OR MSVC)
+    message(FATAL_ERROR "FUCK MICROSOFT AND ITS STUPID WINDOWS, FUCK YOU ALL!!! AND GO FUCK YOURSELF...")
+endif()
+
 project(GAA LANGUAGES C CXX VERSION 1.0.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -20,7 +24,7 @@ option(GAA_VERY_STRICT OFF)
 include(gaaXrepoCMake)
 # find_package(Boost REQUIRED COMPONENTS headers)
 # find_package(Eigen3 REQUIRED NO_MODULE)
-gaaFindPackageOrXrepo(Boost  "boost")
+gaaFindPackageOrXrepo(Boost  "boost" COMPONENTS headers)
 gaaFindPackageOrXrepo(Eigen3 "eigen" NO_MODULE)
 if(GAA_WITH_R)
     include(gaaFindRLang)
