@@ -3,8 +3,12 @@
 #include <gaa/core/config.hpp>
 
 #if !(GAA_WITH_R)
+#if defined(__GNUC__) || defined(__clang__)
 #warning                                                                       \
     "GAA is configured without R, it's impossible to embed R, please rebuild GAA if possible"
+#elif defined(_MSC_VER)
+#pragma message
+#endif
 #else
 
 #include <concepts>
