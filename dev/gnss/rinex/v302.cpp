@@ -10,7 +10,11 @@
 
 #define FILE "/mnt/d/.resource/gnss/gths135a.18f.txt"
 
+#endif
+
 int main() {
+#if !GAA_MSVC
+
   std::ifstream ifs{FILE};
   auto hdr = gaa::rinex::v302::parse_nav_hdr(ifs);
 
@@ -19,6 +23,5 @@ int main() {
   auto dat = gaa::rinex::v302::parse_nav_dat_bds(ifs, hdr);
 
   return 0;
-}
-
 #endif
+}
