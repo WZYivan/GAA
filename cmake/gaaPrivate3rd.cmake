@@ -5,4 +5,4 @@ set(GAA_3RD_LIB_DIR "${GAA_3RD_DIR}/lib")
 target_include_directories(gaa PUBLIC $<BUILD_INTERFACE:${GAA_3RD_INCLUDE_DIR}>)
 target_include_directories(gaa PUBLIC $<BUILD_INTERFACE:${GAA_3RD_INCLUDE_DIR}/eigen3>)
 
-target_link_libraries(gaa PUBLIC "-L${GAA_3RD_LIB_DIR} -Wl,-rpath=${GAA_3RD_LIB_DIR}")
+target_link_directories(gaa PUBLIC ${GAA_3RD_LIB_DIR})
