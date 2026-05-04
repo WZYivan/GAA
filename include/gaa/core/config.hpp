@@ -5,6 +5,7 @@
 
 #define GAA_R_RHOME ""
 #define GAA_WITH_R 0
+#define GAA_USE_PRIVATE_3RD 1
 
 #ifndef GAA_AFTER_ASSERTION_FAIL
 #define GAA_AFTER_ASSERTION_FAIL std::abort

@@ -1,12 +1,16 @@
-#define BOOST_TEST_MODULE PhotogrammetryTest
-#define BOOST_TEST_DYN_LINK
-#include <boost/test/included/unit_test.hpp>
-
 #include <gaa/core/math.hpp>
 #include <gaa/photogrammetry/orient.hpp>
 #include <gaa/photogrammetry/space_intersection.hpp>
 #include <gaa/photogrammetry/space_resection.hpp>
 #include <gaa/photogrammetry/trans.hpp>
+
+#define BOOST_TEST_MODULE PhotogrammetryTest
+#if !(GAA_USE_PRIVATE_3RD)
+#define BOOST_TEST_DYN_LINK
+#include <boost/test/unit_test.hpp>
+#else
+#include <boost/test/included/unit_test.hpp>
+#endif
 
 using namespace gaa;
 
