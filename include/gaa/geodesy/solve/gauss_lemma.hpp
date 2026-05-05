@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gaa/core/kw.hpp>
+#include <gaa/core/signature_of_deprecated_header.hpp>
 #include <gaa/geodesy/solve/solver.hpp>
 
 namespace gaa {
@@ -9,10 +10,6 @@ struct Gauss_lemma_solver {
 
   Geodetic_solve_result solve(Latitude latitude, Longitude longitude, double s,
                               Azimuth angle, kwargs args = {}) const;
-  Geodetic_solve_result solve(Latitude lat1, Longitude lon1, double s,
-                              Azimuth angle) const {
-    return this->solve(lat1, lon1, s, angle, kw{});
-  }
   Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2,
                                 Longitude lon2) const;
 
@@ -65,7 +62,7 @@ struct _gauss_lemma_solve {
   }
 };
 
-constexpr _gauss_lemma_solve gauss_lemma = {};
+inline constexpr _gauss_lemma_solve gauss_lemma = {};
 
 struct _gauss_lemma_rsolve_fn {
   Latitude lat1_2;
@@ -98,5 +95,5 @@ struct _gauss_lemma_rsolve {
   }
 };
 
-constexpr _gauss_lemma_rsolve rgauss_lemma = {};
+inline constexpr _gauss_lemma_rsolve rgauss_lemma = {};
 } // namespace gaa

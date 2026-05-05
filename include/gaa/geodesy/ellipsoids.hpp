@@ -136,7 +136,7 @@ class Ellipsoid {
 public:
   using data_type = _ellipsoid_data_section_t;
 
-  enum class Identifier { CGCS2000, WGS84, Krassovsky };
+  enum class Identifier { CGCS2000, WGS84, Krassovsky, EmptyPlaceHolder };
 
 private:
   data_type const &m_data;
@@ -152,6 +152,7 @@ public:
 
   bool operator==(Ellipsoid const &other) const;
   bool operator!=(Ellipsoid const &other) const;
+  bool is_null() const;
 
   std::tuple<double, double, double>
   principle_curvature_radius(double lat) const;
@@ -167,6 +168,7 @@ public:
 extern GAA_msvc_dll_patch Ellipsoid const cgcs2000;
 extern GAA_msvc_dll_patch Ellipsoid const wgs84;
 extern GAA_msvc_dll_patch Ellipsoid const krassovsky;
+extern GAA_msvc_dll_patch Ellipsoid const null_ellipsoid;
 
 template <class T>
 concept Reference_To_Ellipsoid = requires(T t) {

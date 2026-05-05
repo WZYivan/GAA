@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include <gaa/core/signature_of_deprecated_header.hpp>
 #include <gaa/geodesy/ellipsoids.hpp>
 
 namespace gaa::rinex {

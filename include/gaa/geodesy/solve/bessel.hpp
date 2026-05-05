@@ -1,7 +1,9 @@
 #pragma once
 
 #include <gaa/core/kw.hpp>
+#include <gaa/core/signature_of_deprecated_header.hpp>
 #include <gaa/geodesy/solve/solver.hpp>
+// #include <print>
 
 namespace gaa {
 struct Bessel_solver {
@@ -11,10 +13,6 @@ struct Bessel_solver {
                               Azimuth angle) const;
   Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2,
                                 Longitude lon2, kwargs args = {}) const;
-  Geodetic_rsolve_result rsolve(Latitude lat1, Longitude lon1, Latitude lat2,
-                                Longitude lon2) const {
-    return this->rsolve(lat1, lon1, lat2, lon2, kw{});
-  }
 
   ~Bessel_solver() = default;
   Bessel_solver(Ellipsoid const &e) : ellipsoid(e) {}
@@ -59,7 +57,7 @@ struct _bessel_solve {
   }
 };
 
-constexpr _bessel_solve bessel = {};
+inline constexpr _bessel_solve bessel = {};
 
 struct _bessel_rsolve_fn {
   Latitude lat1_2;
@@ -67,11 +65,17 @@ struct _bessel_rsolve_fn {
   kwargs args;
 
   Geodetic_rsolve_result operator()(Geodetic_solve_result const &r) const {
+    // std::println("(rbessel.gr) L1 = {}, B1 = {}, L2 = {}, B1 = {}",
+    // rad(lat1_2),
+    //              rad(lon1_2), rad(r.latitude), rad(r.longitude));
     return Bessel_solver(r.ellipsoid)
         .rsolve(lat1_2, lon1_2, r.latitude, r.longitude, args);
   }
 
   Geodetic_rsolve_result operator()(Geodetic_coordinate const &gc) const {
+    // std::println("(rbessel.gc) L1 = {}, B1 = {}, L2 = {}, B1 = {}",
+    //              rad(gc.latitude), rad(gc.longitude), rad(lat1_2),
+    //              rad(lon1_2));
     return Bessel_solver(gc.ellipsoid)
         .rsolve(gc.latitude, gc.longitude, lat1_2, lon1_2, args);
   }
@@ -94,5 +98,5 @@ struct _bessel_rsolve {
   }
 };
 
-constexpr _bessel_rsolve rbessel = {};
+inline constexpr _bessel_rsolve rbessel = {};
 } // namespace gaa

@@ -2,6 +2,7 @@ file(GLOB_RECURSE GAA_SRC_FILES ${GAA_SRC_DIR}/**/*.cpp)
 
 add_library(gaa SHARED ${GAA_SRC_FILES})
 target_include_directories(gaa PUBLIC $<BUILD_INTERFACE:${GAA_INCLUDE_DIR}>)
+target_compile_definitions(gaa PRIVATE GAA_IN_BUILDING)
 
 if(GAA_USE_PRIVATE_3RD)
     include(gaaPrivate3rd)

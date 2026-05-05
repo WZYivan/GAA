@@ -5,6 +5,7 @@ foreach(GAA_DEV_FILE ${GAA_DEV_FILES})
     set(exe_name "${base_name}")
     add_executable(${exe_name} ${GAA_DEV_FILE})
     target_link_libraries(${exe_name} PRIVATE gaa)
+    target_compile_definitions(${exe_name} PRIVATE GAA_IN_DEV)
     # target_compile_options(${exe_name} BEFORE PRIVATE -save-temps)
 endforeach()
 

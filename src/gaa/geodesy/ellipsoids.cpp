@@ -136,7 +136,8 @@ _ellipsoid_data_section_t _krassovsky_data({.a = 6'378'245,
 
 Ellipsoid const krassovsky(_krassovsky_data, Ellipsoid::Identifier::Krassovsky),
     wgs84(_wgs84_data, Ellipsoid::Identifier::WGS84),
-    cgcs2000(_cgcs2000_data, Ellipsoid::Identifier::CGCS2000);
+    cgcs2000(_cgcs2000_data, Ellipsoid::Identifier::CGCS2000),
+    null_ellipsoid(_cgcs2000_data, Ellipsoid::Identifier::EmptyPlaceHolder);
 
 double _ellipsoid_geometry_access_t::a() const {
   return this->m_data.geometry_property.a;
@@ -184,6 +185,10 @@ bool Ellipsoid::operator==(Ellipsoid const &other) const {
 
 bool Ellipsoid::operator!=(Ellipsoid const &other) const {
   return !(*this == other);
+}
+
+bool Ellipsoid::is_null() const {
+  return this->m_identifier == Identifier::EmptyPlaceHolder;
 }
 
 Ellipsoid::data_type const &Ellipsoid::data() const { return this->m_data; }
