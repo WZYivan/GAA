@@ -18,7 +18,7 @@ extern void _assert_fail(char const *expr, std::source_location const &loc,
 #define gaa_assert(EXPR, ...)                                                  \
   (EXPR) ? (void(0))                                                           \
          : (gaa::_assert_fail(#EXPR, gaa_here __VA_OPT__(, ) __VA_ARGS__),     \
-            GAA_AFTER_ASSERTION_FAIL())
+            GAA_AFTER_ASSERTION_FAIL)
 #else
 #define gaa_assert(EXPR, ...) assert(EXPR)
 #endif

@@ -26,7 +26,13 @@
 #define GAA_USE_PRIVATE_3RD 1
 
 #ifndef GAA_AFTER_ASSERTION_FAIL
-#define GAA_AFTER_ASSERTION_FAIL std::abort
+#define GAA_AFTER_ASSERTION_FAIL std::abort()
 #endif
 
 #include <gaa/core/export.hpp>
+
+#if (GAA_MSVC)
+#define GAA_msvc_dll_patch GAA_API
+#else
+#define GAA_msvc_dll_patch
+#endif

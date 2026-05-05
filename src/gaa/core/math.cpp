@@ -1,4 +1,5 @@
 #include <numbers>
+#include <numeric>
 
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
@@ -124,6 +125,12 @@ double dot_product(std::span<double const> v1, std::span<double const> v2) {
   }
   return dot;
 }
+
+double sum(std::span<double const> v) {
+  return std::accumulate(v.begin(), v.end(), 0.0);
+}
+
+double mean(std::span<double const> v) { return sum(v) / v.size(); }
 
 double const rho0 = 57.295'779'513'082'321'0, rho1 = 3'437.746'770'784'939'17,
              rho2 = 206'264.806'247'096'355;

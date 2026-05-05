@@ -102,5 +102,5 @@ public:
   Gauss_kruger_project project(double interval, int band) const;
 };
 
-extern Gauss_kruger const GAA_API gauss_kruger;
+extern GAA_msvc_dll_patch Gauss_kruger const gauss_kruger;
 } // namespace gaa

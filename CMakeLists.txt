@@ -14,7 +14,12 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 set(GAA_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+set(GAA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(GAA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
+set(GAA_EXPORT_MACRO_NAME "GAA_API")
 
 option(GAA_DEV OFF)
 option(GAA_TEST ON)
@@ -35,6 +40,8 @@ if(NOT GAA_USE_PRIVATE_3RD)
         find_package(Boost REQUIRED COMPONENTS headers)
         find_package(Eigen3 REQUIRED NO_MODULE)
     endif()
+elseif(NOT WIN32)
+    message(WARNING "bundle boost and Eigen are provided for windows user, it may populate environment (/usr/local/include) in GNU/Linux")
 endif()
 
 if(GAA_WITH_R)
@@ -51,10 +58,6 @@ if(GAA_WITH_R)
         message(FATAL_ERROR "R package RInside is REQUIRED but not found")
     endif()
 endif()
-
-set(GAA_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(GAA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
 
 include(gaaConfig)
 
