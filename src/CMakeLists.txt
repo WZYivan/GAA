@@ -12,7 +12,7 @@ endif()
 
 if(NOT GAA_USE_PRIVATE_EXTERNAL)
     target_link_libraries(gaa PUBLIC gnsstk)
-else()
+elseif(GAA_USE_GNSSTK)
     target_sources(gaa PRIVATE $<TARGET_OBJECTS:GNSSTK>)
     target_include_directories(gaa PRIVATE ${GNSSTK_INCLUDE_DIR})
 endif()

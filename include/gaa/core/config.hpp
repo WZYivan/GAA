@@ -21,8 +21,9 @@
 #define GAA_CLANG 0
 #endif
 
-#define GAA_R_RHOME ""
-#define GAA_WITH_R 0
+#define GAA_R_RHOME "/usr/local/lib/R"
+#define GAA_WITH_R 1
+#define GAA_USE_GNSSTK 0
 #define GAA_USE_PRIVATE_3RD 0
 
 #ifndef GAA_AFTER_ASSERTION_FAIL

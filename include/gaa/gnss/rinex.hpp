@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gaa/core/config.hpp>
+
 #if !(GAA_MSVC) && (0)
 
 #include <chrono>
@@ -230,14 +232,149 @@ Nav_data_section_gps parse_nav_dat_gps(std::istream &in,
     ACT(val);                                                                  \
   }
 
-#else
+#elif (GAA_USE_GNSSTK)
 
-#include <gnsstk/Rinex3NavData.hpp>
-#include <gnsstk/Rinex3NavStream.hpp>
+#include <map>
+#include <string>
+#include <vector>
+
+#include <gaa/core/keywords.hpp>
 
 namespace gaa {
-using Rinex3_nav_record = gnsstk::Rinex3NavData;
-using Rinex3_nav_header = gnsstk::Rinex3NavHeader;
+
+enum Rinex3NavTimeCorrType {
+  GPUT = 1,
+  GAUT,
+  SBUT,
+  GLUT,
+  GPGA,
+  GAGP,
+  GLGP,
+  QZGP,
+  QZUT,
+  BDUT,
+  BDGP,
+  IRUT,
+  IRGP,
+  Rinex3NavTimeCorrType_COUNT
+};
+
+enum Rinex3NavIonoCorrType { GAL = 1, GPSA, GPSB, Rinex3NavIonoCorrType_COUNT };
+
+struct Rinex3_nav_hdr {
+  double version;
+  std::string type;
+  std::string sys;
+  std::string program;
+  std::string agency;
+  std::string date;
+  std::vector<std::string> comments;
+  std::map<Rinex3NavTimeCorrType, double> time_corr;
+  std::map<Rinex3NavIonoCorrType, double> iono_corr;
+  long leap_seconds;
+  long leap_delta;
+  long leap_week;
+  long leap_day;
+};
+
+template <Rinex3NavTimeCorrType TimeCorr>
+inline double get(Rinex3_nav_hdr const &hdr) noexcept {
+  gaa_assert(hdr.time_corr.contains(TimeCorr));
+  return hdr.time_corr.at(TimeCorr);
+}
+
+template <Rinex3NavIonoCorrType IonoCorr>
+inline double get(Rinex3_nav_hdr const &hdr) noexcept {
+  gaa_assert(hdr.iono_corr.contains(IonoCorr));
+  return hdr.iono_corr.at(IonoCorr);
+}
+
+enum SatelliteSystem {
+  GPS = 1,
+  GLONASS,
+  Galileo,
+  QZSS,
+  BDS,
+  SBAS_Payload,
+  Mixed,
+  SatelliteSystem_COUNT
+};
+
+struct Rinex3_nav_dat {
+  double days;
+  std::string sat_sys;
+  short PRN_ID;
+  SatelliteSystem sat;
+  long xmit_time;
+  short week_num;
+
+  double accuracy;
+  short health;
+
+  short codeflgs;
+  short L2Pdata;
+  double IODC;
+  double IODE;
+
+  double TauN;
+  double GammaN;
+  double MFTraw;
+  long MFtime;
+  short freq_num;
+  double age_of_info;
+
+  short data_sources;
+  double IOD_nav;
+
+  double acc_code;
+  double IODN;
+
+  double Toc;
+  double af0;
+  double af1;
+  double af2;
+  double Tgd;
+  double Tgd2;
+
+  double Cuc;
+  double Cus;
+  double Crc;
+  double Crs;
+  double Cic;
+  double Cis;
+
+  double Toe;
+  double M0;
+  double dn;
+  double ecc;
+  double Ahalf;
+  double OMEGA0;
+  double i0;
+  double w;
+  double OMEGAdot;
+  double idot;
+  double fit_itv;
+
+  double px;
+  double py;
+  double pz;
+  double vx;
+  double vy;
+  double vz;
+  double ax;
+  double ay;
+  double az;
+};
+
+extern std::pair<Rinex3_nav_hdr, std::vector<Rinex3_nav_dat>>
+read_rinex3(std::string const &fname);
+
+extern std::string str(Rinex3NavTimeCorrType v);
+extern std::string str(Rinex3NavIonoCorrType v);
+extern std::string str(SatelliteSystem v);
+extern std::string str(Rinex3_nav_hdr const &hdr);
+extern std::string str(Rinex3_nav_dat const &dat);
+
 } // namespace gaa
 
 #endif

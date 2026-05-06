@@ -10,6 +10,12 @@ else()
     set(IS_GAA_USE_PRIVATE_3RD 0)
 endif()
 
+if(GAA_USE_GNSSTK)
+    set(IS_GAA_USE_GNSSTK 1)
+else()
+    set(IS_GAA_USE_GNSSTK 0)
+endif()
+
 set(GAA_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
 configure_file(
