@@ -23,7 +23,7 @@ GAA_EIGEN_XPR_FN((Mat), ols_design_matrix_AP, 1, kwargs args = {}) {
 }
 
 GAA_EIGEN_XPR_FN((Mat), svd_inverse, 1) {
-  Eigen::JacobiSVD<Mat> svd(m_1, Eigen::ComputeFullU | Eigen::ComputeFullV);
+  Eigen::JacobiSVD<Xpr_1> svd(m_1, Eigen::ComputeFullU | Eigen::ComputeFullV);
   gaa_assert(svd.info() == Eigen::Success, "SVD execution failed");
 
   auto singular_values = svd.singularValues();
@@ -41,12 +41,12 @@ GAA_EIGEN_XPR_FN((Mat), svd_inverse, 1) {
 }
 
 GAA_EIGEN_XPR_FN((Mat), cholesky_inverse, 1) {
-  Eigen::LLT<Mat> llt(m_1);
+  Eigen::LLT<Xpr_1> llt(m_1);
   if (llt.info() == Eigen::Success) {
     return llt.solve(make_identity_like(m_1));
   }
 
-  Eigen::LDLT<Mat> ldlt(m_1);
+  Eigen::LDLT<Xpr_1> ldlt(m_1);
   if (ldlt.info() == Eigen::Success) {
     return ldlt.solve(make_identity_like(m_1));
   }

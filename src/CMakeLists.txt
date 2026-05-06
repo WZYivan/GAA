@@ -7,7 +7,8 @@ target_compile_definitions(gaa PRIVATE GAA_IN_BUILDING)
 if(GAA_USE_PRIVATE_3RD)
     include(gaaPrivate3rd)
 else()
-    target_link_libraries(gaa PUBLIC Boost::headers Eigen3::Eigen)
+    target_link_libraries(gaa 
+    PUBLIC Boost::headers Eigen3::Eigen DataFrame::DataFrame tbb)
 endif()
 
 if(NOT GAA_USE_PRIVATE_EXTERNAL)

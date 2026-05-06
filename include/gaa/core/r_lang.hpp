@@ -32,6 +32,8 @@ extern RInside &r_interp();
 
 namespace R = ::Rcpp;
 
+extern void read_csv(std::string const &fname, R::DataFrame &df);
+
 using _rcpp_Vector_not_supported_type = void;
 
 template <class V> struct _r_vector_gen {

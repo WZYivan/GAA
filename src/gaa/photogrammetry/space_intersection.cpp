@@ -102,7 +102,7 @@ space_intersection_ols(std::span<Orientated_image const> list, kwargs args) {
           std::abs(correction(1, 0)) < converge_threshold &&
           std::abs(correction(2, 0)) < converge_threshold) {
         result.info = Info::Iterative_Solve_Success;
-        const Mat N = cholesky_inverse(coeff.transpose() * coeff);
+        const Mat N = cholesky_inverse((coeff.transpose() * coeff).eval());
         result.rmse =
             median_error_VP(coeff * correction - residual, list.size() * 2, 3);
         result.sigma = result.rmse * N.cwiseSqrt();

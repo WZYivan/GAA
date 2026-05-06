@@ -48,7 +48,7 @@ Space_resection_result space_resection(IOrient const &io, Mat const &img,
         std::abs(corr(4)) < converge_threshold &&
         std::abs(corr(5)) < converge_threshold) {
       Mat v = coeff * corr - residual;
-      Mat n_inv = cholesky_inverse(coeff.transpose() * coeff);
+      Mat n_inv = cholesky_inverse((coeff.transpose() * coeff).eval());
       result.rmse = median_error_VP(v, coeff.rows(), 6);
       result.sigma = result.rmse * n_inv.cwiseSqrt();
       result.img = Mat(img);
