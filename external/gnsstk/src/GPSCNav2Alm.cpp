@@ -1,0 +1,100 @@
+//==============================================================================
+//
+//  This file is part of GNSSTk, the ARL:UT GNSS Toolkit.
+//
+//  The GNSSTk is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published
+//  by the Free Software Foundation; either version 3.0 of the License, or
+//  any later version.
+//
+//  The GNSSTk is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public
+//  License along with GNSSTk; if not, write to the Free Software Foundation,
+//  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+//
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin.
+//  Copyright 2004-2022, The Board of Regents of The University of Texas System
+//
+//==============================================================================
+
+
+//==============================================================================
+//
+//  This software was developed by Applied Research Laboratories at the
+//  University of Texas at Austin, under contract to an agency or agencies
+//  within the U.S. Department of Defense. The U.S. Government retains all
+//  rights to use, duplicate, distribute, disclose, or release this software.
+//
+//  Pursuant to DoD Directive 523024
+//
+//  DISTRIBUTION STATEMENT A: This software has been approved for public
+//                            release, distribution is unlimited.
+//
+//==============================================================================
+#include "GPSCNav2Alm.hpp"
+
+using namespace std;
+
+namespace gnsstk
+{
+   const double GPSCNav2Alm::refi0GPS = 0.3 * PI;
+   const double GPSCNav2Alm::refi0QZSS = 0.25 * PI;
+
+   GPSCNav2Alm ::
+   GPSCNav2Alm()
+         : healthL1(true),
+           healthL2(true),
+           healthL5(true),
+           deltai(0),
+           wna(0),
+           toa(0)
+   {
+      signal.messageType = NavMessageType::Almanac;
+      msgLenSec = 5.48;
+   }
+
+
+   bool GPSCNav2Alm ::
+   validate() const
+   {
+         /// @todo implement some checks.
+      return true;
+   }
+
+
+   void GPSCNav2Alm ::
+   fixFit()
+   {
+         /** @todo Determine a more reasonable set of values.  This
+          * was copied from OrbAlmExt. */
+      beginFit = xmitTime;
+      endFit   = gnsstk::CommonTime::END_OF_TIME;
+      endFit.setTimeSystem(beginFit.getTimeSystem());
+   }
+
+   bool GPSCNav2Alm::
+   isSameData(const NavDataPtr& right, bool ignore_timestamp) const
+   {
+      const std::shared_ptr<GPSCNav2Alm> alm = std::dynamic_pointer_cast<GPSCNav2Alm>(right);
+      
+      if (!alm)
+      {
+         return false;
+      }
+      return (OrbitDataKepler::isSameData(right, true) &&
+         (healthL1 == alm->healthL1) &&
+         (healthL2 == alm->healthL2) && 
+         (healthL5 == alm->healthL5) &&
+         (deltai == alm->deltai) &&
+         (wna == alm->wna) &&
+         (toa == alm->toa));
+
+         // Checked 6/11/2024
+
+   }
+}

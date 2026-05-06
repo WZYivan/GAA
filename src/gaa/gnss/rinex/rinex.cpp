@@ -1,6 +1,6 @@
 #include <gaa/core/config.hpp>
 
-#if !(GAA_MSVC)
+#if !(GAA_MSVC) && (0)
 
 #include <gaa/core/keywords.hpp>
 #include <gaa/gnss/rinex.hpp>

@@ -1,6 +1,6 @@
 #pragma once
 
-#if !(GAA_MSVC)
+#if !(GAA_MSVC) && (0)
 
 #include <chrono>
 #include <iostream>
@@ -229,5 +229,15 @@ Nav_data_section_gps parse_nav_dat_gps(std::istream &in,
                std::format("error parsing `{}` to double", str));              \
     ACT(val);                                                                  \
   }
+
+#else
+
+#include <gnsstk/Rinex3NavData.hpp>
+#include <gnsstk/Rinex3NavStream.hpp>
+
+namespace gaa {
+using Rinex3_nav_record = gnsstk::Rinex3NavData;
+using Rinex3_nav_header = gnsstk::Rinex3NavHeader;
+} // namespace gaa
 
 #endif

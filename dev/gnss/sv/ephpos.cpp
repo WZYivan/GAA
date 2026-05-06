@@ -1,7 +1,7 @@
 #include <gaa/gnss/space/sv_pos_from_broadcast.hpp>
 
 int main() {
-#if !GAA_MSVC
+#if !GAA_MSVC && (0)
   gaa::rinex::v302::Nav_ephemeris_bds eph;
 
   eph.sqrtA = 0.515365263176e04;

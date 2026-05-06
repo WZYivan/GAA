@@ -3,7 +3,7 @@
 
 #include <gaa/core/config.hpp>
 
-#if !GAA_MSVC
+#if !GAA_MSVC && (0)
 
 #include <gaa/core/keywords.hpp>
 #include <gaa/gnss/rinex.hpp>
@@ -13,7 +13,7 @@
 #endif
 
 int main() {
-#if !GAA_MSVC
+#if !GAA_MSVC && (0)
 
   std::ifstream ifs{FILE};
   auto hdr = gaa::rinex::v302::parse_nav_hdr(ifs);

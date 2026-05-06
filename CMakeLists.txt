@@ -28,6 +28,7 @@ option(GAA_WITH_R OFF)
 option(GAA_STRICT ON)
 option(GAA_VERY_STRICT OFF)
 option(GAA_USE_PRIVATE_3RD OFF)
+option(GAA_USE_PRIVATE_EXTERNAL ON)
 option(SYS_WITH_XREPO OFF)
 
 if(NOT GAA_USE_PRIVATE_3RD)
@@ -39,6 +40,10 @@ if(NOT GAA_USE_PRIVATE_3RD)
     else()
         find_package(Boost REQUIRED COMPONENTS headers)
         find_package(Eigen3 REQUIRED NO_MODULE)
+
+        if(NOT GAA_USE_PRIVATE_EXTERNAL)
+            find_package(GNSSTK REQUIRED)
+        endif()
     endif()
 elseif(NOT WIN32)
     message(WARNING "bundle boost and Eigen are provided for windows user, it may populate environment (/usr/local/include) in GNU/Linux")
@@ -61,6 +66,7 @@ endif()
 
 include(gaaConfig)
 
+add_subdirectory(external)
 add_subdirectory(src)
 
 include(gaaExport)
