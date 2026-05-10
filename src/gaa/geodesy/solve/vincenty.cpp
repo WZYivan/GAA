@@ -141,8 +141,6 @@ Geodetic_rsolve_result Vincenty_solver::rsolve(Latitude lat1, Longitude lon1,
                                (cos_d_sigma_m +
                                 C * cos_sigma * (-1 + 2 * cos_2_d_sigma_m)));
     } while (!within_abs(lambda, prev, converge_threshold));
-
-    double x = 1;
   }
   double sin_2_sigma = std::pow(sin_sigma, 2);
 

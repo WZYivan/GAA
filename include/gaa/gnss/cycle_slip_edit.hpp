@@ -13,6 +13,6 @@ struct Cycle_detect_result {
   //   std::vector<double> confidence;
 };
 
-extern Cycle_detect_result diff_detect(std::span<double const> vals, int degree,
-                                       kwargs args = {});
+extern Cycle_detect_result diff_detect(std::span<double const> vals,
+                                       int degree);
 } // namespace gaa

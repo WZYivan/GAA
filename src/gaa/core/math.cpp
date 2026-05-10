@@ -120,7 +120,7 @@ std::vector<double> difference(std::span<double const> vals, int degree) {
 double dot_product(std::span<double const> v1, std::span<double const> v2) {
   gaa_assert(v1.size() == v2.size());
   double dot = 0;
-  for (int i = 0; i != v1.size(); ++i) {
+  for (std::size_t i = 0; i != v1.size(); ++i) {
     dot += v1[i] * v2[i];
   }
   return dot;

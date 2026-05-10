@@ -61,7 +61,7 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
     gaa_assert(seq.size() == flags.size(),
                "given flags mismatch actual components count");
 
-    for (int i = 0; i != seq.size(); ++i) {
+    for (std::size_t i = 0; i != seq.size(); ++i) {
       cnts.at(i).emplace_back(std::move(seq.at(i)));
     }
   }
@@ -70,8 +70,8 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
     gaa_assert(names.empty(),
                "Internal error, ignore first line but names is not empty");
     auto cols = cnts.size();
-    for (auto i = 0; i != cols; ++i) {
-      names.emplace_back(std::move(std::format("COL_{:d}", i)));
+    for (std::size_t i = 0; i != cols; ++i) {
+      names.emplace_back(std::format("COL_{:d}", i));
     }
   }
 
@@ -115,7 +115,6 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
     case Tab_Bool: {
       Table_column<Tab_bool> col;
       col.reserve(cnt.size());
-      int val;
       for (auto &str : cnt) {
         for (auto &c : str) {
           c = std::tolower(c);
@@ -192,7 +191,7 @@ Table read_csv_auto(std::istream &is, kwargs args) {
                  "given flags mismatch actual components count");
     }
 
-    for (int i = 0; i != seq.size(); ++i) {
+    for (std::size_t i = 0; i != seq.size(); ++i) {
       cnts.at(i).emplace_back(std::move(seq.at(i)));
     }
   }
@@ -201,8 +200,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
     gaa_assert(names.empty(),
                "Internal error, ignore first line but names is not empty");
     auto cols = cnts.size();
-    for (auto i = 0; i != cols; ++i) {
-      names.emplace_back(std::move(std::format("COL_{:d}", i)));
+    for (std::size_t i = 0; i != cols; ++i) {
+      names.emplace_back(std::format("COL_{:d}", i));
     }
   }
 
@@ -248,7 +247,6 @@ Table read_csv_auto(std::istream &is, kwargs args) {
     case Tab_Bool: {
       Table_column<Tab_bool> col;
       col.reserve(cnt.size());
-      int val;
       for (auto &str : cnt) {
         for (auto &c : str) {
           c = std::tolower(c);

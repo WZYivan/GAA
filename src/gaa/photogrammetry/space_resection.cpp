@@ -30,8 +30,14 @@ Space_resection_result space_resection(IOrient const &io, Mat const &img,
     }
 
     Mat coeff(img2.rows() * 2, 6);
-    Collinearity_condition_param ccp{
-        .f = io.f, .h = io.f * io.m, .k = eo.k, .w = eo.w, .rot = rot};
+    Collinearity_condition_param ccp{.x{},
+                                     .y{},
+                                     .f = io.f,
+                                     .h = io.f * io.m,
+                                     .k = eo.k,
+                                     .w = eo.w,
+                                     .z{},
+                                     .rot = rot};
     for (long int pi = 0; pi != img2.rows(); ++pi) {
       ccp.x = img2(pi, 0);
       ccp.y = img2(pi, 1);

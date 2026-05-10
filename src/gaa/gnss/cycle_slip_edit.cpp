@@ -6,17 +6,13 @@
 
 namespace gaa {
 
-Cycle_detect_result diff_detect(std::span<double const> vals, int degree,
-                                kwargs args) {
+Cycle_detect_result diff_detect(std::span<double const> vals, int degree) {
   gaa_assert(degree > 0);
-  gaa_assert(vals.size() > degree * 2);
-
-  GAA_ARG_OR(args, lt_threshold, 0.2);
+  gaa_assert(vals.size() > static_cast<std::size_t>(degree * 2));
 
   auto diff = difference(vals, degree);
   auto pattern = pascal_triangle_row(degree - 1) | dbl_vec;
-  double pattern_factor = dot_product(pattern, pattern);
-  for (int i = 0; i != pattern.size(); ++i) {
+  for (std::size_t i = 0; i != pattern.size(); ++i) {
     if (i % 2 != 0) {
       pattern[i] *= -1;
     }
@@ -27,7 +23,7 @@ Cycle_detect_result diff_detect(std::span<double const> vals, int degree,
   using Interval = Interval_set::interval_type;
   Interval_set intervals;
 
-  for (int i = 0; i + degree <= diff.size(); ++i) {
+  for (std::size_t i = 0; i + degree <= diff.size(); ++i) {
     auto shift = diff | std::views::drop(i) | std::views::take(degree);
     double head = shift[0];
     auto shift_pattern =

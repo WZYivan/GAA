@@ -124,8 +124,8 @@ Map_index::Map_index(std::string const &cnt) {
 
 Map_index::Map_index(int major_row, int major_col, Scale scale, int minor_row,
                      int minor_col)
-    : m_major_row(major_row), m_major_col(major_col), m_scale(scale),
-      m_minor_row(minor_row), m_minor_col(minor_col) {
+    : m_major_row(major_row), m_major_col(major_col), m_minor_row(minor_row),
+      m_minor_col(minor_col), m_scale(scale) {
   double b = deg2rad(m_major_row * 4) + rad(this->lat_dif()) * m_minor_row;
   double l = deg2rad(m_major_col * 6) + rad(this->lon_dif()) * m_minor_col;
   m_south = Latitude(b);
@@ -138,9 +138,6 @@ Map_index::Map_index(Latitude const &lat, Longitude const &lon, int scale) {
 
   m_major_row = int(B / 4.0) + 1;
   m_major_col = int(L / 6.0) + 31;
-
-  double lat_dif = B - int(B / 4.0) * 4;
-  double lon_dif = L - int(L / 6.0) * 6;
 
   m_scale = scale_of(scale);
 
