@@ -6,10 +6,13 @@
 build/*
 xbuild/*
 docs/LatexmkFiles/*
+docs/build/*
+docs/Makefile
 
 # in-dev section
 module/*
 data/*
+external/*
 python/utils/*
 
 # private section

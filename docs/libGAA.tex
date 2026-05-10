@@ -25,8 +25,11 @@
 % --------------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[9pt,a4paper,twocolumn,twoside]{rho-class/rho}
+\documentclass[9pt,a4paper,onecolumn,oneside]{rho-class/rho}
 \usepackage[english]{babel}
+
+\newcommand{\classref}[1]{\ref{class:#1}}
+\newcommand{\funcref}[1]{\ref{func:#1}}
 
 %% Spanish babel recomendation
 % \usepackage[spanish,es-nodecimaldot,es-noindentfirst]{babel}
@@ -90,29 +93,180 @@
 \begin{document}
 
 \maketitle
+\tableofcontents
 \thispagestyle{firststyle}
 
 %----------------------------------------------------------
 
 \section{Introduction}
-\textbf{TODO}
+
+The lib GAA (Geomatics Algorithms Application) provides a series of algorithms widely using in domain of geomatics (undergraduate level) and corresponding utility.
 
 \section{Motivation}
-\textbf{TODO}
+
+Provide implementation of geomatics algorithms for undergraduate level students in major of geomatics (surveying and mapping). Its features are not unique, but they may separate in serval libraries and their code may hard to understand for beginners. As a result, I develop this library, easy to use, easy to understand, but not fast, not so correct.
+
+\section{Naming rules}
+Before starting, let me illustrate naming rules of GAA.
+
+\begin{minted}{cpp}
+// -------------------- macros --------------------
+// This is a public macro, you can use it
+// snake_casing + all upper casing + prefix 'GAA_'
+#define GAA_PP_STRIP_PARAM 
+// This is a private macro, use for your own risk
+// snake_casing + prefix 'GAA_'
+#define GAA_msvc_dll_patch 
+// This is design for internally use, it's not stable
+// snake_casing + prefix 'gaa_'
+#define gaa_assert 
+
+// -------------------- functions --------------------
+// This is a public function or method
+// snake casing
+extern double deg2rad(double); 
+// This is a private function
+// snake casing + prefix '_'
+double _assert_fail(...); 
+// -------------------- class/struct --------------------
+// This is a public class
+// snake_casing + initial letter upper casing
+class Gauss_kruger_project;
+// This is a private class
+// snake_casing + prefix '_' and optional suffix '_t'
+class _ellipsoid_data_section_t;
+// typename inside type traits
+// snake_casing
+// type argument in template
+// PascalCasing
+template <class Unit> struct _quantity_traits {
+  using unit_type = Unit;
+  constexpr static unit_type unit{};
+  using base_type = boost::units::quantity<unit_type>;
+};
+// -------------------- enum --------------------
+// enum name and enum value
+// snake_casing + each initial letter upper casing
+enum Table_Storage_Flag : int {
+  Tab_Unsupported = 0,
+  Tab_String,
+  Tab_Double,
+  Tab_Integer,
+  Tab_Bool,
+  Tab_COUNT
+};
+// -------------------- constants --------------------
+// read only objects
+// snake_casing
+extern double const rho0, rho1, rho2;
+\end{minted}
+
+\section{Core}
+The \inlinecode{core} module serves as the base of other module. It provides
+\begin{itemize}
+    \item customized assertion macro
+    \item preprocessor macro (like Boost.PP)
+    \item keyword argument extension
+    \item convenient wrapper of 3rd party library (Eigen, Boost.Unit)
+    \item API of other languages (R)
+    \item more math function and constants
+    \item domain specified utility
+    \item io function of specified format (csv)
+    \item and more ...
+\end{itemize}
+some of them are internally used, while others may be used as part of public API. In general, you can include what you want, that's fine.
+
+\subsection{features}
+\begin{itemize}
+    \item Table\classref{Table}
+    \item csv\funcref{read_csv_auto}
+\end{itemize}
+
+\subsection{Table}\label{class:Table}
+
+The class \inlinecode{Table}, imported by \inlinecode{<gaa/core/table.hpp>} is designed as a named column major data frame to store heterogeneous data in one object. You can
+\begin{description}
+    \item[access column] using \inlinecode{.at<>()} by index or name
+    \item[add column (move only)] using \inlinecode{.push_back()} with given name or automatically generated
+    \item[iterate columns] using \inlinecode{.columns()}
+    \item[access row] using \inlinecode{.row()} by index, it automatically returns \inlinecode{Table_row_ref} (read or write) or \inlinecode{Table_row_view} (read only)
+    \item[insert meta info] using \inlinecode{.meta_ioa()} with given name and value
+    \item[access meta info] using \inlinecode{.meta_at<>()} with its name
+    \item[more container method] like \inlinecode{.size() .clear() .empty() ...}
+    \item[and others] just view source code
+\end{description}
+To correctly access a column, you must give \inlinecode{.at<>()} a template argument candidate its type. Supported type are \inlinecode{Tab_double} \inlinecode{Tab_int Tab_bool Tab_string}, they are basically alias of \inlinecode{double int bool std::string}, but please use the previous which is automatically generated by macro. So do \inlinecode{.meta_at<>()}.
+
+\subsection{csv}
+The function \inlinecode{read_csv_auto}\label{func:read_csv_auto} and its manual version \inlinecode{read_csv}, imported by \inlinecode{<gaa/core/io/csv.hpp>} is used to read a CSV file to a \inlinecode{Table}\classref{Table}. Function \inlinecode{read_csv_auto} automatically parse type of a column according to its content based on regular expression, while \inlinecode{read_csv} don't, so you must give it a vector of \inlinecode{Table_Storage_Flag}\classref{Table}. I recommend \inlinecode{read_csv_auto} unless it can't correctly parse type of a column.
 
 \section{Geodesy}
-\textbf{TODO}
+
+\subsection{features}
+\begin{itemize}
+    \item spatial reference system (earth ellipsoid)
+    \item algorithm for geodetic solution problem
+    \item projection
+\end{itemize}
 
 \section{Photogrammetry}
-\textbf{TODO}
+
+\subsection{features}
+\begin{itemize}
+    \item collinearity condition equation
+    \item space resection/intersection
+\end{itemize}
 
 
 \section{GNSS}
+
+\subsection{features}
+\begin{itemize}
+    \item cycle slip detection \ref{sec:cycle slip detection}
+    \item satellite position calculation \ref{sec:satellite position calculation}
+\end{itemize}
+
+\subsection{cycle slip detection}\label{sec:cycle slip detection}
 \textbf{TODO}
+
+\subsection{satellite position calculation}\label{sec:satellite position calculation}
+
+\subsubsection{sv\_pos\_from\_broadcast}\label{func:sv_pos_from_broadcast}
+
+Function \inlinecode{sv_pos_from_broadcast}, imported by header \inlinecode{<gaa/gnss/space/sv_pos_from_broadcast.hpp>}, is used to calculate position of satellite using parameters from broadcast ephemeris, and return in order of xyz. It accepts tow group of arguments, first is combined of parameters in broadcast ephemeris, and the second one is a time point \inlinecode{t} defining when the position is calculating. You can either give these arguments one by one or store them in a struct \inlinecode{Param_sv_pos_from_broadcast} except \inlinecode{t}. Also \inlinecode{Param_sv_pos_from_broadcast::from_table_row} help you to construct parameters from a \inlinecode{Table_row_ref}\classref{Table}, a typical pipeline is: convert RINEX file to csv file using \inlinecode{gnss_lib_py}, then read csv file using \inlinecode{read_csv_auto}\funcref{read_csv_auto} to a \inlinecode{Table} object, finally construct \inlinecode{Param_sv_pos_from_broadcast} and invoke \inlinecode{sv_pos_from_broadcast}. Here are required parameters in broadcast ephemeris:
+\begin{description}
+    \item[sqrtA] Square root of the semi-major axis (\(m^\frac{1}{2}\)).
+    \item[e] Eccentricity (dimensionless).
+    \item[t\_oe] Ephemeris reference time (seconds, GPS week seconds).
+    \item[M\_0] Mean anomaly at reference time (radians).
+    \item[omega] Argument of perigee (radians).
+    \item[i\_0] Inclination angle at reference time (radians).
+    \item[IDOT] Rate of inclination angle (radians/second).
+    \item[C\_us] Amplitude of the sine harmonic correction term to the argument of latitude (radians).
+    \item[C\_uc] Amplitude of the cosine harmonic correction term to the argument of latitude (radians).
+    \item[C\_is] Amplitude of the sine harmonic correction term to the inclination angle (radians).
+    \item[C\_ic] Amplitude of the cosine harmonic correction term to the inclination angle (radians).
+    \item[C\_rc] Amplitude of the sine harmonic correction term to the geocentric distance (meters).
+    \item[C\_rs] Amplitude of the cosine harmonic correction term to the geocentric distance (meters).
+    \item[Omega\_0] Longitude of ascending node at reference time (radians).
+    \item[OmegaDot] Rate of longitude of ascending node (radians/second).
+\end{description}
 
 \section{Build}
-\textbf{TODO}
+Build system of GAA is CMake. Just build as usual(\inlinecode{cmake .. && make -j16 && sudo make install})
 
+\subsection{dependencies}
+\begin{description}
+    \item[Eigen3 (5.0.0 used in dev)] headers
+    \item[Boost (1.90.0 used in dev)] headers + dll(optional)
+    \item[CMake] version \(\geq \) 3.20
+\end{description}
+
+GAA provide option \inlinecode{GAA_USE_PRIVATE_3RD} to enable using bundle 3rd party headers in building and installing. With this option on, you don't need an existing Eigen3 or Boost.
+
+\begin{info}
+    option \inlinecode{GAA_USE_PRIVATE_3RD} will also install Eigen3 and Boost(header only) to install prefix.
+\end{info}
 %----------------------------------------------------------
 
 \printbibliography
