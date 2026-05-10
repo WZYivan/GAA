@@ -299,12 +299,5 @@ template <class V>
 using Table_column = Table::column_type<V>;
 using Table_column_name = Table::column_name_type;
 
-extern Table read_csv(std::string const &fname,
-                      std::vector<Table_Storage_Flag> const &flags,
-                      kwargs args = {});
-extern Table read_csv(std::istream &is,
-                      std::vector<Table_Storage_Flag> const &flags,
-                      kwargs args = {});
-extern Table read_csv_auto(std::string const &fname, kwargs args = {});
-extern Table read_csv_auto(std::istream &is, kwargs args = {});
+extern Table_Storage_Flag table_storage_flag_of(std::string const &str);
 } // namespace gaa
