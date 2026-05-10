@@ -5,6 +5,7 @@
 .xmake/*
 build/*
 xbuild/*
+docs/LatexmkFiles/*
 
 # in-dev section
 module/*

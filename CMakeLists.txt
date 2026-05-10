@@ -24,6 +24,7 @@ set(GAA_EXPORT_MACRO_NAME "GAA_API")
 option(GAA_DEV OFF)
 option(GAA_TEST ON)
 option(GAA_MODULE OFF)
+option(GAA_DOCS ON)
 option(GAA_WITH_R OFF)
 option(GAA_R_EXT OFF)
 option(GAA_USE_GNSSTK OFF)
@@ -77,6 +78,10 @@ include(gaaCMakeConfig)
 
 if(GAA_R_EXT)
     add_subdirectory(R)
+endif()
+
+if(GAA_DOCS)
+    add_subdirectory(docs)
 endif()
 
 if(GAA_DEV)

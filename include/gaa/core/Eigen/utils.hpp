@@ -109,7 +109,7 @@ GAA_EIGEN_XPR_FN((double), median_error_VP, 1, int n, int t, kwargs args = {}) {
 }
 
 namespace EigenFmt {
-extern Eigen::IOFormat const GAA_API python;
-extern Eigen::IOFormat const GAA_API csv;
+extern Eigen::IOFormat const GAA_msvc_dll_patch python;
+extern Eigen::IOFormat const GAA_msvc_dll_patch csv;
 } // namespace EigenFmt
 } // namespace gaa
