@@ -3,51 +3,59 @@
 namespace gaa {
 
 std::tuple<double, double, double>
-sv_pos_from_broadcast(Data_frame const &df, Data_frame_idx row, double t) {
-  gaa_assert(df.has_column("sqrtA"));
-  gaa_assert(df.has_column("e"));
-  gaa_assert(df.has_column("t_oe"));
-  gaa_assert(df.has_column("M_0"));
-  gaa_assert(df.has_column("omega"));
-  gaa_assert(df.has_column("i_0"));
-  gaa_assert(df.has_column("IDOT"));
-  gaa_assert(df.has_column("C_us"));
-  gaa_assert(df.has_column("C_uc"));
-  gaa_assert(df.has_column("C_is"));
-  gaa_assert(df.has_column("C_ic"));
-  gaa_assert(df.has_column("C_rc"));
-  gaa_assert(df.has_column("C_rs"));
-  gaa_assert(df.has_column("Omega_0"));
-  gaa_assert(df.has_column("OmegaDot"));
-
+sv_pos_from_broadcast(double sqrtA, double e, double t_oe, double M_0,
+                      double omega, double i_0, double IDOT, double C_us,
+                      double C_uc, double C_is, double C_ic, double C_rc,
+                      double C_rs, double Omega_0, double OmegaDot, double t) {
   double GM = cgcs2000.gravity().GM(), omegaE = cgcs2000.gravity().omega();
-  double sqrtA = df_at<double>(df, row, "sqrtA");
   double n0 = sv_mean_angular_velocity(GM, sqrtA);
 
-  double e = df_at<double>(df, row, "e"), toe = df_at<double>(df, row, "t_oe"),
-         tk = t - toe;
+  double tk = t - t_oe;
 
-  double M0 = df_at<double>(df, row, "M_0"), Mk = M0 + n0 * tk,
-         Ek = sv_eccentric_anomaly(Mk, e), fk = sv_true_anomaly(Ek, e);
+  double Mk = M_0 + n0 * tk, Ek = sv_eccentric_anomaly(Mk, e),
+         fk = sv_true_anomaly(Ek, e);
 
-  double omega = df_at<double>(df, row, "omega"), Phi = omega + fk,
-         i0 = df_at<double>(df, row, "i_0"),
-         IDOT = df_at<double>(df, row, "IDOT"),
+  double Phi = omega + fk,
          r = sv_geocentric_distance(std::pow(sqrtA, 2), e, fk);
 
-  Perturb_correction corr = sv_perturb_corr(
-      Phi, df_at<double>(df, row, "C_uc"), df_at<double>(df, row, "C_us"),
-      df_at<double>(df, row, "C_rc"), df_at<double>(df, row, "C_rs"),
-      df_at<double>(df, row, "C_ic"), df_at<double>(df, row, "C_is"));
-  auto [uk, rk, ik] = sv_apply_perturb_correction(corr, Phi, r, i0);
+  Perturb_correction corr =
+      sv_perturb_corr(Phi, C_uc, C_us, C_rc, C_rs, C_ic, C_is);
+  auto [uk, rk, ik] = sv_apply_perturb_correction(corr, Phi, r, i_0);
 
   auto [xk, yk, zk] = sv_orbit_coordinate(uk, rk);
 
-  double L =
-      sv_longitude_argument(df_at<double>(df, row, "Omega_0"),
-                            df_at<double>(df, row, "OmegaDot"), omegaE, t, toe);
+  double L = sv_longitude_argument(Omega_0, OmegaDot, omegaE, t, t_oe);
   auto coord = sv_instance_earth_coordinate(xk, yk, ik, L);
 
   return coord;
+}
+std::tuple<double, double, double>
+sv_pos_from_broadcast(Param_sv_pos_from_broadcast const &param) {
+  return sv_pos_from_broadcast(
+      param.sqrtA, param.e, param.t_oe, param.M_0, param.omega, param.i_0,
+      param.IDOT, param.C_us, param.C_uc, param.C_is, param.C_ic, param.C_rc,
+      param.C_rs, param.Omega_0, param.OmegaDot, param.t);
+}
+
+Param_sv_pos_from_broadcast
+Param_sv_pos_from_broadcast::from_table_row(Table_row_ref row, double t) {
+  return Param_sv_pos_from_broadcast{
+      .sqrtA = row.at<Tab_double>("sqrtA"),
+      .e = row.at<Tab_double>("e"),
+      .t_oe = row.at<Tab_double>("t_oe"),
+      .M_0 = row.at<Tab_double>("M_0"),
+      .omega = row.at<Tab_double>("omega"),
+      .i_0 = row.at<Tab_double>("i_0"),
+      .IDOT = row.at<Tab_double>("IDOT"),
+      .C_us = row.at<Tab_double>("C_us"),
+      .C_uc = row.at<Tab_double>("C_uc"),
+      .C_is = row.at<Tab_double>("C_is"),
+      .C_ic = row.at<Tab_double>("C_ic"),
+      .C_rc = row.at<Tab_double>("C_rc"),
+      .C_rs = row.at<Tab_double>("C_rs"),
+      .Omega_0 = row.at<Tab_double>("Omega_0"),
+      .OmegaDot = row.at<Tab_double>("OmegaDot"),
+      .t = t,
+  };
 }
 } // namespace gaa

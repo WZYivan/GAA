@@ -8,14 +8,7 @@ if(GAA_USE_PRIVATE_3RD)
     include(gaaPrivate3rd)
 else()
     target_link_libraries(gaa 
-    PUBLIC Boost::headers Eigen3::Eigen DataFrame::DataFrame tbb)
-endif()
-
-if(NOT GAA_USE_PRIVATE_EXTERNAL)
-    target_link_libraries(gaa PUBLIC gnsstk)
-elseif(GAA_USE_GNSSTK)
-    target_sources(gaa PRIVATE $<TARGET_OBJECTS:GNSSTK>)
-    target_include_directories(gaa PRIVATE ${GNSSTK_INCLUDE_DIR})
+    PUBLIC Boost::headers Eigen3::Eigen)
 endif()
 
 if(GAA_WITH_R)
