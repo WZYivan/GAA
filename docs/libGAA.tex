@@ -107,9 +107,12 @@ The lib GAA (Geomatics Algorithms Application) provides a series of algorithms w
 Provide implementation of geomatics algorithms for undergraduate level students in major of geomatics (surveying and mapping). Its features are not unique, but they may separate in serval libraries and their code may hard to understand for beginners. As a result, I develop this library, easy to use, easy to understand, but not fast, not so correct.
 
 \section{Naming rules}
-Before starting, let me illustrate naming rules of GAA.
+Before starting, let me illustrate naming rules of GAA \ref{lst:rules}.
 
-\begin{minted}{cpp}
+\begin{code}
+    \caption{Naming rules of GAA}
+    \label{lst:rules}
+    \begin{minted}{cpp}
 // -------------------- macros --------------------
 // This is a public macro, you can use it
 // snake_casing + all upper casing + prefix 'GAA_'
@@ -160,6 +163,7 @@ enum Table_Storage_Flag : int {
 // snake_casing
 extern double const rho0, rho1, rho2;
 \end{minted}
+\end{code}
 
 \section{Core}
 The \inlinecode{core} module serves as the base of other module. It provides
@@ -233,7 +237,7 @@ The function \inlinecode{read_csv_auto}\label{func:read_csv_auto} and its manual
 
 \subsubsection{sv\_pos\_from\_broadcast}\label{func:sv_pos_from_broadcast}
 
-Function \inlinecode{sv_pos_from_broadcast}, imported by header \inlinecode{<gaa/gnss/space/sv_pos_from_broadcast.hpp>}, is used to calculate position of satellite using parameters from broadcast ephemeris, and return in order of xyz. It accepts tow group of arguments, first is combined of parameters in broadcast ephemeris, and the second one is a time point \inlinecode{t} defining when the position is calculating. You can either give these arguments one by one or store them in a struct \inlinecode{Param_sv_pos_from_broadcast} except \inlinecode{t}. Also \inlinecode{Param_sv_pos_from_broadcast::from_table_row} help you to construct parameters from a \inlinecode{Table_row_ref}\classref{Table}, a typical pipeline is: convert RINEX file to csv file using \inlinecode{gnss_lib_py}, then read csv file using \inlinecode{read_csv_auto}\funcref{read_csv_auto} to a \inlinecode{Table} object, finally construct \inlinecode{Param_sv_pos_from_broadcast} and invoke \inlinecode{sv_pos_from_broadcast}. Here are required parameters in broadcast ephemeris:
+Function \inlinecode{sv_pos_from_broadcast}, imported by header \inlinecode{<gaa/gnss/space/sv_pos_from_broadcast.hpp>}, is used to calculate position of satellite using parameters from broadcast ephemeris, and return in order of xyz. It accepts tow group of arguments, first is combined of parameters in broadcast ephemeris, and the second one is a time point \inlinecode{t} defining when the position is calculating. You can either give these arguments one by one or store them in a struct \inlinecode{Param_sv_pos_from_broadcast}. Also \inlinecode{Param_sv_pos_from_broadcast::from_table_row} help you to construct parameters from a \inlinecode{Table_row_ref}\classref{Table}, note that \inlinecode{t} must be given coz' it can't be read from RINEX, a typical pipeline is: convert RINEX file to csv file (see \ref{tab:param_of_sv_pos_from_broadcast}) using \inlinecode{gnss_lib_py}, then read csv file using \inlinecode{read_csv_auto}\funcref{read_csv_auto} to a \inlinecode{Table} object, finally construct \inlinecode{Param_sv_pos_from_broadcast} and invoke \inlinecode{sv_pos_from_broadcast}. Here are required parameters in broadcast ephemeris:
 \begin{description}
     \item[sqrtA] Square root of the semi-major axis (\(m^\frac{1}{2}\)).
     \item[e] Eccentricity (dimensionless).
@@ -251,6 +255,69 @@ Function \inlinecode{sv_pos_from_broadcast}, imported by header \inlinecode{<gaa
     \item[Omega\_0] Longitude of ascending node at reference time (radians).
     \item[OmegaDot] Rate of longitude of ascending node (radians/second).
 \end{description}
+
+\begin{code}
+    \caption{Example of sv\_pos\_from\_broadcast}
+    \label{lst:sv_pos_from_broadcast}
+    \begin{minted}{cpp}
+#include <gaa/core/io/csv.hpp>
+#include <gaa/core/table.hpp>
+#include <gaa/gnss/space/sv_pos_from_broadcast.hpp>
+#include <print>
+
+int main() {
+  gaa::Table tab = gaa::read_csv_auto("data/gths135a.18f.dat.csv");
+  auto row0 = tab.row(0);
+  auto [x2, y2, z2] = gaa::sv_pos_from_broadcast(
+      gaa::Param_sv_pos_from_broadcast::from_table_row(
+          row0, row0.at<gaa::Tab_double>("t_oe")));
+  std::println("x2 = {}, y2 = {}, z2 = {}", x2, y2, z2);
+}
+    \end{minted}
+\end{code}
+
+\begin{table}[!htbp]
+    \centering
+    \caption{Example of valid csv (read and print in R)}
+    \label{tab:param_of_sv_pos_from_broadcast}
+    \begin{tabular}{ccc}
+        <empty>          & <int> & 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1… \\
+        sv\_id           & <int> & 12, 10, 11, 14, 8, 13, 9, 7, 6, 5, 3, 2, 1, 4, 6, 9, 7,… \\
+        SVclockBias      & <dbl> & 4.426864e-04, -2.310887e-04, -5.074686e-04, 3.110900e-0… \\
+        SVclockDrift     & <dbl> & 1.181011e-11, -2.889955e-11, -1.549960e-11, 4.936140e-1… \\
+        SVclockDriftRate & <dbl> & 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0… \\
+        AODE             & <dbl> & 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1… \\
+        C\_rs            & <dbl> & -51.75000, 143.15625, -70.14062, -60.32812, -143.64062,… \\
+        deltaN           & <dbl> & 2.979767e-09, 2.115445e-09, 2.811189e-09, 4.275178e-09,… \\
+        M\_0             & <dbl> & -1.5413306, 0.2060422, -0.5336614, -2.2362802, 0.315646… \\
+        C\_uc            & <dbl> & -2.608169e-06, 4.576519e-06, -3.525522e-06, -3.089197e-… \\
+        e                & <dbl> & 2.301337e-03, 5.068831e-03, 2.078848e-03, 2.145755e-03,… \\
+        C\_us            & <dbl> & 1.338031e-05, -1.719035e-05, 1.309998e-05, 5.155802e-06… \\
+        sqrtA            & <dbl> & 5282.616, 6493.698, 5282.613, 5282.601, 6493.414, 6493.… \\
+        t\_oe            & <dbl> & 118800, 133200, 133200, 136800, 158400, 162000, 169200,… \\
+        C\_ic            & <dbl> & 9.499490e-08, 6.891787e-08, -6.053597e-09, 5.215406e-08… \\
+        Omega\_0         & <dbl> & 2.9984629, 1.3293284, 3.0085968, -1.1969830, -2.8140888… \\
+        C\_is            & <dbl> & -9.313226e-09, -2.151355e-07, 4.130416e-07, -2.980232e-… \\
+        i\_0             & <dbl> & 0.98434080, 0.92017016, 0.98548643, 0.95735949, 1.01730… \\
+        C\_rc            & <dbl> & 101.4688, 735.2188, 111.7812, 250.8594, -574.4688, -607… \\
+        omega            & <dbl> & -2.3741856, -2.7492023, -2.2586315, -2.0881416, -2.6973… \\
+        OmegaDot         & <dbl> & -6.362051e-09, -3.173346e-09, -6.146327e-09, -7.089581e… \\
+        IDOT             & <dbl> & 1.914365e-10, -2.035799e-11, -2.035799e-11, -4.085884e-… \\
+        BDTWeek          & <dbl> & 645, 645, 645, 645, 645, 645, 645, 645, 645, 645, 645, … \\
+        SVacc            & <dbl> & 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2… \\
+        SatH1            & <dbl> & 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0… \\
+        TGD1             & <dbl> & 2.60e-09, 5.60e-09, 3.60e-09, 6.00e-09, 1.07e-08, -1.01… \\
+        TGD2             & <dbl> & -3.00e-10, 3.00e-09, 1.70e-09, 1.50e-09, -6.00e-10, 2.8… \\
+        TransTime        & <dbl> & 118800.0, 133200.0, 133200.0, 136800.0, 158400.0, 16200… \\
+        AODC             & <dbl> & 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0… \\
+        leap\_seconds    & <int> & 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4… \\
+        source           & <chr> & " data/gths135a.18f", " data/gths135a.18f", " data/gths… \\
+        t\_oc            & <dbl> & 118800, 133200, 133200, 136800, 158400, 162000, 169200,… \\
+        gps\_millis      & <dbl> & 1.210324e+12, 1.210338e+12, 1.210338e+12, 1.210342e+12,… \\
+        gnss\_sv\_id     & <chr> & " C12       ", " C10       ", " C11       ", " C14     … \\
+        gnss\_id         & <chr> & " beidou", " beidou", " beidou", " beidou", " beidou", … \\
+    \end{tabular}
+\end{table}
 
 \section{Build}
 Build system of GAA is CMake. Just build as usual(\inlinecode{cmake .. && make -j16 && sudo make install})
