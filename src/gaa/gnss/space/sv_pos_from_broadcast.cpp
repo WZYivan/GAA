@@ -59,4 +59,26 @@ Param_sv_pos_from_broadcast::from_table_row(Table_row_ref row, double t) {
       .t = t,
   };
 }
+
+Param_sv_pos_from_broadcast
+Param_sv_pos_from_broadcast::from_table_row(Table_row_view row, double t) {
+  return Param_sv_pos_from_broadcast{
+      .sqrtA = row.at<Tab_double>("sqrtA"),
+      .e = row.at<Tab_double>("e"),
+      .t_oe = row.at<Tab_double>("t_oe"),
+      .M_0 = row.at<Tab_double>("M_0"),
+      .omega = row.at<Tab_double>("omega"),
+      .i_0 = row.at<Tab_double>("i_0"),
+      .IDOT = row.at<Tab_double>("IDOT"),
+      .C_us = row.at<Tab_double>("C_us"),
+      .C_uc = row.at<Tab_double>("C_uc"),
+      .C_is = row.at<Tab_double>("C_is"),
+      .C_ic = row.at<Tab_double>("C_ic"),
+      .C_rc = row.at<Tab_double>("C_rc"),
+      .C_rs = row.at<Tab_double>("C_rs"),
+      .Omega_0 = row.at<Tab_double>("Omega_0"),
+      .OmegaDot = row.at<Tab_double>("OmegaDot"),
+      .t = t,
+  };
+}
 } // namespace gaa

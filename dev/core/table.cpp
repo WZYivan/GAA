@@ -1,7 +1,7 @@
 #include <print>
 
-#include <gaa/core/io/csv.hpp>
 #include <gaa/core/table.hpp>
+#include <gaa/io/csv.hpp>
 using namespace gaa;
 
 int main() {

@@ -8,12 +8,11 @@ void _assert_fail(char const *expr, std::source_location const &loc,
                   std::string const &message) {
   std::print(std::cerr,
              "Assertion failed\n"
-             "file: {:s}\n"
+             "file: {:s}:{:d}:{:d}\n"
              "function: {:s}\n"
-             "position: {:d}:{:d}\n"
              "expr: {:s}\n"
              "message: {:s}\n",
-             loc.file_name(), loc.function_name(), loc.line(), loc.column(),
+             loc.file_name(), loc.line(), loc.column(), loc.function_name(),
              expr, message);
 }
 } // namespace gaa

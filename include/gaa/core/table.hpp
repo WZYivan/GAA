@@ -13,6 +13,7 @@
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/kw.hpp>
 #include <gaa/core/pp.hpp>
+#include <gaa/gnss/def.hpp>
 
 namespace gaa {
 
@@ -22,7 +23,14 @@ enum Table_Storage_Flag : int {
   Tab_Double,
   Tab_Integer,
   Tab_Bool,
-  Tab_COUNT
+  Tab_Char,
+  Tab_UTC_Id,
+  Tab_Sat_Sys,
+  Tab_Vector_String,
+  Tab_Vector_Double,
+  Tab_Vector_Integer,
+  Tab_COUNT,
+  Tab_UNKNOWN
 };
 
 template <class V> struct Is_table_storageble : public boost::mpl::false_ {};
@@ -44,6 +52,14 @@ struct Table_storage_type {
 template <Table_Storage_Flag flag>
 using Table_storage_type_of = Table_storage_type<flag>::type;
 
+template <Table_Storage_Flag flag>
+  requires(flag != Tab_Unsupported && flag != Tab_COUNT)
+struct _table_storage_flag_string {
+  constexpr static std::string value{""};
+};
+
+extern std::string table_storage_flag_string(Table_Storage_Flag flag);
+
 #define GAA_register_storageble(TYPE, FLAG, ALIAS)                             \
   template <>                                                                  \
   struct Is_table_storageble<GAA_PP_STRIP_PARAM TYPE>                          \
@@ -61,7 +77,14 @@ using Table_storage_type_of = Table_storage_type<flag>::type;
 GAA_register_storageble((std::string), Tab_String, Tab_string);
 GAA_register_storageble((double), Tab_Double, Tab_double);
 GAA_register_storageble((int), Tab_Integer, Tab_int);
+GAA_register_storageble((char), Tab_Char, Tab_char);
 GAA_register_storageble((bool), Tab_Bool, Tab_bool);
+GAA_register_storageble((UTC_Identifier), Tab_UTC_Id, Tab_utc_id);
+GAA_register_storageble((Satellite_System), Tab_Sat_Sys, Tab_sat_sys);
+GAA_register_storageble((std::vector<std::string>), Tab_Vector_String,
+                        Tab_vecs);
+GAA_register_storageble((std::vector<double>), Tab_Vector_Double, Tab_vecd);
+GAA_register_storageble((std::vector<int>), Tab_Vector_Integer, Tab_veci);
 
 #undef GAA_register_storageble
 
@@ -79,14 +102,15 @@ public:
 
   using meta_info_key_type = std::string;
   using meta_info_storage_type = std::any;
-  using mate_info_type = std::map<meta_info_key_type, meta_info_storage_type>;
+  using mate_storage_type =
+      std::map<meta_info_key_type, meta_info_storage_type>;
 
   using table_storage_info_type = std::vector<Table_Storage_Flag>;
   using mate_storage_info_type =
       std::map<meta_info_key_type, Table_Storage_Flag>;
 
 private:
-  mate_info_type m_meta_storage;
+  mate_storage_type m_meta_storage;
   table_storage_type m_table_storage;
   column_name_storage_type m_table_col_names;
 
@@ -103,7 +127,8 @@ public:
     static constexpr Table_Storage_Flag storage_flag = storage_flag_of<V>;
     using storage_column_type = column_type<V>;
     using column_ptr_type = std::add_pointer_t<storage_column_type>;
-    using column_const_ptr_type = std::add_const_t<column_ptr_type>;
+    using column_const_ptr_type =
+        std::add_pointer_t<std::add_const_t<storage_column_type>>;
   };
 
   table_storage_type const &columns() const { return m_table_storage; }
@@ -138,6 +163,12 @@ public:
     requires is_table_storageble_v<V>
   void push_back(column_type<V> const &col) {
     this->push_back(col, std::format("COL_{:d}", m_table_storage.size()));
+  }
+
+  template <class V>
+    requires is_table_storageble_v<V>
+  void push_back(column_name_type const &name) {
+    this->push_back(column_type<V>{}, name);
   }
 
   template <class V> column_type<V> const &at(index_type const &idx) const {
@@ -227,12 +258,22 @@ public:
     return *ptr;
   }
 
+  template <Table_Storage_Flag flag>
+  bool meta_is(meta_info_key_type const &key) const {
+    return m_meta_info.at(key) == flag;
+  }
+
+  bool meta_has(meta_info_key_type const &key) const;
+  mate_storage_type const &meta() const;
+  mate_storage_type &meta();
+
   void clear();
   bool empty() const;
   std::size_t size() const;
   void self_check() const;
   std::ptrdiff_t column_of(column_name_type const &name) const;
   bool has_column(column_name_type const &name) const;
+  std::string glimpse() const;
 
   class Row_view {
   private:
@@ -300,4 +341,49 @@ using Table_column = Table::column_type<V>;
 using Table_column_name = Table::column_name_type;
 
 extern Table_Storage_Flag table_storage_flag_of(std::string const &str);
+
+template <class F>
+void visit_table_storage(Table_Storage_Flag flag, std::any const &storage,
+                         F &&f) {
+  std::any const *wrapped_ptr = std::addressof(storage);
+  switch (flag) {
+  case Tab_String: {
+    auto ptr = std::any_cast<std::vector<Tab_string>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Double: {
+    auto ptr = std::any_cast<std::vector<Tab_double>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Integer: {
+    auto ptr = std::any_cast<std::vector<Tab_int>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Bool: {
+    auto ptr = std::any_cast<std::vector<Tab_bool>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Char: {
+    auto ptr = std::any_cast<std::vector<Tab_char>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_UTC_Id: {
+    auto ptr = std::any_cast<std::vector<Tab_utc_id>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Sat_Sys: {
+    auto ptr = std::any_cast<std::vector<Tab_sat_sys>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  default:
+    gaa_assert(false, "unreachable default case");
+  }
+}
 } // namespace gaa

@@ -19,6 +19,7 @@ python/utils/*
 .clangd
 .clang-format
 .clang-format-llvm
+.Rhistory
 TODO.md 
 configure.sh
 tokei.sh

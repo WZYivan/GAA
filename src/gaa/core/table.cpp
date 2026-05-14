@@ -1,8 +1,83 @@
+#include <ranges>
+
 #include <boost/regex.hpp>
 
 #include <gaa/core/table.hpp>
 
 namespace gaa {
+
+std::string table_storage_flag_string(Table_Storage_Flag flag) {
+  switch (flag) {
+  case Tab_String:
+    return "<str>";
+  case Tab_Double:
+    return "<dbl>";
+  case Tab_Integer:
+    return "<int>";
+  case Tab_Bool:
+    return "<bool>";
+  case Tab_Char:
+    return "<chr>";
+  case Tab_UTC_Id:
+    return "<utc_id>";
+  case Tab_Sat_Sys:
+    return "<sat_sys>";
+  case Tab_Vector_String:
+    return "<vec_str>";
+  case Tab_Vector_Double:
+    return "<vec_dbl>";
+  case Tab_Vector_Integer:
+    return "<vec_int>";
+  default:
+    gaa_assert(false, "unreachable default case");
+  }
+}
+
+std::string Table::glimpse() const {
+  std::string cnt;
+  std::string tmp;
+
+  static constexpr auto storage2str
+      [[maybe_unused]] = []<class T>(T const &val) {
+        if constexpr (requires { requires std::same_as<UTC_Identifier, T>; }) {
+          return enum2str(val);
+        } else if constexpr (requires {
+                               requires std::same_as<Satellite_System, T>;
+                             }) {
+          return enum2str(val);
+        } else {
+          return val;
+        }
+      };
+
+  for (auto const &[label, info, storage] :
+       std::views::zip(m_table_col_names, m_table_info, m_table_storage)) {
+    auto dest = std::back_inserter(tmp);
+
+    std::format_to(dest, "\"{}\" {} ", label, table_storage_flag_string(info));
+    visit_table_storage(info, storage, [&dest, &tmp](auto const &vals) {
+      for (auto const &v : vals) {
+        std::format_to(dest, "{}, ", storage2str(v));
+        if (tmp.size() > 96) {
+          break;
+        }
+      }
+    });
+    tmp.pop_back();
+    tmp.pop_back();
+
+    if (tmp.size() > 96) {
+      tmp.resize(96);
+    }
+    tmp.append(" ...\n");
+
+    cnt.append(tmp);
+    tmp.clear();
+  }
+
+  return cnt;
+}
+
 void Table::clear() {
   m_table_col_names.clear();
   m_table_info.clear();
@@ -79,4 +154,13 @@ Table_Storage_Flag table_storage_flag_of(std::string const &str) {
     return Tab_Unsupported;
   }
 }
+
+bool Table::meta_has(meta_info_key_type const &key) const {
+  return m_meta_storage.contains(key);
+}
+Table::mate_storage_type const &Table::meta() const {
+  return this->m_meta_storage;
+}
+Table::mate_storage_type &Table::meta() { return m_meta_storage; }
+
 } // namespace gaa

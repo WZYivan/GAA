@@ -27,6 +27,8 @@ struct Param_sv_pos_from_broadcast {
 
   static Param_sv_pos_from_broadcast from_table_row(Table_row_ref row,
                                                     double t);
+  static Param_sv_pos_from_broadcast from_table_row(Table_row_view row,
+                                                    double t);
 };
 
 extern std::tuple<double, double, double>
