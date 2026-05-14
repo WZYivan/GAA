@@ -11,4 +11,6 @@ extern Table read_csv(std::istream &is,
                       kwargs args = {});
 extern Table read_csv_auto(std::string const &fname, kwargs args = {});
 extern Table read_csv_auto(std::istream &is, kwargs args = {});
+
+extern bool write_csv(std::ostream &os, Table const &table);
 } // namespace gaa

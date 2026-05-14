@@ -6,7 +6,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/regex.hpp>
 
-#include <gaa/core/io/csv.hpp>
+#include <gaa/io/csv.hpp>
 
 namespace fs = std::filesystem;
 
