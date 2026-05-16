@@ -11,7 +11,7 @@ extern Satellite_System sat_sys_rinex3(char cnt);
 extern Rinex_type rinex_type_rinex3(std::string const &cnt);
 extern UTC_Identifier utc_id_rinex3(int cnt);
 
-class Rinex3 {
+class Rinex3_nav {
 public:
   struct Labels {
     static std::string version_type, pgm_run_by, comment, iono_corr, time_corr,
@@ -31,8 +31,8 @@ private:
   Table m_table;
 
 public:
-  Rinex3() = default;
-  ~Rinex3() = default;
+  Rinex3_nav() = default;
+  ~Rinex3_nav() = default;
 
   double version() const;
   Satellite_System sat_sys() const;
@@ -63,10 +63,10 @@ public:
 
   Table_row_view row(std::size_t row) const;
 
-  friend Rinex3 read_rinex3(std::string const &fname, kwargs args);
-  friend Rinex3 read_rinex3(std::istream &is, kwargs args);
+  friend Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args);
+  friend Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args);
 };
 
-extern Rinex3 read_rinex3(std::string const &fname, kwargs args = {});
-extern Rinex3 read_rinex3(std::istream &is, kwargs args = {});
+extern Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args = {});
+extern Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args = {});
 } // namespace gaa

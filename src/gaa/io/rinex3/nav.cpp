@@ -2,7 +2,7 @@
 #include <fstream>
 
 #include <gaa/core/boost/spirit/x3.hpp>
-#include <gaa/io/rinex.hpp>
+#include <gaa/io/rinex3/nav.hpp>
 
 namespace fs = std::filesystem;
 
@@ -46,92 +46,94 @@ UTC_Identifier utc_id_rinex3(int cnt) {
   return static_cast<UTC_Identifier>(cnt);
 }
 
-std::string Rinex3::Labels::version_type{"RINEX VERSION / TYPE"},
-    Rinex3::Labels::pgm_run_by{"PGM / RUN BY / DATE"},
-    Rinex3::Labels::comment{"COMMENT"},
-    Rinex3::Labels::iono_corr{"IONOSPHERIC CORR"},
-    Rinex3::Labels::time_corr{"TIME SYSTEM CORR"},
-    Rinex3::Labels::leap_secs{"LEAP SECONDS"},
-    Rinex3::Labels::end{"END OF HEADER"};
+std::string Rinex3_nav::Labels::version_type{"RINEX VERSION / TYPE"},
+    Rinex3_nav::Labels::pgm_run_by{"PGM / RUN BY / DATE"},
+    Rinex3_nav::Labels::comment{"COMMENT"},
+    Rinex3_nav::Labels::iono_corr{"IONOSPHERIC CORR"},
+    Rinex3_nav::Labels::time_corr{"TIME SYSTEM CORR"},
+    Rinex3_nav::Labels::leap_secs{"LEAP SECONDS"},
+    Rinex3_nav::Labels::end{"END OF HEADER"};
 
-std::string Rinex3::Fields::version{"version"},
-    Rinex3::Fields::sat_sys{"satellite system"},
-    Rinex3::Fields::type{"rinex type"};
-std::string Rinex3::Fields::pgm{"program"}, Rinex3::Fields::run_by{"runner"},
-    Rinex3::Fields::date{"date"};
-std::string Rinex3::Fields::comments{"comments"};
-std::string Rinex3::Fields::time_corr_type{"time corr type"},
-    Rinex3::Fields::bdsa{"BDSA"}, Rinex3::Fields::bdsb{"BDSB"};
-std::string Rinex3::Fields::a0{"a0"}, Rinex3::Fields::a1{"a1"},
-    Rinex3::Fields::T{"T"}, Rinex3::Fields::W{"W"},
-    Rinex3::Fields::utc_id{"UTC ID"}, Rinex3::Fields::S{"S"};
-std::string Rinex3::Fields::tLS{"tLS"}, Rinex3::Fields::tLSF{"tLSF"},
-    Rinex3::Fields::WN{"WN"}, Rinex3::Fields::DN{"DN"};
+std::string Rinex3_nav::Fields::version{"version"},
+    Rinex3_nav::Fields::sat_sys{"satellite system"},
+    Rinex3_nav::Fields::type{"rinex type"};
+std::string Rinex3_nav::Fields::pgm{"program"},
+    Rinex3_nav::Fields::run_by{"runner"}, Rinex3_nav::Fields::date{"date"};
+std::string Rinex3_nav::Fields::comments{"comments"};
+std::string Rinex3_nav::Fields::time_corr_type{"time corr type"},
+    Rinex3_nav::Fields::bdsa{"BDSA"}, Rinex3_nav::Fields::bdsb{"BDSB"};
+std::string Rinex3_nav::Fields::a0{"a0"}, Rinex3_nav::Fields::a1{"a1"},
+    Rinex3_nav::Fields::T{"T"}, Rinex3_nav::Fields::W{"W"},
+    Rinex3_nav::Fields::utc_id{"UTC ID"}, Rinex3_nav::Fields::S{"S"};
+std::string Rinex3_nav::Fields::tLS{"tLS"}, Rinex3_nav::Fields::tLSF{"tLSF"},
+    Rinex3_nav::Fields::WN{"WN"}, Rinex3_nav::Fields::DN{"DN"};
 
-std::string Rinex3::glimpse() const { return m_table.glimpse(); }
+std::string Rinex3_nav::glimpse() const { return m_table.glimpse(); }
 
-Table_row_view Rinex3::row(std::size_t row) const { return m_table.row(row); }
+Table_row_view Rinex3_nav::row(std::size_t row) const {
+  return m_table.row(row);
+}
 
-double Rinex3::version() const {
+double Rinex3_nav::version() const {
   return m_table.meta_at<Tab_double>(Fields::version);
 }
-Satellite_System Rinex3::sat_sys() const {
+Satellite_System Rinex3_nav::sat_sys() const {
   return sat_sys_rinex3(m_table.meta_at<Tab_string>(Fields::sat_sys));
 }
-Rinex_type Rinex3::type() const {
+Rinex_type Rinex3_nav::type() const {
   return rinex_type_rinex3(m_table.meta_at<Tab_string>(Fields::type));
 }
 
-std::string const &Rinex3::program() const {
+std::string const &Rinex3_nav::program() const {
   return m_table.meta_at<Tab_string>(Fields::pgm);
 }
-std::string const &Rinex3::generator() const {
+std::string const &Rinex3_nav::generator() const {
   return m_table.meta_at<Tab_string>(Fields::run_by);
 }
-std::string const &Rinex3::date() const {
+std::string const &Rinex3_nav::date() const {
   return m_table.meta_at<Tab_string>(Fields::date);
 }
 
-std::vector<std::string> const &Rinex3::comments() const {
+std::vector<std::string> const &Rinex3_nav::comments() const {
   return m_table.meta_at<Tab_vecs>(Fields::comments);
 }
 
-std::vector<double> const &Rinex3::bdsa() const {
+std::vector<double> const &Rinex3_nav::bdsa() const {
   return m_table.meta_at<Tab_vecd>(Fields::bdsa);
 }
-std::vector<double> const &Rinex3::bdsb() const {
+std::vector<double> const &Rinex3_nav::bdsb() const {
   return m_table.meta_at<Tab_vecd>(Fields::bdsb);
 }
 
-std::string const &Rinex3::time_corr_type() const {
+std::string const &Rinex3_nav::time_corr_type() const {
   return m_table.meta_at<Tab_string>(Fields::time_corr_type);
 }
-double Rinex3::polynomial_coeff_0() const {
+double Rinex3_nav::polynomial_coeff_0() const {
   return m_table.meta_at<Tab_int>(Fields::a0);
 }
-double Rinex3::polynomial_coeff_1() const {
+double Rinex3_nav::polynomial_coeff_1() const {
   return m_table.meta_at<Tab_int>(Fields::a1);
 }
-int Rinex3::reference_time_of_polynomial() const {
+int Rinex3_nav::reference_time_of_polynomial() const {
   return m_table.meta_at<Tab_int>(Fields::T);
 }
-int Rinex3::reference_week_number() const {
+int Rinex3_nav::reference_week_number() const {
   return m_table.meta_at<Tab_int>(Fields::W);
 }
-UTC_Identifier Rinex3::utc_id() const {
+UTC_Identifier Rinex3_nav::utc_id() const {
   return utc_id_rinex3(m_table.meta_at<Tab_int>(Fields::utc_id));
 }
 
-int Rinex3::number_of_leap_seconds() const {
+int Rinex3_nav::number_of_leap_seconds() const {
   return m_table.meta_at<Tab_int>(Fields::tLS);
 }
-int Rinex3::future_or_past_leap_second() const {
+int Rinex3_nav::future_or_past_leap_second() const {
   return m_table.meta_at<Tab_int>(Fields::tLSF);
 }
-int Rinex3::respective_week_number() const {
+int Rinex3_nav::respective_week_number() const {
   return m_table.meta_at<Tab_int>(Fields::WN);
 }
-int Rinex3::respective_day_number() const {
+int Rinex3_nav::respective_day_number() const {
   return m_table.meta_at<Tab_int>(Fields::DN);
 }
 
@@ -258,21 +260,21 @@ void _read_rinex3_bds_data(std::istream &is, Table &table) {
   table.push_back(fit_interval, "fit interval");
 }
 
-Rinex3 read_rinex3(std::string const &fname, kwargs args) {
+Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args) {
   fs::path fpath{fname};
   gaa_assert(fs::exists(fpath), std::format("File not exists:{:s}", fname));
   std::ifstream ifs{fname, std::ios::in};
-  return read_rinex3(ifs, args);
+  return read_rinex3_nav(ifs, args);
 }
 
-Rinex3 read_rinex3(std::istream &is, kwargs args) {
+Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
   gaa_assert(is.good());
 
   GAA_ARG_OR(args, trim_string, true);
 
   namespace x3 = gaa::spirit::x3;
 
-  Rinex3 rinex3;
+  Rinex3_nav rinex3;
   Table &table = rinex3.m_table;
   std::string line;
 
@@ -289,7 +291,7 @@ Rinex3 read_rinex3(std::istream &is, kwargs args) {
     auto body = gaa::substr(line, 0, 60);
     auto label = gaa::substr(line, 60);
 
-    if (label == Rinex3::Labels::version_type) {
+    if (label == Rinex3_nav::Labels::version_type) {
       double version;
       std::string ftype, ssys;
       auto rule = x3::vchr<9 + 11>[x3::p2dbl(version)] >>
@@ -297,33 +299,33 @@ Rinex3 read_rinex3(std::istream &is, kwargs args) {
                   x3::vchr<1 + 19>[x3::p2str(ssys).trim(trim_string)];
       gaa_assert(x3::parse(body, rule));
 
-      table.meta_ioa<Tab_double>(Rinex3::Fields::version, version);
-      table.meta_ioa<Tab_string>(Rinex3::Fields::type, ftype);
-      table.meta_ioa<Tab_string>(Rinex3::Fields::sat_sys, ssys);
+      table.meta_ioa<Tab_double>(Rinex3_nav::Fields::version, version);
+      table.meta_ioa<Tab_string>(Rinex3_nav::Fields::type, ftype);
+      table.meta_ioa<Tab_string>(Rinex3_nav::Fields::sat_sys, ssys);
 
-    } else if (label == Rinex3::Labels::pgm_run_by) {
+    } else if (label == Rinex3_nav::Labels::pgm_run_by) {
       std::string program, run_by, date;
       auto rule = x3::vchr<20>[x3::p2str(program).trim(trim_string)] >>
                   x3::vchr<20>[x3::p2str(run_by).trim(trim_string)] >>
                   x3::vchr<20>[x3::p2str(date).trim(trim_string)];
       gaa_assert(x3::parse(body, rule));
-      table.meta_ioa<Tab_string>(Rinex3::Fields::pgm, program);
-      table.meta_ioa<Tab_string>(Rinex3::Fields::run_by, run_by);
-      table.meta_ioa<Tab_string>(Rinex3::Fields::date, date);
+      table.meta_ioa<Tab_string>(Rinex3_nav::Fields::pgm, program);
+      table.meta_ioa<Tab_string>(Rinex3_nav::Fields::run_by, run_by);
+      table.meta_ioa<Tab_string>(Rinex3_nav::Fields::date, date);
 
-    } else if (label == Rinex3::Labels::comment) {
+    } else if (label == Rinex3_nav::Labels::comment) {
       std::string cmt;
       auto rule = x3::vchr<60>[x3::p2str(cmt).trim(trim_string)];
       gaa_assert(x3::parse(body, rule));
 
-      if (table.meta_has(Rinex3::Fields::comments) &&
-          table.meta_is<Tab_Vector_String>(Rinex3::Fields::comments)) {
-        table.meta_at<Tab_vecs>(Rinex3::Fields::comments).push_back(cmt);
+      if (table.meta_has(Rinex3_nav::Fields::comments) &&
+          table.meta_is<Tab_Vector_String>(Rinex3_nav::Fields::comments)) {
+        table.meta_at<Tab_vecs>(Rinex3_nav::Fields::comments).push_back(cmt);
       } else {
-        table.meta_ioa<Tab_vecs>(Rinex3::Fields::comments, {cmt});
+        table.meta_ioa<Tab_vecs>(Rinex3_nav::Fields::comments, {cmt});
       }
 
-    } else if (label == Rinex3::Labels::iono_corr) {
+    } else if (label == Rinex3_nav::Labels::iono_corr) {
       std::string corr_type;
       Tab_vecd vecd;
 
@@ -335,7 +337,7 @@ Rinex3 read_rinex3(std::istream &is, kwargs args) {
 
       table.meta_ioa<Tab_vecd>(corr_type, vecd);
 
-    } else if (label == Rinex3::Labels::time_corr) {
+    } else if (label == Rinex3_nav::Labels::time_corr) {
       if (time_sys_corr_stage == 0) {
         std::string corr_type;
         double a0, a1;
@@ -347,11 +349,12 @@ Rinex3 read_rinex3(std::istream &is, kwargs args) {
                     x3::vchr<5>[x3::p2int(W)];
         gaa_assert(x3::parse(body, rule));
 
-        table.meta_ioa<Tab_string>(Rinex3::Fields::time_corr_type, corr_type);
-        table.meta_ioa<Tab_double>(Rinex3::Fields::a0, a0);
-        table.meta_ioa<Tab_double>(Rinex3::Fields::a1, a1);
-        table.meta_ioa<Tab_int>(Rinex3::Fields::T, T);
-        table.meta_ioa<Tab_int>(Rinex3::Fields::W, W);
+        table.meta_ioa<Tab_string>(Rinex3_nav::Fields::time_corr_type,
+                                   corr_type);
+        table.meta_ioa<Tab_double>(Rinex3_nav::Fields::a0, a0);
+        table.meta_ioa<Tab_double>(Rinex3_nav::Fields::a1, a1);
+        table.meta_ioa<Tab_int>(Rinex3_nav::Fields::T, T);
+        table.meta_ioa<Tab_int>(Rinex3_nav::Fields::W, W);
 
         time_sys_corr_stage++;
       } else if (time_sys_corr_stage == 1) {
@@ -362,26 +365,26 @@ Rinex3 read_rinex3(std::istream &is, kwargs args) {
                     x3::vchr<2 + 1>[x3::p2int(utc_id)];
         gaa_assert(x3::parse(body, rule));
 
-        table.meta_ioa<Tab_string>(Rinex3::Fields::S, S);
-        table.meta_ioa<Tab_int>(Rinex3::Fields::utc_id, utc_id);
+        table.meta_ioa<Tab_string>(Rinex3_nav::Fields::S, S);
+        table.meta_ioa<Tab_int>(Rinex3_nav::Fields::utc_id, utc_id);
 
       } else {
         gaa_assert(false, "Get unexpected 3 line of TIME SYSTEM CORR");
       }
 
-    } else if (label == Rinex3::Labels::leap_secs) {
+    } else if (label == Rinex3_nav::Labels::leap_secs) {
       int tLS, tLSF, WN_LSF, DN;
 
       auto rule = x3::vchr<6>[x3::p2int(tLS)] >> x3::vchr<6>[x3::p2int(tLSF)] >>
                   x3::vchr<6>[x3::p2int(WN_LSF)] >> x3::vchr<6>[x3::p2int(DN)];
       gaa_assert(x3::parse(body, rule));
 
-      table.meta_ioa<Tab_int>(Rinex3::Fields::tLS, tLS);
-      table.meta_ioa<Tab_int>(Rinex3::Fields::tLSF, tLSF);
-      table.meta_ioa<Tab_int>(Rinex3::Fields::WN, WN_LSF);
-      table.meta_ioa<Tab_int>(Rinex3::Fields::DN, DN);
+      table.meta_ioa<Tab_int>(Rinex3_nav::Fields::tLS, tLS);
+      table.meta_ioa<Tab_int>(Rinex3_nav::Fields::tLSF, tLSF);
+      table.meta_ioa<Tab_int>(Rinex3_nav::Fields::WN, WN_LSF);
+      table.meta_ioa<Tab_int>(Rinex3_nav::Fields::DN, DN);
 
-    } else if (label == Rinex3::Labels::end) {
+    } else if (label == Rinex3_nav::Labels::end) {
       break;
     } else {
       gaa_assert(false, std::format("Unknown label:{}", label));

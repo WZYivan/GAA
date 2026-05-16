@@ -5,13 +5,13 @@
 #include <boost/algorithm/string.hpp>
 
 #include <gaa/gnss/space/sv_pos_from_broadcast.hpp>
-#include <gaa/io/rinex.hpp>
+#include <gaa/io/rinex3/nav.hpp>
 
 int main() {
   std::string fname{"/home/azusa/file/project/GAA/data/gths135a.18f"};
   std::ifstream ifs{fname, std::ios::in};
 
-  gaa::Rinex3 rinex3 = gaa::read_rinex3(fname);
+  gaa::Rinex3_nav rinex3 = gaa::read_rinex3_nav(fname);
   std::cout << rinex3.glimpse();
 
   auto row0 = rinex3.row(0);
