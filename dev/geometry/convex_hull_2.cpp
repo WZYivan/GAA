@@ -1,8 +1,8 @@
 #include <print>
 
 #include <gaa/geometry/convex_hull_2.hpp>
-#include <gaa/visiualization/linestring.hpp>
-#include <gaa/visiualization/point.hpp>
+#include <gaa/visualization/linestring.hpp>
+#include <gaa/visualization/point.hpp>
 
 namespace plt = gaa::plt;
 
