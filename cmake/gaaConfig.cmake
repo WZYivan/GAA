@@ -10,10 +10,10 @@ else()
     set(IS_GAA_USE_PRIVATE_3RD 0)
 endif()
 
-if(GAA_USE_GNSSTK)
-    set(IS_GAA_USE_GNSSTK 1)
+if(GAA_EXT_VIS)
+    set(IS_GAA_EXT_VIS 1)
 else()
-    set(IS_GAA_USE_GNSSTK 0)
+    set(IS_GAA_EXT_VIS 0)
 endif()
 
 set(GAA_BUILD_TYPE ${CMAKE_BUILD_TYPE})

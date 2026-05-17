@@ -9,6 +9,10 @@ if(GAA_USE_PRIVATE_3RD)
 else()
     target_link_libraries(gaa 
     PUBLIC Boost::headers Eigen3::Eigen)
+
+    if(GAA_EXT_VIS)
+        target_link_libraries(gaa PUBLIC Matplot++::matplot)
+    endif()
 endif()
 
 if(GAA_WITH_R)

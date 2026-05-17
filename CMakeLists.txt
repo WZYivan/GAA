@@ -21,6 +21,7 @@ set(GAA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(GAA_DEV_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev)
 set(GAA_EXPORT_MACRO_NAME "GAA_API")
 
+option(GAA_EXT_VIS "Enable gaa/visualization" OFF)
 option(GAA_DEV "Building sources in folder dev/" OFF)
 option(GAA_TEST "Enable ctest and build sources in test/" ON)
 option(GAA_MODULE "(experimental) Building modules" OFF)
@@ -59,6 +60,10 @@ if(GAA_WITH_R)
     if(NOT RInside_FOUND)
         message(FATAL_ERROR "R package RInside is REQUIRED but not found")
     endif()
+endif()
+
+if(GAA_EXT_VIS)
+    find_package(Matplot++ REQUIRED)
 endif()
 
 include(gaaConfig)
