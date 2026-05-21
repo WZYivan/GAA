@@ -17,6 +17,7 @@ external/matplotplusplus/*
 python/utils/*
 
 # private section
+scripts/*
 .clangd
 .clang-format
 .clang-format-llvm
