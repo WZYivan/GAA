@@ -24,8 +24,7 @@ int main() {
   auto point_range = pts.make_point_range();
   auto point_map = pts.point_map();
 
-  gaa::Convex_hull_2 convex(point_range, point_map);
-  auto const &convex_pts = convex.range();
+  auto const &convex_pts = gaa::convex_hull_2(point_range, point_map);
 
   plt::hold(plt::on);
 
