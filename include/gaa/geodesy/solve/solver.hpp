@@ -7,14 +7,14 @@ struct Geodetic_solve_result {
   Latitude latitude;
   Longitude longitude;
   Azimuth rangle;
-  Ellipsoid const &ellipsoid;
+  Ellipsoid_ref ellipsoid;
 };
 
 struct Geodetic_rsolve_result {
   Azimuth angle;
   Azimuth rangle;
   double s;
-  Ellipsoid const &ellipsoid;
+  Ellipsoid_ref ellipsoid;
 };
 
 template <> struct Geodetic_coordinate_caster<Geodetic_solve_result> {

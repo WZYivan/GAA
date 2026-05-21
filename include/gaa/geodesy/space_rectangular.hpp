@@ -9,7 +9,7 @@ struct Space_rectangular_coordinate {
   double y;
   double z;
 
-  Ellipsoid const &ellipsoid = null_ellipsoid;
+  Ellipsoid_ref ellipsoid = null_ellipsoid;
 };
 
 template <> struct Geodetic_coordinate_caster<Space_rectangular_coordinate> {

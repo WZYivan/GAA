@@ -29,6 +29,10 @@ public:
   Ellipsoid_ref &operator=(Ellipsoid_ref const &bind);
   Ellipsoid_ref &operator=(Ellipsoid const &e);
 
+  bool operator==(Ellipsoid_ref const &other);
+  bool operator==(Ellipsoid const &e);
+  friend bool operator==(Ellipsoid const &e, Ellipsoid_ref const &bind);
+
   bool is_null() const;
 
   static Ellipsoid_ref cgcs2000();

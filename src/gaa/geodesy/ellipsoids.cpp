@@ -132,6 +132,15 @@ Ellipsoid_ref Ellipsoid_ref::krassovsky() {
 Ellipsoid_ref Ellipsoid_ref::null() {
   return Ellipsoid_ref(gaa::null_ellipsoid);
 }
+bool Ellipsoid_ref::operator==(Ellipsoid_ref const &other) {
+  return this->ellipsoid() == other.ellipsoid();
+}
+bool Ellipsoid_ref::operator==(Ellipsoid const &e) {
+  return this->ellipsoid() == e;
+}
+bool operator==(Ellipsoid const &e, Ellipsoid_ref const &bind) {
+  return bind.ellipsoid() == e;
+}
 
 _ellipsoid_data_section_t _krassovsky_data({.a = 6'378'245,
                                             .b = 6'356'863.018'773'047'3,

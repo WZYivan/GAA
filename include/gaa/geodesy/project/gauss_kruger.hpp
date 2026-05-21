@@ -52,7 +52,7 @@ struct Gauss_kruger_project_coordinate {
   double x, y;
   Gauss_kruger_project
       project; // its band will be modified ti keep same as this->band
-  Ellipsoid const &ellipsoid;
+  Ellipsoid_ref ellipsoid;
 
   ~Gauss_kruger_project_coordinate() = default;
 

@@ -124,9 +124,9 @@ Gauss_kruger_project::reval(Gauss_kruger_project_coordinate const &pc) const {
   auto const &ellipsoid = pc.ellipsoid;
   auto const &project = pc.project;
 
-  double Bf = ellipsoid.meridian_arc_bottom_latitude(x);
-  auto [Mf, Nf, Rf] = ellipsoid.principle_curvature_radius(Bf);
-  auto aux = ellipsoid.lat_aux(Latitude(Bf));
+  double Bf = ellipsoid->meridian_arc_bottom_latitude(x);
+  auto [Mf, Nf, Rf] = ellipsoid->principle_curvature_radius(Bf);
+  auto aux = ellipsoid->lat_aux(Latitude(Bf));
 
   double tf = aux.t, nf2 = aux.nu_2;
   double tf2 = std::pow(tf, 2), tf4 = std::pow(tf, 4);
@@ -144,7 +144,7 @@ Gauss_kruger_project::reval(Gauss_kruger_project_coordinate const &pc) const {
                   (5 + 28 * tf2 + 24 * tf4 + 6 * nf2 + 8 * nf2 * tf2) * y5;
   double Lc = project.center_meridian(band);
 
-  return ellipsoid.coordinate(B, Lc + dl);
+  return ellipsoid->coordinate(B, Lc + dl);
 }
 
 Gauss_kruger const gauss_kruger = {};
