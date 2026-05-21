@@ -71,4 +71,17 @@ std::string enum2str(UTC_Identifier v) {
     gaa_assert(false, "unreachable default case");
   }
 }
+
+Ellipsoid_ref ellipsoid_of(Satellite_System v) {
+  switch (v) {
+  case BDS: {
+    return cgcs2000;
+  }
+  case GPS: {
+    return wgs84;
+  }
+  default:
+    gaa_assert(false, "unreachable default case");
+  }
+}
 } // namespace gaa

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <gaa/geodesy/ellipsoids.hpp>
+
 namespace gaa {
 enum Satellite_System {
   BDS = 1,
@@ -28,4 +30,6 @@ enum UTC_Identifier {
 extern std::string enum2str(Satellite_System v);
 extern std::string enum2str(Rinex_type v);
 extern std::string enum2str(UTC_Identifier v);
+
+extern Ellipsoid_ref ellipsoid_of(Satellite_System v);
 } // namespace gaa

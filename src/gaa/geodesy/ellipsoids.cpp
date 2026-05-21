@@ -108,6 +108,31 @@ struct _ellipsoid_data_section_t {
   ~_ellipsoid_data_section_t() = default;
 };
 
+Ellipsoid_ref::Ellipsoid_ref(Ellipsoid const &e) : m_ptr(std::addressof(e)) {}
+Ellipsoid_ref::operator Ellipsoid const &() const { return this->ellipsoid(); }
+Ellipsoid const *Ellipsoid_ref::operator->() const { return m_ptr; }
+Ellipsoid const &Ellipsoid_ref::operator*() const { return this->ellipsoid(); }
+Ellipsoid_ref &Ellipsoid_ref::rebind(Ellipsoid const &e) {
+  m_ptr = std::addressof(e);
+  return *this;
+}
+Ellipsoid const &Ellipsoid_ref::ellipsoid() const { return *m_ptr; }
+Ellipsoid_ref &Ellipsoid_ref::operator=(Ellipsoid_ref const &bind) {
+  return this->rebind(bind);
+}
+Ellipsoid_ref &Ellipsoid_ref::operator=(Ellipsoid const &e) {
+  return this->rebind(e);
+}
+bool Ellipsoid_ref::is_null() const { return this->ellipsoid().is_null(); }
+Ellipsoid_ref Ellipsoid_ref::cgcs2000() { return Ellipsoid_ref(gaa::cgcs2000); }
+Ellipsoid_ref Ellipsoid_ref::wgs84() { return Ellipsoid_ref(gaa::wgs84); }
+Ellipsoid_ref Ellipsoid_ref::krassovsky() {
+  return Ellipsoid_ref(gaa::krassovsky);
+}
+Ellipsoid_ref Ellipsoid_ref::null() {
+  return Ellipsoid_ref(gaa::null_ellipsoid);
+}
+
 _ellipsoid_data_section_t _krassovsky_data({.a = 6'378'245,
                                             .b = 6'356'863.018'773'047'3,
                                             .c = 6'399'698.901'782'771'0,

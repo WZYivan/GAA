@@ -11,6 +11,32 @@ namespace gaa {
 class Ellipsoid;
 struct _ellipsoid_data_section_t;
 
+class Ellipsoid_ref {
+private:
+  Ellipsoid const *m_ptr;
+
+public:
+  ~Ellipsoid_ref() = default;
+  Ellipsoid_ref(Ellipsoid const &e);
+
+  operator Ellipsoid const &() const;
+  Ellipsoid const *operator->() const;
+  Ellipsoid const &operator*() const;
+
+  Ellipsoid const &ellipsoid() const;
+  Ellipsoid_ref &rebind(Ellipsoid const &e);
+
+  Ellipsoid_ref &operator=(Ellipsoid_ref const &bind);
+  Ellipsoid_ref &operator=(Ellipsoid const &e);
+
+  bool is_null() const;
+
+  static Ellipsoid_ref cgcs2000();
+  static Ellipsoid_ref wgs84();
+  static Ellipsoid_ref krassovsky();
+  static Ellipsoid_ref null();
+};
+
 class _ellipsoid_geometry_access_t {
 private:
   _ellipsoid_data_section_t const &m_data;

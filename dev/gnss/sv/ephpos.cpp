@@ -15,8 +15,9 @@ int main() {
     auto param = gaa::Param_sv_pos_from_broadcast::from_table_row(
         row, row.at<gaa::Tab_double>("t_oe"));
     auto src = gaa::sv_pos_from_broadcast(param);
+    // src.ellipsoid = gaa::ellipsoid_of(sat_sys.at(r));
     auto [x, y, z, _src_e] = src;
-    auto geo = src >> gaa::geodetic_cast(gaa::cgcs2000);
+    auto geo = src >> gaa::geodetic_cast(gaa::ellipsoid_of(sat_sys.at(r)));
     auto [B, L, H, _geo_e] = geo;
     auto prn = sat_prn.at(r);
     auto sys = sat_sys.at(r);
