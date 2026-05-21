@@ -2,7 +2,7 @@
 
 namespace gaa {
 
-std::tuple<double, double, double>
+Space_rectangular_coordinate
 sv_pos_from_broadcast(double sqrtA, double e, double t_oe, double M_0,
                       double omega, double i_0, double IDOT [[maybe_unused]],
                       double C_us, double C_uc, double C_is, double C_ic,
@@ -26,11 +26,11 @@ sv_pos_from_broadcast(double sqrtA, double e, double t_oe, double M_0,
   auto [xk, yk, zk] = sv_orbit_coordinate(uk, rk);
 
   double L = sv_longitude_argument(Omega_0, OmegaDot, omegaE, t, t_oe);
-  auto coord = sv_instance_earth_coordinate(xk, yk, ik, L);
+  auto [x, y, z] = sv_instance_earth_coordinate(xk, yk, ik, L);
 
-  return coord;
+  return Space_rectangular_coordinate(x, y, z);
 }
-std::tuple<double, double, double>
+Space_rectangular_coordinate
 sv_pos_from_broadcast(Param_sv_pos_from_broadcast const &param) {
   return sv_pos_from_broadcast(
       param.sqrtA, param.e, param.t_oe, param.M_0, param.omega, param.i_0,
