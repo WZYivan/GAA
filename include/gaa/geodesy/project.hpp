@@ -1,3 +1,3 @@
 #pragma once
 
-#include <gaa/geodesy/project/Gauss_kruger.hpp>
+#include <gaa/geodesy/project/gauss_kruger.hpp>

@@ -43,13 +43,16 @@ public:
 struct Geodetic_coordinate {
   Latitude latitude;
   Longitude longitude;
+  double height;
   Ellipsoid const &ellipsoid;
 
   ~Geodetic_coordinate() = default;
   Geodetic_coordinate(double lat, double lon, Ellipsoid const &e)
-      : latitude(lat), longitude(lon), ellipsoid(e) {}
+      : latitude(lat), longitude(lon), height(0.0), ellipsoid(e) {}
   Geodetic_coordinate(Latitude lat, Longitude lon, Ellipsoid const &e)
-      : latitude(lat), longitude(lon), ellipsoid(e) {}
+      : latitude(lat), longitude(lon), height(0.0), ellipsoid(e) {}
+  Geodetic_coordinate(Latitude lat, Longitude lon, double h, Ellipsoid const &e)
+      : latitude(lat), longitude(lon), height(h), ellipsoid(e) {}
 };
 
 template <class T> struct Geodetic_coordinate_caster {

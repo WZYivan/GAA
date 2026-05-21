@@ -172,18 +172,22 @@ double _ellipsoid_gravity_access_t::omega() const {
 }
 
 Geodetic_coordinate Ellipsoid::coordinate(double lat, double lon) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return Geodetic_coordinate(lat, lon, *this);
 }
 
 Geodetic_coordinate Ellipsoid::coordinate(Latitude lat, Longitude lon) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return Geodetic_coordinate(lat, lon, *this);
 }
 
 bool Ellipsoid::operator==(Ellipsoid const &other) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return this->m_identifier == other.m_identifier;
 }
 
 bool Ellipsoid::operator!=(Ellipsoid const &other) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return !(*this == other);
 }
 
@@ -191,18 +195,24 @@ bool Ellipsoid::is_null() const {
   return this->m_identifier == Identifier::EmptyPlaceHolder;
 }
 
-Ellipsoid::data_type const &Ellipsoid::data() const { return this->m_data; }
+Ellipsoid::data_type const &Ellipsoid::data() const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
+  return this->m_data;
+}
 
 _ellipsoid_geometry_access_t Ellipsoid::geometry() const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return _ellipsoid_geometry_access_t(this->data());
 }
 
 _ellipsoid_gravity_access_t Ellipsoid::gravity() const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return _ellipsoid_gravity_access_t(this->data());
 }
 
 std::tuple<double, double, double>
 Ellipsoid::principle_curvature_radius(double lat) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   GAA_latitude_assert(lat);
 
   auto const &geo = this->data().geometry_property;
@@ -213,6 +223,7 @@ Ellipsoid::principle_curvature_radius(double lat) const {
 }
 
 double Ellipsoid::meridian_arc_length(double lat) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   auto const &coeff = this->data().quarter_arc_coefficient;
   double a0 = coeff.a0, a2 = coeff.a2, a4 = coeff.a4, a6 = coeff.a6,
          a8 = coeff.a8;
@@ -224,6 +235,7 @@ double Ellipsoid::meridian_arc_length(double lat) const {
 }
 
 double Ellipsoid::meridian_arc_bottom_latitude(double len) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   auto const &coeff = this->data().quarter_arc_bottom_coefficient;
   auto const &geometry = this->data().geometry_property;
   double B0 = len / (geometry.a * (1 - geometry.e1_2) * coeff.a0),
@@ -239,6 +251,7 @@ double Ellipsoid::meridian_arc_bottom_latitude(double len) const {
 }
 
 Latitude_auxiliary_constants Ellipsoid::lat_aux(Latitude lat) const {
+  gaa_assert(!this->is_null(), "The null_ellipsoid is a placeholder");
   return Latitude_auxiliary_constants(lat, *this);
 }
 
