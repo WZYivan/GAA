@@ -131,8 +131,13 @@ public:
         std::add_pointer_t<std::add_const_t<storage_column_type>>;
   };
 
-  table_storage_type const &columns() const { return m_table_storage; }
-  table_storage_type &columns() { return m_table_storage; }
+  table_storage_type const &columns() const;
+  table_storage_type &columns();
+  column_name_storage_type const &column_names() const;
+  column_name_storage_type &column_names();
+  table_storage_info_type const &column_infos() const;
+  table_storage_info_type &column_infos();
+  std::size_t column_size() const;
 
   template <class V>
     requires is_table_storageble_v<V>
@@ -293,6 +298,11 @@ public:
     template <class V> V const &at(column_name_type const &name) const {
       return this->at<V>(m_tab.column_of(name));
     }
+
+    template <class V> bool contains(index_type const &idx) const {
+      auto const &col = m_tab.at<V>(idx);
+      return col.size() < m_row;
+    }
   };
 
   Row_view row(index_type const &idx) const;
@@ -325,6 +335,11 @@ public:
 
     template <class V> V const &at(column_name_type const &name) const {
       return this->at<V>(m_tab.column_of(name));
+    }
+
+    template <class V> bool contains(index_type const &idx) const {
+      auto const &col = m_tab.at<V>(idx);
+      return col.size() < m_row;
     }
   };
 

@@ -62,9 +62,12 @@ public:
   std::string glimpse() const;
 
   Table_row_view row(std::size_t row) const;
+  Table_row_view row(std::string const &row) const;
 
   friend Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args);
   friend Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args);
+
+  Table const &table() const;
 };
 
 extern Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args = {});

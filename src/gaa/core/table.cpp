@@ -39,11 +39,8 @@ std::string Table::glimpse() const {
 
   static constexpr auto storage2str
       [[maybe_unused]] = []<class T>(T const &val) {
-        if constexpr (requires { requires std::same_as<UTC_Identifier, T>; }) {
-          return enum2str(val);
-        } else if constexpr (requires {
-                               requires std::same_as<Satellite_System, T>;
-                             }) {
+        if constexpr (std::same_as<UTC_Identifier, T> ||
+                      std::same_as<Satellite_System, T>) {
           return enum2str(val);
         } else {
           return val;
@@ -114,6 +111,8 @@ std::ptrdiff_t Table::column_of(column_name_type const &name) const {
   return idx;
 }
 
+std::size_t Table::column_size() const { return this->m_table_storage.size(); }
+
 bool Table::has_column(column_name_type const &name) const {
   auto dest =
       std::find(m_table_col_names.begin(), m_table_col_names.end(), name);
@@ -162,5 +161,20 @@ Table::mate_storage_type const &Table::meta() const {
   return this->m_meta_storage;
 }
 Table::mate_storage_type &Table::meta() { return m_meta_storage; }
+
+Table::table_storage_type const &Table::columns() const {
+  return m_table_storage;
+}
+Table::table_storage_type &Table::columns() { return m_table_storage; }
+Table::column_name_storage_type const &Table::column_names() const {
+  return m_table_col_names;
+}
+Table::column_name_storage_type &Table::column_names() {
+  return m_table_col_names;
+}
+Table::table_storage_info_type const &Table::column_infos() const {
+  return m_table_info;
+}
+Table::table_storage_info_type &Table::column_infos() { return m_table_info; }
 
 } // namespace gaa

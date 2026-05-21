@@ -21,6 +21,12 @@
 #define GAA_CLANG 0
 #endif
 
+#ifdef GAA_UNIT_NEVER_VALIDATE
+#define GAA_UNIT_validate_switch 1
+#else
+#define GAA_UNIT_validate_switch 0
+#endif
+
 #define GAA_R_RHOME ""
 #define GAA_WITH_R 0
 #define GAA_EXT_VIS 1

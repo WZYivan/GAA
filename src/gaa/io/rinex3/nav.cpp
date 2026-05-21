@@ -74,6 +74,12 @@ Table_row_view Rinex3_nav::row(std::size_t row) const {
   return m_table.row(row);
 }
 
+Table_row_view Rinex3_nav::row(std::string const &row) const {
+  return m_table.row(row);
+}
+
+Table const &Rinex3_nav::table() const { return m_table; }
+
 double Rinex3_nav::version() const {
   return m_table.meta_at<Tab_double>(Fields::version);
 }

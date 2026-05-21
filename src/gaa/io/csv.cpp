@@ -267,4 +267,73 @@ Table read_csv_auto(std::istream &is, kwargs args) {
   }
   return tab;
 }
+
+void write_csv(std::string const &fname, Table const &table, kwargs args) {
+  fs::path fpath{fname};
+  if (fpath.has_parent_path() && !fs::exists(fpath.parent_path())) {
+    fs::create_directories(fpath.parent_path());
+  }
+  std::ofstream ofs{fpath, std::ios::out};
+  gaa_assert(ofs, std::format("bad ofstream using \'{}\'", fname));
+  write_csv(ofs, table, args);
+}
+
+void write_csv(std::ostream &os, Table const &table, kwargs args) {
+  GAA_ARG_OR(args, stream_precision, 0);
+
+  auto const &col_names = table.column_names();
+  auto const &col_infos = table.column_infos();
+  auto const &col_storages = table.columns();
+  size_t num_cols = col_names.size();
+  if (num_cols == 0)
+    return;
+
+  size_t num_rows = 0;
+  auto get_size = [&](size_t col) -> size_t {
+    size_t sz = 0;
+    visit_table_storage(col_infos.at(col), col_storages.at(col),
+                        [&sz](auto const &vec) { sz = vec.size(); });
+    return sz;
+  };
+  num_rows = get_size(0);
+
+  std::vector<std::vector<std::string>> col_strs(num_cols);
+  auto storage2str = [stream_precision]<class T>(T const &val) {
+    if constexpr (std::is_same_v<T, UTC_Identifier> ||
+                  std::is_same_v<T, Satellite_System>) {
+      return enum2str(val);
+    } else if constexpr (std::is_floating_point_v<T>) {
+      return std::format("{:.{}}", val, stream_precision);
+    } else {
+      return std::format("{}", val);
+    }
+  };
+
+  for (size_t c = 0; c < num_cols; ++c) {
+    auto &str_vec = col_strs[c];
+    visit_table_storage(col_infos.at(c), col_storages.at(c),
+                        [&](auto const &vec) {
+                          str_vec.reserve(vec.size());
+                          for (auto const &v : vec) {
+                            str_vec.push_back(storage2str(v));
+                          }
+                        });
+  }
+
+  for (size_t c = 0; c < num_cols; ++c) {
+    os << col_names[c];
+    if (c != num_cols - 1)
+      os << ',';
+  }
+  os << '\n';
+
+  for (size_t r = 0; r < num_rows; ++r) {
+    for (size_t c = 0; c < num_cols; ++c) {
+      os << col_strs[c][r];
+      if (c != num_cols - 1)
+        os << ',';
+    }
+    os << '\n';
+  }
+}
 } // namespace gaa

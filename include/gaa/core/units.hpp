@@ -1,6 +1,7 @@
 #pragma once
 
 #include <concepts>
+#include <format>
 #include <type_traits>
 
 #include <boost/units/is_quantity.hpp>
@@ -9,6 +10,8 @@
 #include <boost/units/systems/angle/degrees.hpp>
 #include <boost/units/systems/si/plane_angle.hpp>
 
+#include <gaa/core/config.hpp>
+#include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
 
 namespace gaa {
@@ -110,7 +113,11 @@ public:
   using base_type::unit_type;
 
 private:
-  bool validate() { return std::abs(this->value()) <= deg2rad(90); }
+  void validate() {
+    gaa_assert((GAA_UNIT_validate_switch) ||
+                   std::abs(this->value()) <= std::numbers::pi / 2,
+               std::format("invalid value: \'{}\'", this->value()));
+  }
 
 public:
   ~Latitude() = default;
@@ -131,7 +138,11 @@ public:
   using base_type::unit_type;
 
 private:
-  bool validate() { return std::abs(this->value()) <= deg2rad(180); }
+  void validate() {
+    gaa_assert((GAA_UNIT_validate_switch) ||
+                   std::abs(this->value()) <= std::numbers::pi,
+               std::format("invalid value: \'{}\'", this->value()));
+  }
 
 public:
   ~Longitude() = default;
