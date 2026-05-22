@@ -18,9 +18,9 @@ template <class CoordinateType = double,
 using Point_3 = geom::model::d3::point_xyz<CoordinateType, CoordinateSystem>;
 
 template <class T>
-concept IsPoint = std::same_as<geom::point_tag, typename geom::tag<T>::type>;
+concept Is_Point = std::same_as<geom::point_tag, typename geom::tag<T>::type>;
 
-template <IsPoint Point> struct Point_traits {
+template <Is_Point Point> struct Point_traits {
   using point_type = Point;
   using coordinate_type = typename geom::traits::coordinate_type<Point>::type;
   using coordinate_system =
@@ -59,7 +59,7 @@ template <class Property> _make_point_map_result_t<Property> make_point_map() {
 extern Point_range make_point_range(Point_index begin, Point_index count,
                                     Point_index interval = 1);
 
-template <IsPoint P>
+template <Is_Point P>
 typename Point_traits<P>::coordinate_type cross_product(P const &a, P const &b,
                                                         P const &c) {
   return (b.x() - a.x()) * (c.y() - a.y()) - (b.y() - a.y()) * (c.x() - a.x());
