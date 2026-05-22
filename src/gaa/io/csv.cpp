@@ -89,9 +89,8 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), dbl);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_double", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_double", str);
         col.emplace_back(dbl);
       }
       tab.push_back(std::move(col), name);
@@ -104,9 +103,8 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), val);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_int", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_int", str);
         col.emplace_back(val);
       }
       tab.push_back(std::move(col), name);
@@ -130,7 +128,7 @@ Table read_csv(std::istream &is, std::vector<Table_Storage_Flag> const &flags,
       break;
     }
     default:
-      gaa_assert(false, "unreachable default case");
+      gaa_fail("unreachable default case");
     }
   }
   return tab;
@@ -219,9 +217,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), dbl);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_double", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_double", str);
         col.emplace_back(dbl);
       }
 
@@ -235,9 +232,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size(), val);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_int", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_int", str);
         col.emplace_back(val);
       }
 
@@ -268,9 +264,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_lat", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_lat", str);
         col.emplace_back(deg2rad(dbl));
       }
 
@@ -284,9 +279,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_lon", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_lon", str);
         col.emplace_back(deg2rad(dbl));
       }
 
@@ -300,9 +294,8 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       for (auto const &str : cnt) {
         auto [ptr, ec] =
             std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
-        gaa_assert(
-            ec == std::errc{},
-            std::format("error occurs in parsing `{:s}` as Tab_rad", str));
+        gaa_assert(ec == std::errc{},
+                   "error occurs in parsing `{:s}` as Tab_rad", str);
         col.emplace_back(deg2rad(dbl));
       }
 
@@ -310,7 +303,7 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       break;
     }
     default:
-      gaa_assert(false, "unreachable default case");
+      gaa_fail("unreachable default case");
     }
   }
   return tab;
@@ -322,7 +315,7 @@ void write_csv(std::string const &fname, Table const &table, kwargs args) {
     fs::create_directories(fpath.parent_path());
   }
   std::ofstream ofs{fpath, std::ios::out};
-  gaa_assert(ofs, std::format("bad ofstream using \'{}\'", fname));
+  gaa_assert(ofs, "bad ofstream using \'{}\'", fname);
   write_csv(ofs, table, args);
 }
 

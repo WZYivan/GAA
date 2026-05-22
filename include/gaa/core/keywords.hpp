@@ -1,5 +1,6 @@
 #pragma once
 
+#include <format>
 #include <source_location>
 #include <string>
 
@@ -13,10 +14,19 @@ extern void _assert_fail(char const *expr, std::source_location const &loc,
 #define gaa_here (std::source_location::current())
 
 #ifndef GAA_USE_STD_ASSERT
+// #define gaa_assert(EXPR, ...)
+//   (EXPR) ? (void(0))
+//          : (gaa::_assert_fail(#EXPR, gaa_here __VA_OPT__(, ) __VA_ARGS__),
+//             GAA_AFTER_ASSERTION_FAIL)
 #define gaa_assert(EXPR, ...)                                                  \
   (EXPR) ? (void(0))                                                           \
-         : (gaa::_assert_fail(#EXPR, gaa_here __VA_OPT__(, ) __VA_ARGS__),     \
+         : (gaa::_assert_fail(                                                 \
+                #EXPR, gaa_here __VA_OPT__(, std::format(__VA_ARGS__))),       \
             GAA_AFTER_ASSERTION_FAIL)
+#define gaa_fail(...)                                                          \
+  gaa::_assert_fail("force to fail",                                           \
+                    gaa_here __VA_OPT__(, std::format(__VA_ARGS__))),          \
+      GAA_AFTER_ASSERTION_FAIL
 #else
 #include <cassert>
 #define gaa_assert(EXPR, ...) assert(EXPR)

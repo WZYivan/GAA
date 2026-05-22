@@ -69,13 +69,12 @@ struct _dbl_fn {
       }
       gaa_assert(
           is_dbl || is_sci,
-          std::format(
-              "Pattern Error: {:s} can't be treated as double (pattern:{:s})",
-              cnt, dbl_pattern.str()));
+
+          "Pattern Error: {:s} can't be treated as double (pattern:{:s})", cnt,
+          dbl_pattern.str());
     }
 
-    gaa_assert(from_str(cnt, dbl),
-               std::format("convert from `{:s}` to double failed", cnt));
+    gaa_assert(from_str(cnt, dbl), "convert from `{:s}` to double failed", cnt);
   }
 };
 template <std::ranges::range R>
@@ -115,12 +114,12 @@ struct _itg_fn {
 
     bool is_itg = boost::regex_match(cnt, itg_pattern);
     gaa_assert(is_itg,
-               std::format(
-                   "Pattern Error: {:s} can't be treated as int (pattern:{:s})",
-                   cnt, itg_pattern.str()));
 
-    gaa_assert(from_str(cnt, itg),
-               std::format("convert from `{:s}` to integer failed", cnt));
+               "Pattern Error: {:s} can't be treated as int (pattern:{:s})",
+               cnt, itg_pattern.str());
+
+    gaa_assert(from_str(cnt, itg), "convert from `{:s}` to integer failed",
+               cnt);
   }
 };
 template <std::ranges::range R>
@@ -150,8 +149,7 @@ struct _chr_fn {
 
   void operator()(auto const &ctx) const {
     std::string cnt{x3::_attr(ctx)};
-    gaa_assert(cnt.size() == 1,
-               std::format("Pattern Error: {:s} is not a char", cnt));
+    gaa_assert(cnt.size() == 1, "Pattern Error: {:s} is not a char", cnt);
     chr = cnt.front();
   }
 };

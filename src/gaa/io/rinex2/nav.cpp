@@ -79,7 +79,7 @@ Table const &Rinex2_nav::table() const { return m_table; }
 
 Rinex2_nav read_rinex2_nav(std::string const &fname, kwargs args) {
   fs::path fpath{fname};
-  gaa_assert(fs::exists(fpath), std::format("File not exists:{:s}", fname));
+  gaa_assert(fs::exists(fpath), "File not exists:{:s}", fname);
   std::ifstream ifs{fname, std::ios::in};
   return read_rinex2_nav(ifs, args);
 }
@@ -172,7 +172,7 @@ Rinex2_nav read_rinex2_nav(std::istream &is, kwargs args) {
     } else if (label == Rinex2_nav::Labels::end) {
       break;
     } else {
-      gaa_assert(false, std::format("Unknown label:{}", label));
+      gaa_fail("Unknown label:{}", label);
     }
   }
 
@@ -207,9 +207,8 @@ Rinex2_nav read_rinex2_nav(std::istream &is, kwargs args) {
         if (sub.size() < 79) {
           sub.resize(79, ' ');
         }
-        gaa_assert(
-            sub.size() <= 79,
-            std::format("Rinex 2 unexpected line whose size > 79:\'{}\'", sub));
+        gaa_assert(sub.size() <= 79,
+                   "Rinex 2 unexpected line whose size > 79:\'{}\'", sub);
         line.append(std::move(sub));
       }
 

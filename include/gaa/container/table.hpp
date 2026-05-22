@@ -428,7 +428,7 @@ void visit_table_storage(Table_Storage_Flag flag, std::any const &storage,
     return;
   }
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 } // namespace gaa

@@ -116,7 +116,7 @@ private:
   void validate() {
     gaa_assert((GAA_UNIT_validate_switch) ||
                    std::abs(this->value()) <= std::numbers::pi / 2,
-               std::format("invalid value: \'{}\'", this->value()));
+               "invalid value: \'{}\'", this->value());
   }
 
 public:
@@ -141,7 +141,7 @@ private:
   void validate() {
     gaa_assert((GAA_UNIT_validate_switch) ||
                    std::abs(this->value()) <= std::numbers::pi,
-               std::format("invalid value: \'{}\'", this->value()));
+               "invalid value: \'{}\'", this->value());
   }
 
 public:

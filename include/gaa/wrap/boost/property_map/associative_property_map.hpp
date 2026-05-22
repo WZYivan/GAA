@@ -29,7 +29,7 @@ public:
   bool contains(key_type const &key) { return m_db.contains(key); }
 
   template <class K, class V> decltype(auto) add(key_type const &key) {
-    gaa_assert(!this->contains(key), std::format("key {} already exists", key));
+    gaa_assert(!this->contains(key), "key {} already exists", key);
     gaa_assert(m_db.insert_or_assign(key, map_type<K, V>{}).second,
                "insert map failed");
     return this->template at<K, V>(key);
@@ -41,7 +41,7 @@ public:
   }
 
   template <class K, class V> decltype(auto) at(key_type const &key) {
-    gaa_assert(this->contains(key), std::format("key {} not exists", key));
+    gaa_assert(this->contains(key), "key {} not exists", key);
     map_type<K, V> *storage_ptr = std::any_cast<map_type<K, V>>(&m_db.at(key));
     return boost::make_assoc_property_map(*storage_ptr);
   }

@@ -2,7 +2,4 @@
 
 #include <gaa/core/keywords.hpp>
 
-int main()
-{
-    gaa_assert(false, "false");
-}
+int main() { gaa_assert(false, "{}", false); }

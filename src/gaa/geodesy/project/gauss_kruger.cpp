@@ -26,8 +26,8 @@ Gauss_kruger_project::Gauss_kruger_project(double val, int band)
   } else if (gaa::within_abs(val, 3.0)) {
     m_id = Identifier::Three;
   } else {
-    gaa_assert(false, "construct `Gauss_kruger_project` failed, interval "
-                      "should be in [6.0, 3.0]");
+    gaa_fail("construct `Gauss_kruger_project` failed, interval "
+             "should be in [6.0, 3.0]");
   }
 }
 
@@ -63,7 +63,7 @@ int Gauss_kruger_project::band_of(double lon) const {
   }
 
   default: {
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
     break;
   }
   }
@@ -80,7 +80,7 @@ double Gauss_kruger_project::center_meridian(double band) const {
     break;
   }
   default: {
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
     break;
   }
   }

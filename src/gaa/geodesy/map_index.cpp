@@ -27,7 +27,7 @@ Map_index::Scale Map_index::scale_of(int scale) {
   case 5'000:
     return H;
   default:
-    gaa_assert(false, "unreachable default");
+    gaa_fail("unreachable default");
   }
 }
 
@@ -46,7 +46,7 @@ Latitude Map_index::lat_dif_of(Map_index::Scale scale) {
     CASE(G, Latitude, dms(0, 2, 30));
     CASE(H, Latitude, dms(0, 1, 15));
   default:
-    gaa_assert(false, "unreachable default");
+    gaa_fail("unreachable default");
   }
 }
 Longitude Map_index::lon_dif_of(Map_index::Scale scale) {
@@ -60,7 +60,7 @@ Longitude Map_index::lon_dif_of(Map_index::Scale scale) {
     CASE(G, Longitude, dms(0, 3, 45));
     CASE(H, Longitude, dms(0, 1, 52.5));
   default:
-    gaa_assert(false, "unreachable default");
+    gaa_fail("unreachable default");
   }
 }
 #undef CASE
@@ -94,7 +94,7 @@ Map_index::Map_index(std::string const &cnt) {
   {
     auto [ptr, ec] =
         std::from_chars(mc.data(), mc.data() + mc.size(), m_major_col);
-    gaa_assert(ec == std::errc{}, std::format("fail parseing:{}", mc));
+    gaa_assert(ec == std::errc{}, "fail parseing:{}", mc);
   }
 
   m_scale = static_cast<Scale>(cnt[3]);
@@ -109,7 +109,7 @@ Map_index::Map_index(std::string const &cnt) {
     boost::trim(r);
     auto [ptr, ec] =
         std::from_chars(r.data(), r.data() + r.size(), m_minor_row);
-    gaa_assert(ec == std::errc{}, std::format("fail parseing:{}", r));
+    gaa_assert(ec == std::errc{}, "fail parseing:{}", r);
   }
 
   {
@@ -118,7 +118,7 @@ Map_index::Map_index(std::string const &cnt) {
     boost::trim(c);
     auto [ptr, ec] =
         std::from_chars(c.data(), c.data() + c.size(), m_minor_col);
-    gaa_assert(ec == std::errc{}, std::format("fail parseing:{}", c));
+    gaa_assert(ec == std::errc{}, "fail parseing:{}", c);
   }
 }
 

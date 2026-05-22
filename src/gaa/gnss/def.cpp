@@ -20,7 +20,7 @@ std::string enum2str(Satellite_System v) {
     return "Satellite_System_UNKNOWN";
   }
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 std::string enum2str(Rinex_type v) {
@@ -35,7 +35,7 @@ std::string enum2str(Rinex_type v) {
     return "Rinex_type_UNKNOWN";
   }
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 std::string enum2str(UTC_Identifier v) {
@@ -68,7 +68,7 @@ std::string enum2str(UTC_Identifier v) {
     return "UTC_Identifier_UNKOWN";
   }
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 
@@ -81,7 +81,7 @@ Ellipsoid_ref ellipsoid_of(Satellite_System v) {
     return wgs84;
   }
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 } // namespace gaa

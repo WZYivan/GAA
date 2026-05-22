@@ -29,7 +29,7 @@ Satellite_System sat_sys_rinex3(char cnt) {
   case 'R':
     return GLONASS;
   default:
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
 }
 
@@ -169,9 +169,8 @@ void _read_rinex3_bds_data(std::istream &is, Table &table) {
         if (sub.size() < 80) {
           sub.resize(80, ' ');
         }
-        gaa_assert(
-            sub.size() <= 80,
-            std::format("Rinex 3 unexpected line whose size > 80:\'{}\'", sub));
+        gaa_assert(sub.size() <= 80,
+                   "Rinex 3 unexpected line whose size > 80:\'{}\'", sub);
         line.append(std::move(sub));
       }
 
@@ -263,7 +262,7 @@ void _read_rinex3_bds_data(std::istream &is, Table &table) {
 
 Rinex3_nav read_rinex3_nav(std::string const &fname, kwargs args) {
   fs::path fpath{fname};
-  gaa_assert(fs::exists(fpath), std::format("File not exists:{:s}", fname));
+  gaa_assert(fs::exists(fpath), "File not exists:{:s}", fname);
   std::ifstream ifs{fname, std::ios::in};
   return read_rinex3_nav(ifs, args);
 }
@@ -368,7 +367,7 @@ Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
         table.meta_ioa<Tab_int>(Rinex3_nav::Fields::utc_id, utc_id);
 
       } else {
-        gaa_assert(false, "Get unexpected 3 line of TIME SYSTEM CORR");
+        gaa_fail("Get unexpected 3 line of TIME SYSTEM CORR");
       }
 
     } else if (label == Rinex3_nav::Labels::leap_secs) {
@@ -386,7 +385,7 @@ Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
     } else if (label == Rinex3_nav::Labels::end) {
       break;
     } else {
-      gaa_assert(false, std::format("Unknown label:{}", label));
+      gaa_fail("Unknown label:{}", label);
     }
   }
 
@@ -399,7 +398,7 @@ Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
     break;
   }
   default: {
-    gaa_assert(false, "unreachable default case");
+    gaa_fail("unreachable default case");
   }
   }
 

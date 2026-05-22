@@ -51,8 +51,8 @@ public:
   }
 
   void remove(Point_index idx) {
-    gaa_assert(idx < this->size(),
-               std::format("index out of range ({} > {})", idx, this->size()));
+    gaa_assert(idx < this->size(), "index out of range ({} > {})", idx,
+               this->size());
     m_removed.insert(idx);
   }
 
