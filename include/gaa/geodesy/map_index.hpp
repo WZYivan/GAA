@@ -1,7 +1,8 @@
 #pragma once
 
-#include <gaa/core/units.hpp>
 #include <string>
+
+#include <gaa/wrap/boost/units.hpp>
 
 namespace gaa {
 class Map_index {

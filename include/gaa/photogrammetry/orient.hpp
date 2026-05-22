@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gaa/core/Eigen/pre.hpp>
-#include <gaa/core/units.hpp>
+#include <gaa/wrap/Eigen/pre.hpp>
+#include <gaa/wrap/boost/units.hpp>
 
 namespace gaa {
 struct IOrient {

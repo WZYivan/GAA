@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gaa/core/Eigen/pre.hpp>
+#include <gaa/wrap/Eigen/pre.hpp>
 
 #include <gaa/core/kw.hpp>
 

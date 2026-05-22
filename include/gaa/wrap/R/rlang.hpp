@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
 
 #if !(GAA_WITH_R)
 #if !defined(GAA_IN_BUILDING)

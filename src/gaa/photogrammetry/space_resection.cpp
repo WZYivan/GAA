@@ -1,6 +1,6 @@
 #include <cmath>
-#include <gaa/core/Eigen/utils.hpp>
 #include <gaa/photogrammetry/space_resection.hpp>
+#include <gaa/wrap/Eigen/utils.hpp>
 
 namespace gaa {
 Space_resection_result space_resection(IOrient const &io, Mat const &img,

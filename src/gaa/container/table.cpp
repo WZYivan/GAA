@@ -2,7 +2,7 @@
 
 #include <boost/regex.hpp>
 
-#include <gaa/core/table.hpp>
+#include <gaa/container/table.hpp>
 
 namespace gaa {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gaa/core/Eigen/pre.hpp>
 #include <gaa/photogrammetry/orient.hpp>
+#include <gaa/wrap/Eigen/pre.hpp>
 
 namespace gaa {
 extern Mat obj2aux(Mat const &obj, EOrient const &eo);

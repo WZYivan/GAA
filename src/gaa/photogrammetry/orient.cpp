@@ -1,6 +1,6 @@
-#include <gaa/core/Eigen/utils.hpp>
 #include <gaa/core/keywords.hpp>
 #include <gaa/photogrammetry/orient.hpp>
+#include <gaa/wrap/Eigen/utils.hpp>
 
 namespace gaa {
 

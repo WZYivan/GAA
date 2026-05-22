@@ -1,9 +1,5 @@
-#include "gaa/core/Eigen/utils.hpp"
-#include "gaa/core/info.hpp"
-#include "gaa/core/kw.hpp"
-#include "gaa/photogrammetry/collinearity.hpp"
-#include "gaa/photogrammetry/orient.hpp"
 #include <gaa/photogrammetry/space_intersection.hpp>
+#include <gaa/wrap/Eigen/utils.hpp>
 
 namespace gaa {
 

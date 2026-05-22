@@ -4,7 +4,7 @@
 // #define GAA_UNIT_NEVER_VALIDATE
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
-#include <gaa/core/units.hpp>
+#include <gaa/wrap/boost/units.hpp>
 
 void LB(gaa::Latitude, gaa::Longitude) {}
 

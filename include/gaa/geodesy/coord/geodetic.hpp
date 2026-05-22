@@ -1,9 +1,9 @@
 #pragma once
 
 #include <gaa/core/message.hpp>
-#include <gaa/core/units.hpp>
 #include <gaa/geodesy/ellipsoid/entity.hpp>
 #include <gaa/geodesy/ellipsoid/ref.hpp>
+#include <gaa/wrap/boost/units.hpp>
 
 namespace gaa {
 struct Geodetic_coordinate {

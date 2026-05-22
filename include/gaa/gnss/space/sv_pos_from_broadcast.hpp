@@ -1,7 +1,7 @@
 #pragma once
 
-#include <gaa/core/table.hpp>
-#include <gaa/core/time.hpp>
+#include <gaa/container/table.hpp>
+#include <gaa/core/etc.hpp>
 #include <gaa/geodesy/coord/ecef.hpp>
 #include <gaa/gnss/space/sv_orbit.hpp>
 

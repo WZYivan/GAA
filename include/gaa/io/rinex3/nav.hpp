@@ -1,7 +1,7 @@
 #pragma once
 
+#include <gaa/container/table.hpp>
 #include <gaa/core/kw.hpp>
-#include <gaa/core/table.hpp>
 #include <gaa/gnss/def.hpp>
 
 namespace gaa {

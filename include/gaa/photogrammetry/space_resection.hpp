@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gaa/core/info.hpp>
+#include <gaa/core/enums.hpp>
 #include <gaa/core/kw.hpp>
 #include <gaa/photogrammetry/collinearity.hpp>
 #include <gaa/photogrammetry/orient.hpp>

@@ -10,12 +10,12 @@
 #include <boost/units/systems/angle/degrees.hpp>
 #include <boost/units/systems/si/plane_angle.hpp>
 
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
 
 namespace gaa {
-
+namespace units {
 template <class Unit> struct _quantity_traits {
   using unit_type = Unit;
   constexpr static unit_type unit{};
@@ -155,6 +155,15 @@ public:
     validate();
   }
 };
+} // namespace units
+
+using units::Arcdeg;
+using units::Arcmin;
+using units::Arcsec;
+using units::Azimuth;
+using units::Latitude;
+using units::Longitude;
+using units::Radian;
 
 template <class Q> double rad(Q const &q) {
   if constexpr (std::same_as<Radian, Q>) {

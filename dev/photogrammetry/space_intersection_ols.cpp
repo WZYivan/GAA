@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
 
-#include <gaa/core/Eigen/utils.hpp>
 #include <gaa/core/math.hpp>
 #include <gaa/photogrammetry/orient.hpp>
 #include <gaa/photogrammetry/space_intersection.hpp>
 #include <gaa/photogrammetry/trans.hpp>
+#include <gaa/wrap/Eigen/utils.hpp>
 
 using namespace gaa;
 

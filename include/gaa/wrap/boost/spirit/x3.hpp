@@ -6,8 +6,8 @@
 #include <boost/regex.hpp>
 #include <boost/spirit/home/x3.hpp>
 
+#include <gaa/core/etc.hpp>
 #include <gaa/core/keywords.hpp>
-#include <gaa/core/utils.hpp>
 
 namespace gaa::spirit::x3 {
 namespace x3 = boost::spirit::x3;

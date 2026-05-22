@@ -9,12 +9,12 @@
 
 #include <boost/mpl/bool.hpp>
 
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/kw.hpp>
 #include <gaa/core/pp.hpp>
-#include <gaa/core/units.hpp>
 #include <gaa/gnss/def.hpp>
+#include <gaa/wrap/boost/units.hpp>
 
 namespace gaa {
 

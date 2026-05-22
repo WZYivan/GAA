@@ -3,7 +3,7 @@
 #include <source_location>
 #include <string>
 
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
 
 namespace gaa {
 extern void _assert_fail(char const *expr, std::source_location const &loc,

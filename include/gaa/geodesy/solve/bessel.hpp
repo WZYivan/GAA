@@ -1,7 +1,7 @@
 #pragma once
 
 #include <gaa/core/kw.hpp>
-#include <gaa/core/signature_of_deprecated_header.hpp>
+#include <gaa/core/signature/deprecated.hpp>
 #include <gaa/geodesy/solve/solver.hpp>
 // #include <print>
 

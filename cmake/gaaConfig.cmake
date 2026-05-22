@@ -20,6 +20,6 @@ set(GAA_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.hpp.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/gaa/core/config.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/gaa/core/buildsystem/config.hpp
     @ONLY
 )

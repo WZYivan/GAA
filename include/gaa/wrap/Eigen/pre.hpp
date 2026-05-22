@@ -2,8 +2,8 @@
 
 #include <Eigen/Dense>
 
-#include <gaa/core/Eigen/pp.hpp>
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
+#include <gaa/wrap/Eigen/pp.hpp>
 
 namespace gaa {
 GAA_EIGEN_XPR_FN((bool), is_rows_like, 1, int rows) {

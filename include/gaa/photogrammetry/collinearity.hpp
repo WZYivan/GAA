@@ -2,9 +2,9 @@
 
 #include <tuple>
 
-#include <gaa/core/Eigen/pre.hpp>
 #include <gaa/core/pp.hpp>
-#include <gaa/core/units.hpp>
+#include <gaa/wrap/Eigen/pre.hpp>
+#include <gaa/wrap/boost/units.hpp>
 
 namespace gaa {
 using Collinearity_condition = Eigen::Matrix<double, 2, 6>;

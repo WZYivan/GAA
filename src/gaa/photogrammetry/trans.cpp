@@ -1,5 +1,5 @@
-#include <gaa/core/Eigen/utils.hpp>
 #include <gaa/photogrammetry/trans.hpp>
+#include <gaa/wrap/Eigen/utils.hpp>
 
 namespace gaa {
 

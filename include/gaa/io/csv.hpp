@@ -1,7 +1,7 @@
 #pragma once
 
+#include <gaa/container/table.hpp>
 #include <gaa/core/kw.hpp>
-#include <gaa/core/table.hpp>
 
 namespace gaa {
 extern Table read_csv(std::string const &fname,

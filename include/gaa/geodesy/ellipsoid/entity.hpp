@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gaa/core/config.hpp>
+#include <gaa/core/buildsystem/config.hpp>
 #include <gaa/geodesy/ellipsoid/fwd.hpp>
 
 namespace gaa {

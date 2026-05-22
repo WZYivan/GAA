@@ -1,6 +1,6 @@
 #include <print>
 
-#include <gaa/core/table.hpp>
+#include <gaa/container/table.hpp>
 #include <gaa/io/csv.hpp>
 using namespace gaa;
 

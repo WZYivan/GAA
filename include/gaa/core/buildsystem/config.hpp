@@ -36,7 +36,7 @@
 #define GAA_AFTER_ASSERTION_FAIL std::abort()
 #endif
 
-#include <gaa/core/export.hpp>
+#include <gaa/core/buildsystem/export.hpp>
 
 #if (GAA_MSVC)
 #define GAA_msvc_dll_patch GAA_API

@@ -1,8 +1,8 @@
 #include <filesystem>
 #include <fstream>
 
-#include <gaa/core/boost/spirit/x3.hpp>
 #include <gaa/io/rinex3/nav.hpp>
+#include <gaa/wrap/boost/spirit/x3.hpp>
 
 namespace fs = std::filesystem;
 

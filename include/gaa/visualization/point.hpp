@@ -2,8 +2,8 @@
 
 #include <ranges>
 
-#include <gaa/core/plot.hpp>
 #include <gaa/geometry/primitive/point.hpp>
+#include <gaa/wrap/matplot++/plot.hpp>
 
 namespace gaa::plt {
 template <class PointRange, class PointMap, class... Args>

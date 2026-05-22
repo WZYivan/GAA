@@ -5,8 +5,8 @@
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/point_xyz.hpp>
 
-#include <gaa/core/boost/geometry.hpp>
-#include <gaa/core/boost/property_map/associative_property_map.hpp>
+#include <gaa/wrap/boost/geometry.hpp>
+#include <gaa/wrap/boost/property_map/associative_property_map.hpp>
 
 namespace gaa {
 template <class CoordinateType = double,
