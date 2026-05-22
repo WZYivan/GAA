@@ -124,6 +124,22 @@ public:
 #include <gaa/core/kw/enums.hpp>
 };
 
+#undef GAA_KW_arg
+#undef GAA_KW_value
+#undef GAA_KW_ref
+#undef GAA_KW_cref
+
+#define GAA_KW_arg(NAME)                                                       \
+  inline Args NAME(typename traits<tags::NAME>::passed_arg_type NAME) {        \
+    return Args{}.NAME(NAME);                                                  \
+  }
+#define GAA_KW_value(TYPE, NAME) GAA_KW_arg(NAME)
+#define GAA_KW_ref(TYPE, NAME) GAA_KW_arg(NAME)
+#define GAA_KW_cref(TYPE, NAME) GAA_KW_arg(NAME)
+namespace maker {
+#include <gaa/core/kw/enums.hpp>
+}
+#undef GAA_KW_arg
 #undef GAA_KW_value
 #undef GAA_KW_ref
 #undef GAA_KW_cref
@@ -153,6 +169,7 @@ namespace gaa {
 using kw_tags = _kw::tags;
 using kw = _kw::Args;
 using kwargs = kw const &;
+namespace mkarg = _kw::maker;
 
 template <kw_tags... required_tags>
 using kwargs_require = _kw::Required_tags_validator<required_tags...>;
