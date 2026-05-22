@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gaa/geodesy/ellipsoids.hpp>
+#include <gaa/geodesy/ellipsoid.hpp>
 
 namespace gaa {
 struct Gauss_kruger_project_coordinate;

@@ -91,7 +91,7 @@ Gauss_kruger_project::eval(Geodetic_coordinate const &gc) const {
   double L = gc.longitude.value();
   double B = gc.latitude.value();
   auto const &ellipsoid = gc.ellipsoid;
-  auto aux = ellipsoid.lat_aux(gc.latitude);
+  auto aux = ellipsoid->lat_aux(gc.latitude);
 
   double t = aux.t, t2 = std::pow(t, 2), t4 = std::pow(t, 4), n2 = aux.nu_2,
          n4 = std::pow(n2, 2);
@@ -105,8 +105,8 @@ Gauss_kruger_project::eval(Geodetic_coordinate const &gc) const {
          dl_s = l_s - l_c_s, l = dl_s, l2 = std::pow(dl_s, 2),
          l3 = std::pow(dl_s, 3), l4 = std::pow(dl_s, 4), l5 = std::pow(dl_s, 5),
          l6 = std::pow(dl_s, 6);
-  auto [M, N, R] = ellipsoid.principle_curvature_radius(B);
-  double X = ellipsoid.meridian_arc_length(B);
+  auto [M, N, R] = ellipsoid->principle_curvature_radius(B);
+  double X = ellipsoid->meridian_arc_length(B);
 
   double x = X + N / (2 * p2) * sinB * cosB * l2 +
              N / (24 * p4) * sinB * cosBp3 * (5 - t2 + 9 * n2 + 4 * n4) * l4 +

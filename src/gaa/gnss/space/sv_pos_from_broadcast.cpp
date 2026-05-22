@@ -2,12 +2,12 @@
 
 namespace gaa {
 
-Space_rectangular_coordinate
-sv_pos_from_broadcast(double sqrtA, double e, double t_oe, double M_0,
-                      double omega, double i_0, double IDOT [[maybe_unused]],
-                      double C_us, double C_uc, double C_is, double C_ic,
-                      double C_rc, double C_rs, double Omega_0, double OmegaDot,
-                      double t) {
+Ecef_coordinate sv_pos_from_broadcast(double sqrtA, double e, double t_oe,
+                                      double M_0, double omega, double i_0,
+                                      double IDOT [[maybe_unused]], double C_us,
+                                      double C_uc, double C_is, double C_ic,
+                                      double C_rc, double C_rs, double Omega_0,
+                                      double OmegaDot, double t) {
   double GM = cgcs2000.gravity().GM(), omegaE = cgcs2000.gravity().omega();
   double n0 = sv_mean_angular_velocity(GM, sqrtA);
 
@@ -28,9 +28,9 @@ sv_pos_from_broadcast(double sqrtA, double e, double t_oe, double M_0,
   double L = sv_longitude_argument(Omega_0, OmegaDot, omegaE, t, t_oe);
   auto [x, y, z] = sv_instance_earth_coordinate(xk, yk, ik, L);
 
-  return Space_rectangular_coordinate(x, y, z);
+  return Ecef_coordinate(x, y, z);
 }
-Space_rectangular_coordinate
+Ecef_coordinate
 sv_pos_from_broadcast(Param_sv_pos_from_broadcast const &param) {
   return sv_pos_from_broadcast(
       param.sqrtA, param.e, param.t_oe, param.M_0, param.omega, param.i_0,

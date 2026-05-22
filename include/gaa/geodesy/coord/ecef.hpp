@@ -1,10 +1,10 @@
 #pragma once
 
 #include <gaa/core/kw.hpp>
-#include <gaa/geodesy/ellipsoids.hpp>
+#include <gaa/geodesy/ellipsoid.hpp>
 
 namespace gaa {
-struct Space_rectangular_coordinate {
+struct Ecef_coordinate {
   double x;
   double y;
   double z;
@@ -12,13 +12,13 @@ struct Space_rectangular_coordinate {
   Ellipsoid_ref ellipsoid = null_ellipsoid;
 };
 
-template <> struct Geodetic_coordinate_caster<Space_rectangular_coordinate> {
-  static Geodetic_coordinate cast(Space_rectangular_coordinate const &src,
+template <> struct Geodetic_coordinate_caster<Ecef_coordinate> {
+  static Geodetic_coordinate cast(Ecef_coordinate const &src,
                                   kwargs args = {}) {
     return cast_to(src, src.ellipsoid, args);
   }
 
-  static Geodetic_coordinate cast_to(Space_rectangular_coordinate const &src,
+  static Geodetic_coordinate cast_to(Ecef_coordinate const &src,
                                      Ellipsoid const &e, kwargs args = {}) {
     GAA_ARG_OR(args, converge_threshold, 1e-10);
 

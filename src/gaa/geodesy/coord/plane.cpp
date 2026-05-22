@@ -1,6 +1,6 @@
 #include <cmath>
 
-#include <gaa/geodesy/plane.hpp>
+#include <gaa/geodesy/coord/plane.hpp>
 
 namespace gaa {
 

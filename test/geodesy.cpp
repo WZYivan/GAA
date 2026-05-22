@@ -1,5 +1,5 @@
 #include <gaa/core/math.hpp>
-#include <gaa/geodesy/ellipsoids.hpp>
+#include <gaa/geodesy/ellipsoid.hpp>
 #include <gaa/geodesy/project.hpp>
 #include <gaa/geodesy/solve.hpp>
 #include <numbers>

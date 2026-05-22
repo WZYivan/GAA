@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <gaa/geodesy/ellipsoids.hpp>
+#include <gaa/geodesy/ellipsoid.hpp>
 
 namespace gaa {
 enum Satellite_System {
