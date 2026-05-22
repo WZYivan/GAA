@@ -68,17 +68,8 @@ std::string Rinex3_nav::Fields::a0{"a0"}, Rinex3_nav::Fields::a1{"a1"},
 std::string Rinex3_nav::Fields::tLS{"tLS"}, Rinex3_nav::Fields::tLSF{"tLSF"},
     Rinex3_nav::Fields::WN{"WN"}, Rinex3_nav::Fields::DN{"DN"};
 
-std::string Rinex3_nav::glimpse() const { return m_table.glimpse(); }
-
-Table_row_view Rinex3_nav::row(std::size_t row) const {
-  return m_table.row(row);
-}
-
-Table_row_view Rinex3_nav::row(std::string const &row) const {
-  return m_table.row(row);
-}
-
 Table const &Rinex3_nav::table() const { return m_table; }
+Table &Rinex3_nav::table() { return m_table; }
 
 double Rinex3_nav::version() const {
   return m_table.meta_at<Tab_double>(Fields::version);
@@ -174,14 +165,18 @@ void _read_rinex3_bds_data(std::istream &is, Table &table) {
       std::string sub;
       for (int i = 0; i != 7; ++i) {
         gaa_assert(std::getline(is, sub));
+        boost::trim_right(sub);
+        if (sub.size() < 80) {
+          sub.resize(80, ' ');
+        }
+        gaa_assert(
+            sub.size() <= 80,
+            std::format("Rinex 3 unexpected line whose size > 80:\'{}\'", sub));
         line.append(std::move(sub));
       }
 
       boost::replace_all(line, "\r", "");
     }
-
-    gaa_assert(line.size() == 640,
-               "Size of each line in Rinex3(BDS) data record must be 80");
 
     auto rule =
         x3::vchr<1>[x3::p2chr(sys)] >> x3::vchr<2>[x3::p2int(prn)] >>
@@ -253,7 +248,7 @@ void _read_rinex3_bds_data(std::istream &is, Table &table) {
   table.push_back(OMEGA_DOT, "OmegaDot");
 
   table.push_back(IDOT, "IDOT");
-  table.push_back(L2C, "Coeds L2");
+  table.push_back(L2C, "Codes L2");
   table.push_back(Week, "GPS Week");
   table.push_back(L2P, "L2 P flag");
 
@@ -281,7 +276,7 @@ Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
   namespace x3 = gaa::spirit::x3;
 
   Rinex3_nav rinex3;
-  Table &table = rinex3.m_table;
+  Table &table = rinex3.table();
   std::string line;
 
   int time_sys_corr_stage = 0;
@@ -290,9 +285,7 @@ Rinex3_nav read_rinex3_nav(std::istream &is, kwargs args) {
       break;
     }
 
-    if (line.ends_with('\r')) {
-      line.pop_back();
-    }
+    boost::trim_right(line);
 
     auto body = gaa::substr(line, 0, 60);
     auto label = gaa::substr(line, 60);
