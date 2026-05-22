@@ -12,8 +12,7 @@ docs/Makefile
 # in-dev section
 module/*
 data/*
-external/gnsstk/*
-external/matplotplusplus/*
+external/*
 python/utils/*
 
 # private section

@@ -42,7 +42,7 @@ int main() {
   std::cout << "Coords:\n" << coord.glimpse() << "\n";
 
   std::stringstream oss{};
-  gaa::write_csv(oss, coord, gaa::kw{}.stream_precision(5));
+  gaa::write_csv(oss, coord, gaa::mkarg::stream_precision(5));
   auto coord2 = gaa::read_csv_auto(oss);
   std::cout << "Coords reading from oss:\n" << coord2.glimpse() << "\n";
 
