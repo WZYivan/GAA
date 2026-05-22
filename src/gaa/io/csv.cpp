@@ -261,6 +261,54 @@ Table read_csv_auto(std::istream &is, kwargs args) {
       tab.push_back(std::move(col), name);
       break;
     }
+    case Tab_Lat: {
+      Table_column<Tab_lat> col;
+      col.reserve(cnt.size());
+      double dbl;
+      for (auto const &str : cnt) {
+        auto [ptr, ec] =
+            std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
+        gaa_assert(
+            ec == std::errc{},
+            std::format("error occurs in parsing `{:s}` as Tab_lat", str));
+        col.emplace_back(deg2rad(dbl));
+      }
+
+      tab.push_back(std::move(col), name);
+      break;
+    }
+    case Tab_Lon: {
+      Table_column<Tab_lon> col;
+      col.reserve(cnt.size());
+      double dbl;
+      for (auto const &str : cnt) {
+        auto [ptr, ec] =
+            std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
+        gaa_assert(
+            ec == std::errc{},
+            std::format("error occurs in parsing `{:s}` as Tab_lon", str));
+        col.emplace_back(deg2rad(dbl));
+      }
+
+      tab.push_back(std::move(col), name);
+      break;
+    }
+    case Tab_Rad: {
+      Table_column<Tab_rad> col;
+      col.reserve(cnt.size());
+      double dbl;
+      for (auto const &str : cnt) {
+        auto [ptr, ec] =
+            std::from_chars(str.data(), str.data() + str.size() - 4, dbl);
+        gaa_assert(
+            ec == std::errc{},
+            std::format("error occurs in parsing `{:s}` as Tab_rad", str));
+        col.emplace_back(deg2rad(dbl));
+      }
+
+      tab.push_back(std::move(col), name);
+      break;
+    }
     default:
       gaa_assert(false, "unreachable default case");
     }
@@ -302,8 +350,14 @@ void write_csv(std::ostream &os, Table const &table, kwargs args) {
     if constexpr (std::is_same_v<T, UTC_Identifier> ||
                   std::is_same_v<T, Satellite_System>) {
       return enum2str(val);
+    } else if constexpr (std::same_as<Latitude, std::decay_t<T>>) {
+      return std::format("{:.{}f}_lat", deg(val), stream_precision);
+    } else if constexpr (std::same_as<Longitude, std::decay_t<T>>) {
+      return std::format("{:.{}f}_lon", deg(val), stream_precision);
+    } else if constexpr (std::same_as<Radian, std::decay_t<T>>) {
+      return std::format("{:.{}f}_rad", deg(val), stream_precision);
     } else if constexpr (std::is_floating_point_v<T>) {
-      return std::format("{:.{}}", val, stream_precision);
+      return std::format("{:.{}f}", val, stream_precision);
     } else {
       return std::format("{}", val);
     }

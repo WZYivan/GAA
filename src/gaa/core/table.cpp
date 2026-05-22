@@ -22,6 +22,12 @@ std::string table_storage_flag_string(Table_Storage_Flag flag) {
     return "<utc_id>";
   case Tab_Sat_Sys:
     return "<sat_sys>";
+  case Tab_Lat:
+    return "<latitude>";
+  case Tab_Lon:
+    return "<longitude>";
+  case Tab_Rad:
+    return "<radian>";
   case Tab_Vector_String:
     return "<vec_str>";
   case Tab_Vector_Double:
@@ -39,9 +45,15 @@ std::string Table::glimpse() const {
 
   static constexpr auto storage2str
       [[maybe_unused]] = []<class T>(T const &val) {
-        if constexpr (std::same_as<UTC_Identifier, T> ||
-                      std::same_as<Satellite_System, T>) {
+        if constexpr (std::same_as<UTC_Identifier, std::decay_t<T>> ||
+                      std::same_as<Satellite_System, std::decay_t<T>>) {
           return enum2str(val);
+        } else if constexpr (std::same_as<Latitude, std::decay_t<T>>) {
+          return std::format("{}_lat", deg(val));
+        } else if constexpr (std::same_as<Longitude, std::decay_t<T>>) {
+          return std::format("{}_lon", deg(val));
+        } else if constexpr (std::same_as<Radian, std::decay_t<T>>) {
+          return std::format("{}_rad", deg(val));
         } else {
           return val;
         }
@@ -133,13 +145,37 @@ Table_row_ref Table::row(column_name_type const &name) {
   return this->row(column_of(name));
 }
 
+std::size_t Table::row_size() const {
+  static constexpr auto size_of [[maybe_unused]] =
+      []<class T>(T const &vals) -> std::size_t { return vals.size(); };
+
+  auto rows = std::numeric_limits<std::size_t>::max();
+  for (auto const &[label, info, storage] :
+       std::views::zip(m_table_col_names, m_table_info, m_table_storage)) {
+
+    visit_table_storage(info, storage, [&rows](auto const &vals) {
+      auto cur_rows = size_of(vals);
+      if (cur_rows < rows) {
+        rows = cur_rows;
+      }
+    });
+  }
+
+  return rows;
+}
+
 Table_Storage_Flag table_storage_flag_of(std::string const &str) {
   static const boost::regex tab_double(
       R"(^[+-]?([0-9]+)\.([0-9]+)([Ee][+-]?[0-9]+)?$)");
   static const boost::regex tab_int(R"(^[+-]?([0-9]+)$)");
   static const boost::regex tab_bool(
       R"(^([Tt]rue)|(TRUE)|([Ff]alse)|(FALSE)$)");
-  static const boost::regex tab_string(R"(^[\w\/\.]+$)");
+  static const boost::regex tab_lat(
+      R"(^[+-]?([0-9]+)\.([0-9]+)([Ee][+-]?[0-9]+)?_lat$)");
+  static const boost::regex tab_lon(
+      R"(^[+-]?([0-9]+)\.([0-9]+)([Ee][+-]?[0-9]+)?_lon$)");
+  static const boost::regex tab_rad(
+      R"(^[+-]?([0-9]+)\.([0-9]+)([Ee][+-]?[0-9]+)?_rad$)");
 
   if (boost::regex_match(str, tab_double)) {
     return Tab_Double;
@@ -147,10 +183,14 @@ Table_Storage_Flag table_storage_flag_of(std::string const &str) {
     return Tab_Integer;
   } else if (boost::regex_match(str, tab_bool)) {
     return Tab_Bool;
-  } else if (boost::regex_match(str, tab_string)) {
-    return Tab_String;
+  } else if (boost::regex_match(str, tab_lat)) {
+    return Tab_Lat;
+  } else if (boost::regex_match(str, tab_lon)) {
+    return Tab_Lon;
+  } else if (boost::regex_match(str, tab_rad)) {
+    return Tab_Rad;
   } else {
-    return Tab_Unsupported;
+    return Tab_String;
   }
 }
 

@@ -172,6 +172,10 @@ extern double rad(Radian const &r);
 extern double rad(Latitude const &lat);
 extern double rad(Longitude const &lon);
 
+extern double deg(Radian const &r);
+extern double deg(Latitude const &lat);
+extern double deg(Longitude const &lon);
+
 extern Radian rad(double r);
 extern Latitude lat(double r);
 extern Longitude lon(double r);

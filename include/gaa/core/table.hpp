@@ -13,6 +13,7 @@
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/kw.hpp>
 #include <gaa/core/pp.hpp>
+#include <gaa/core/units.hpp>
 #include <gaa/gnss/def.hpp>
 
 namespace gaa {
@@ -26,6 +27,9 @@ enum Table_Storage_Flag : int {
   Tab_Char,
   Tab_UTC_Id,
   Tab_Sat_Sys,
+  Tab_Lat,
+  Tab_Lon,
+  Tab_Rad,
   Tab_Vector_String,
   Tab_Vector_Double,
   Tab_Vector_Integer,
@@ -81,6 +85,9 @@ GAA_register_storageble((char), Tab_Char, Tab_char);
 GAA_register_storageble((bool), Tab_Bool, Tab_bool);
 GAA_register_storageble((UTC_Identifier), Tab_UTC_Id, Tab_utc_id);
 GAA_register_storageble((Satellite_System), Tab_Sat_Sys, Tab_sat_sys);
+GAA_register_storageble((Latitude), Tab_Lat, Tab_lat);
+GAA_register_storageble((Longitude), Tab_Lon, Tab_lon);
+GAA_register_storageble((Radian), Tab_Rad, Tab_rad);
 GAA_register_storageble((std::vector<std::string>), Tab_Vector_String,
                         Tab_vecs);
 GAA_register_storageble((std::vector<double>), Tab_Vector_Double, Tab_vecd);
@@ -174,6 +181,12 @@ public:
     requires is_table_storageble_v<V>
   void push_back(column_name_type const &name) {
     this->push_back(column_type<V>{}, name);
+  }
+
+  template <class V>
+  column_type<V> &push_for_insert(column_name_type const &name) {
+    this->push_back<V>(name);
+    return this->at<V>(name);
   }
 
   template <class V> column_type<V> const &at(index_type const &idx) const {
@@ -345,6 +358,8 @@ public:
 
   Row_ref row(index_type const &idx);
   Row_ref row(column_name_type const &name);
+
+  std::size_t row_size() const;
 };
 
 using Table_row_view = Table::Row_view;
@@ -394,6 +409,21 @@ void visit_table_storage(Table_Storage_Flag flag, std::any const &storage,
   }
   case Tab_Sat_Sys: {
     auto ptr = std::any_cast<std::vector<Tab_sat_sys>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Lat: {
+    auto ptr = std::any_cast<std::vector<Tab_lat>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Lon: {
+    auto ptr = std::any_cast<std::vector<Tab_lon>>(wrapped_ptr);
+    f(*ptr);
+    return;
+  }
+  case Tab_Rad: {
+    auto ptr = std::any_cast<std::vector<Tab_rad>>(wrapped_ptr);
     f(*ptr);
     return;
   }

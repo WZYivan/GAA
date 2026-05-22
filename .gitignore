@@ -23,5 +23,4 @@ scripts/*
 .clang-format-llvm
 .Rhistory
 TODO.md 
-configure.sh
-tokei.sh
+Makefile
