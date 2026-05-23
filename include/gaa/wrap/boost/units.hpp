@@ -14,6 +14,12 @@
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/math.hpp>
 
+#ifdef GAA_UNIT_NEVER_VALIDATE
+#define GAA_UNIT_validate_switch 1
+#else
+#define GAA_UNIT_validate_switch 0
+#endif
+
 namespace gaa {
 namespace units {
 template <class Unit> struct _quantity_traits {
