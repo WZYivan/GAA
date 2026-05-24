@@ -22,8 +22,7 @@ int main() {
   std::vector<long> v4{10, 11, 12};
   Eigen::Vector3d v5{13, 14, 15};
 
-  auto expr = -((v1 | std::views::transform([](auto x) { return x + 1; })) +
-                v2 / v3 - v4 * v5 + 100 * std::views::iota(0, 3));
+  auto expr = -((v1 * 3) + v2 / v3 - v4 * v5 + 100 * std::views::iota(0, 3));
   auto vr = expr.eval();
 
   std::cout << NAMEOF_TYPE(decltype(expr)) << std::endl;
