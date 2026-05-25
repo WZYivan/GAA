@@ -19,4 +19,11 @@ int main() {
           .Default([](auto const &var) { std::println("This is default"); });
 
   visit(var);
+
+  {
+    Variant var = 1.1;
+    double val;
+    make_visitor::unwrap_to(val)(var);
+    gaa_assert(val == 1.1);
+  }
 }

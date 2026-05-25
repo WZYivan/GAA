@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include <gaa/wrap/std/concepts.hpp>
+#include <gaa/wrap/std/format.hpp>
 #include <gaa/wrap/std/variant/variant.hpp>
 
 namespace gaa {
@@ -78,7 +80,6 @@ public:
     m_fn_##ENUM.is_null ? m_fn_DEFAULT(var) : m_fn_##ENUM(var);                \
     break;                                                                     \
   }
-
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
     default:
@@ -100,17 +101,84 @@ public:
 } // namespace variant
 
 namespace make_visitor {
-using namespace variant;
-
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
-  inline Visitor ENUM(Visit_function<Variable::ENUM> fn) {                     \
-    return Visitor{}.case_of(Variable::ENUM, fn);                              \
+  inline variant::Visitor ENUM(                                                \
+      variant::Visit_function<variant::Variable::ENUM> fn) {                   \
+    return variant::Visitor{}.case_of(variant::Variable::ENUM, fn);            \
   }
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
 
-inline Visitor Default(Visit_function<Variable::DEFAULT> fn) {
-  return Visitor{}.case_of(Variable::DEFAULT, fn);
+inline variant::Visitor
+Default(variant::Visit_function<variant::Variable::DEFAULT> fn) {
+  return variant::Visitor{}.case_of(variant::Variable::DEFAULT, fn);
+}
+
+template <class T> inline variant::Visitor unwrap_to(T &ref) {
+#define GAA_VARIANT_register(TYPE, ENUM)                                       \
+  ENUM([&ref]<class V>(V const &v) {                                           \
+    if constexpr (std::same_as<T, V>) {                                        \
+      ref = v;                                                                 \
+    } else {                                                                   \
+      gaa_fail("type mismatch");                                               \
+    }                                                                          \
+  }).
+
+  return make_visitor::
+#include <gaa/wrap/std/variant/enums.hpp>
+      Default([](auto const &v) {
+        gaa_fail("unreachable default case of Visitor");
+      });
+#undef GAA_VARIANT_register
+}
+
+template <class OutIterator>
+inline variant::Visitor format_to(OutIterator &out) {
+  constexpr auto do_format_to = []<class OutIt, class V>(OutIt &out,
+                                                         V const &v) {
+    if constexpr (std::ranges::range<V>) {
+      if constexpr (Is_Vector<V> &&
+                    std::formattable<std::ranges::range_value_t<V>, char>) {
+        std::format_to(out, "[{}", *v.begin());
+        for (auto it = v.begin() + 1; it != v.end(); ++it) {
+          std::format_to(out, " {}", *it);
+        }
+        std::format_to(out, "]");
+
+      } else if constexpr (Is_Map<V>) {
+        if constexpr (std::formattable<typename V::key_type, char> &&
+                      (std::formattable<typename V::mapped_type, char> ||
+                       std::same_as<typename V::mapped_type, bool>)) {
+          auto it = v.begin();
+          std::format_to(out, "[<{}:{}>", it->first, it->second);
+          ++it;
+          for (; it != v.end(); ++it) {
+            std::format_to(out, " <{}:{}>", it->first, it->second);
+          }
+          std::format_to(out, "]");
+        } else {
+          std::format_to(out, "<unformattable>");
+        }
+
+      } else {
+        std::format_to(out, "<unformattable>");
+      }
+    } else if constexpr (std::formattable<std::decay_t<V>, char>) {
+      std::format_to(out, "{}", v);
+    } else {
+      std::format_to(out, "<unformattable>");
+    }
+  };
+
+#define GAA_VARIANT_register(TYPE, ENUM)                                       \
+  ENUM([&out, &do_format_to]<class V>(V const &v) { do_format_to(out, v); }).
+
+  return make_visitor::
+#include <gaa/wrap/std/variant/enums.hpp>
+      Default([&out]<class V>(V const &v) {
+        std::format_to(out, "<unreachable default case>");
+      });
+#undef GAA_VARIANT_register
 }
 } // namespace make_visitor
 } // namespace gaa
