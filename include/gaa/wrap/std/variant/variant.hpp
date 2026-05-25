@@ -114,13 +114,11 @@ inline std::string enum2str(variant::Variable v) {
   case variant::Variable::ENUM: {                                              \
     return #ENUM;                                                              \
   }
-
   switch (v) {
 #include <gaa/wrap/std/variant/enums.hpp>
   default:
     gaa_fail("unreachable default");
   }
-
 #undef GAA_VARIANT_register
 }
 

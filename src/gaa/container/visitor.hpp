@@ -121,12 +121,7 @@ struct Format {
   } unformattable;
 
   static Format json();
-  static Format list();
 };
-
-namespace fmt {
-extern Format const json, list;
-}
 } // namespace variant
 
 namespace make_visitor {
@@ -162,8 +157,8 @@ template <class T> inline variant::Visitor unwrap_to(T &ref) {
 }
 
 template <class OutIterator>
-inline variant::Visitor
-format_to(OutIterator &out, variant::Format const &fmt = variant::fmt::list) {
+inline variant::Visitor format_to(OutIterator &out,
+                                  variant::Format const &fmt = {}) {
   constexpr auto do_format_to = []<class OutIt, class V>(
                                     OutIt &out, V const &v,
                                     variant::Format const &fmt) {
