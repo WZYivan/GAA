@@ -93,15 +93,35 @@ namespace variant {
 
 class Variant : public _std_variant {
 public:
-  using base_t = _std_variant;
+  using Base = _std_variant;
 
 private:
   Variable m_var = Variable::Unknown;
+
+  template <class V> void as_variable_of() {
+    m_var = variable_of_v<std::decay_t<V>>;
+  }
 
 public:
   Variable variable() const;
 
   ~Variant() = default;
+  Variant() = default;
+
+  template <class V>
+    requires std::constructible_from<Base, std::decay_t<V>>
+  Variant(V &&v) : Base(v) {
+    this->as_variable_of<V>();
+  }
+
+  template <class V>
+    requires std::constructible_from<Base, std::decay_t<V>>
+  Variant &operator=(V &&v) {
+    Base::operator=(v);
+    this->as_variable_of<V>();
+    return *this;
+  }
+
   Variant(char const *cstr) : Variant(std::string(cstr)) {}
   template <class T>
   Variant(std::initializer_list<T> &&il)
@@ -112,10 +132,10 @@ public:
     return *this;
   }
   template <class T> Variant &operator=(std::initializer_list<T> il) {
-    if constexpr (!Is_Pair<T>) {
-      this->operator=(std::vector(il));
-    } else {
+    if constexpr (Is_Pair<T>) {
       this->operator=(std::map(il));
+    } else {
+      this->operator=(std::vector(il));
     }
     return *this;
   }
@@ -132,29 +152,6 @@ public:
                enum2str(this->variable()), enum2str(variable_of_v<T>));
     return std::get<T>(*this);
   }
-
-/// x-macros begin
-#define GAA_VARIANT_register(TYPE, ENUM)                                       \
-  Variant(GAA_PP_STRIP_PARAM TYPE &&v) : base_t(v), m_var(Variable::ENUM) {    \
-    gaa_assert(m_var != Variable::Unknown, "invalid construct");               \
-  }                                                                            \
-  Variant(GAA_PP_STRIP_PARAM TYPE const &v)                                    \
-      : base_t(v), m_var(Variable::ENUM) {                                     \
-    gaa_assert(m_var != Variable::Unknown, "invalid construct");               \
-  }                                                                            \
-  Variant &operator=(GAA_PP_STRIP_PARAM TYPE &&v) {                            \
-    base_t::operator=(std::move(v));                                           \
-    m_var = Variable::ENUM;                                                    \
-    return *this;                                                              \
-  }                                                                            \
-  Variant &operator=(GAA_PP_STRIP_PARAM TYPE const &v) {                       \
-    base_t::operator=(v);                                                      \
-    m_var = Variable::ENUM;                                                    \
-    return *this;                                                              \
-  }
-#include <gaa/wrap/std/variant/enums.hpp>
-#undef GAA_VARIANT_register
-  /// x-macros end
 };
 } // namespace variant
 
