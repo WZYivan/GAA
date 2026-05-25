@@ -4,13 +4,19 @@
 
 int main() {
   using namespace gaa;
-  Variant var;
-  var = 1;
+  Variant var = {1, 2, 3};
 
-  var = 11.2;
+  auto visit =
+      gaa::make_visitor::Vec_Integer([](auto const &ints) {
+        for (auto const &v : ints) {
+          std::println("v = {}", v);
+        }
+      })
+          .String([](auto const &str) {
+            std::println("size of \'{}\' = {}", str, str.size());
+          })
+          .Double([](auto const &dbl) { gaa_assert(dbl == 1.1); })
+          .Default([](auto const &var) { std::println("This is default"); });
 
-  int x;
-  std::visit(visitor::assign(x), var);
-
-  std::println("{}", x);
+  visit(var);
 }
