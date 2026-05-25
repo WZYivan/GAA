@@ -62,7 +62,7 @@ template <class T> struct Variable_of {
 template <class T>
 inline constexpr Variable variable_of_v = Variable_of<T>::value;
 
-/// x-macros end
+/// x-macros begin
 /// for specialize
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   template <> struct Variable_of<GAA_PP_STRIP_PARAM TYPE> {                    \
@@ -70,7 +70,7 @@ inline constexpr Variable variable_of_v = Variable_of<T>::value;
   };
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
-/// x-macros begin
+/// x-macros end
 /// traits: Variable_of
 } // namespace variant
 
