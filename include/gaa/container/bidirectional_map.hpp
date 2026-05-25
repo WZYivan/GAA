@@ -1,7 +1,6 @@
 #pragma once
 
 #include <map>
-#include <ranges>
 
 namespace gaa {
 template <class K, class V> class Bidirectional_map {

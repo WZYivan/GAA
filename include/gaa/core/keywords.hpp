@@ -14,10 +14,10 @@ extern void _assert_fail(char const *expr, std::source_location const &loc,
 #define gaa_here (std::source_location::current())
 
 #ifndef GAA_USE_STD_ASSERT
-// #define gaa_assert(EXPR, ...)
-//   (EXPR) ? (void(0))
-//          : (gaa::_assert_fail(#EXPR, gaa_here __VA_OPT__(, ) __VA_ARGS__),
-//             GAA_AFTER_ASSERTION_FAIL)
+/// runtime assert support format message and source location infomation (auto)
+/// output
+/// usage:
+/// gaa_assert(1+1 == 3, "Are U {}?", "stupid ass")
 #define gaa_assert(EXPR, ...)                                                  \
   (EXPR) ? (void(0))                                                           \
          : (gaa::_assert_fail(                                                 \

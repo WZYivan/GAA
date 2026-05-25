@@ -39,12 +39,19 @@ public:
   }
 };
 
+/// brief:
+/// runtime switch invoker for Variant
 class Visitor {
 private:
+/// x-macros begin
+/// x is [Double, String, ...]
+/// expand like
+/// Visit_function<Variable::Double> m_fn_Double;
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   Visit_function<Variable::ENUM> m_fn_##ENUM;
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
+  /// x-macros end
 
   Visit_function<Variable::DEFAULT> m_fn_DEFAULT;
 
@@ -54,14 +61,19 @@ public:
 
   template <class F> Visitor &case_of(Variable var, F &&f) {
     switch (var) {
+
+      /// x-macros begin
+      /// expand like
+      /// case Variable::String: { m_fn_String = f; break; }
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   case Variable::ENUM: {                                                       \
     m_fn_##ENUM = f;                                                           \
     break;                                                                     \
   }
-
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
+      /// x-macros end
+
     case Variable::DEFAULT: {
       m_fn_DEFAULT = f;
       break;
@@ -75,6 +87,11 @@ public:
 
   void operator()(Variant const &var) {
     switch (var.variable()) {
+
+      /// x-macros begin
+      /// expand like
+      /// case Variable::String: { m_fn_String.is_null ? : m_fn_DEFAULT(var) :
+      /// m_fn_String(var); break; }
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   case Variable::ENUM: {                                                       \
     m_fn_##ENUM.is_null ? m_fn_DEFAULT(var) : m_fn_##ENUM(var);                \
@@ -82,23 +99,32 @@ public:
   }
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
+      /// x-macros end
+
     default:
       gaa_fail("unreachable default case");
     }
   }
 
+  /// x-macros begin
+  /// expand like
+  /// Visitor &String(Visit_function<Variable::String> fn){ return
+  /// this->case_of(Variable::String, fn); }
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   Visitor &ENUM(Visit_function<Variable::ENUM> fn) {                           \
     return this->case_of(Variable::ENUM, fn);                                  \
   }
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
+  /// x-macros end
 
   Visitor &Default(Visit_function<Variable::DEFAULT> fn) {
     return this->case_of(Variable::DEFAULT, fn);
   }
 };
 
+/// brief:
+/// using in gaa::make_visitor::format_to
 struct Format {
   struct {
     std::string begin = "", end = "";
@@ -130,6 +156,7 @@ extern Format const json, list;
 } // namespace variant
 
 namespace make_visitor {
+/// x-macros begin
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   inline variant::Visitor ENUM(                                                \
       variant::Visit_function<variant::Variable::ENUM> fn) {                   \
@@ -137,6 +164,7 @@ namespace make_visitor {
   }
 #include <gaa/wrap/std/variant/enums.hpp>
 #undef GAA_VARIANT_register
+/// x-macros end
 
 inline variant::Visitor
 Default(variant::Visit_function<variant::Variable::DEFAULT> fn) {
@@ -144,6 +172,7 @@ Default(variant::Visit_function<variant::Variable::DEFAULT> fn) {
 }
 
 template <class T> inline variant::Visitor unwrap_to(T &ref) {
+/// x-macros begin
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   ENUM([&ref]<class V>(V const &v) {                                           \
     if constexpr (std::same_as<T, V>) {                                        \
@@ -152,13 +181,13 @@ template <class T> inline variant::Visitor unwrap_to(T &ref) {
       gaa_fail("type mismatch");                                               \
     }                                                                          \
   }).
-
   return make_visitor::
 #include <gaa/wrap/std/variant/enums.hpp>
       Default([](auto const &v) {
         gaa_fail("unreachable default case of Visitor");
       });
 #undef GAA_VARIANT_register
+  /// x-macros end
 }
 
 template <class OutIterator>
@@ -205,19 +234,19 @@ format_to(OutIterator &out, variant::Format const &fmt = variant::fmt::list) {
     } else {
       std::format_to(out, "{}{}{}", fmt.unformattable.begin,
                      fmt.unformattable.content, fmt.unformattable.end);
-      // static_assert(std::formattable<V, char>, "unformattable");
     }
   };
 
+/// x-macros begin
 #define GAA_VARIANT_register(TYPE, ENUM)                                       \
   ENUM([&out, &do_format_to, &fmt]<class V>(V const &v) {                      \
     do_format_to(out, v, fmt);                                                 \
   }).
-
   return make_visitor::
 #include <gaa/wrap/std/variant/enums.hpp>
       Default([]<class V>(V const &) { gaa_fail("unreachable default case"); });
 #undef GAA_VARIANT_register
+  /// x-macros end
 }
 } // namespace make_visitor
 } // namespace gaa

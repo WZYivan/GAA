@@ -10,6 +10,18 @@
 #include <gaa/wrap/std/variant.hpp>
 
 namespace gaa {
+/// brief:
+/// A heterogeneous associative container (dictionary) mapping string keys to
+/// Variant values. It supports insertion, deletion (by marking), name-to-index
+/// bidirectional lookup, garbage collection (compaction), and various views on
+/// valid indices. Internally, it uses a pool for index reuse, a sorted list of
+/// indices, a std::map for data storage, and a bidirectional map for name-index
+/// mapping. The container is designed for small to medium-sized collections
+/// with dynamic key-value pairs of different types (supported by Variant).
+/// Access by key or index is provided, with operator[] for easy
+/// insertion/defaulting. Erased entries are only marked until garbage_collect()
+/// is called to physically remove them. The class also provides range adaptors
+/// for filtering (valid, scalar, vector indices).
 class List {
 public:
   using Index = std::size_t;
