@@ -74,20 +74,7 @@ inline constexpr Variable variable_of_v = Variable_of<T>::value;
 /// traits: Variable_of
 } // namespace variant
 
-inline std::string enum2str(variant::Variable v) {
-  /// x-macros begin
-#define GAA_VARIANT_register(TYPE, ENUM)                                       \
-  case variant::Variable::ENUM: {                                              \
-    return #ENUM;                                                              \
-  }
-  switch (v) {
-#include <gaa/wrap/std/variant/enums.hpp>
-  default:
-    gaa_fail("unreachable default");
-  }
-#undef GAA_VARIANT_register
-  /// x-macros end
-}
+extern std::string enum2str(variant::Variable v);
 
 namespace variant {
 
@@ -155,23 +142,25 @@ public:
 };
 } // namespace variant
 
-inline bool is_scalar(variant::Variable v) {
+constexpr inline bool is_scalar(variant::Variable v) {
   auto x = std::to_underlying(v);
   return x != 0 && (x - 1) % 4 == 0;
 }
-inline bool is_scalar(variant::Variant const &v) {
+constexpr inline bool is_scalar(variant::Variant const &v) {
   return is_scalar(v.variable());
 }
-inline bool is_vector(variant::Variable v) {
+constexpr inline bool is_vector(variant::Variable v) {
   auto x = std::to_underlying(v);
   return x != 0 && (x - 1) % 4 == 1;
 }
-inline bool is_vector(variant::Variant const &v) {
+constexpr inline bool is_vector(variant::Variant const &v) {
   return is_vector(v.variable());
 }
-inline bool is_map(variant::Variable v) {
+constexpr inline bool is_map(variant::Variable v) {
   auto x = std::to_underlying(v);
   return x != 0 && ((x - 1) % 4 >= 2);
 }
-inline bool is_map(variant::Variant const &v) { return is_map(v.variable()); }
+constexpr inline bool is_map(variant::Variant const &v) {
+  return is_map(v.variable());
+}
 } // namespace gaa
