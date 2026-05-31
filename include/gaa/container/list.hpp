@@ -6,8 +6,9 @@
 #include <gaa/container/bidirectional_map.hpp>
 #include <gaa/container/pool.hpp>
 #include <gaa/core/keywords.hpp>
+#include <gaa/core/kw.hpp>
+#include <gaa/wrap/std/any.hpp>
 #include <gaa/wrap/std/concepts.hpp>
-#include <gaa/wrap/std/variant.hpp>
 
 namespace gaa {
 /// brief:
@@ -27,7 +28,7 @@ public:
   using Index = std::size_t;
   using Indices = std::vector<Index>;
   using Index_pool = Pool<Index>;
-  using Data = std::map<Index, Variant>;
+  using Data = std::map<Index, Any>;
   using Name = Bidirectional_map<Index, std::string>;
   using key_t = std::string;
 
@@ -50,12 +51,12 @@ public:
   }
   decltype(auto) vector_indices() const {
     return m_indices | std::views::filter([&](auto const &i) {
-             return is_vector(this->at(i));
+             return this->at(i).info().is_vector;
            });
   }
   decltype(auto) scalar_indices() const {
     return m_indices | std::views::filter([&](auto const &i) {
-             return !is_vector(this->at(i));
+             return !this->at(i).info().is_vector;
            });
   }
 
@@ -80,24 +81,24 @@ public:
     return m_data.insert_or_assign(i, std::vector<V>(il));
   }
 
-  Variant &operator[](key_t const &k);
-  Variant const &operator[](key_t const &k) const;
-  Variant &operator[](Index k);
-  Variant const &operator[](Index k) const;
-  Variant &at(key_t const &k);
-  Variant const &at(key_t const &k) const;
-  Variant &at(Index i);
-  Variant const &at(Index i) const;
+  Any &operator[](key_t const &k);
+  Any const &operator[](key_t const &k) const;
+  Any &operator[](Index k);
+  Any const &operator[](Index k) const;
+  Any &at(key_t const &k);
+  Any const &at(key_t const &k) const;
+  Any &at(Index i);
+  Any const &at(Index i) const;
 
   Index index_of(key_t const &k) const;
   key_t const &name_of(Index idx) const;
 
-  Variable variable_of(Index i) const;
-  Variable variable_of(key_t const &k) const;
+  std::type_info const &type_info(Index i) const;
+  std::type_info const &type_info(key_t const &k) const;
 
   void erase(Index idx);
   void erase(key_t const &k);
 
-  std::string glimpse() const;
+  std::string glimpse(bool with_typename = false) const;
 };
 } // namespace gaa

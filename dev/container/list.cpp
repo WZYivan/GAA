@@ -21,9 +21,11 @@ int main() {
 
   list["is_scalar"] =
       list.valid_indices() | std::views::transform([&list](auto i) {
-        return std::make_pair(list.name_of(i), gaa::is_scalar(list[i]));
+        return std::make_pair(list.name_of(i), list[i].info().is_scalar);
       }) |
-      std::ranges::to<gaa::Type_of_variable<gaa::Variable::Map_Str_Logical>>();
+      std::ranges::to<std::map<std::string, bool>>();
   list.garbage_collect();
+
+  list["sublist"] = gaa::List();
   std::println("{}", list.glimpse());
 }
