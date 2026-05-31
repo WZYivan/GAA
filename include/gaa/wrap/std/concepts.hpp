@@ -20,6 +20,13 @@ template <class T> inline constexpr bool is_vector_v = Is_vector<T>::value;
 template <class T>
 concept Is_Vector = is_vector_v<T>;
 
+template <class T> struct Is_string : public False {};
+template <class CharT, class Traits, class Alloc>
+struct Is_string<std::basic_string<CharT, Traits, Alloc>> : public True {};
+template <class T> inline constexpr bool is_string_v = Is_string<T>::value;
+template <class T>
+concept Is_String = is_string_v<T>;
+
 template <class T> struct Is_map : public False {};
 template <class K, class V, class Comp, class Alloc>
 struct Is_map<std::map<K, V, Comp, Alloc>> : public True {};

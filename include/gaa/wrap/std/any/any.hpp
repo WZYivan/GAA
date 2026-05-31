@@ -10,6 +10,7 @@ class Any : public std::any {
 public:
   struct Info {
     bool is_scalar;
+    bool is_string;
     bool is_vector;
     bool is_map;
     bool is_idx_map;
@@ -18,6 +19,7 @@ public:
     template <class T> static Info init() {
       using D = std::decay_t<T>;
       return Info{.is_scalar = is_scalar_v<D>,
+                  .is_string = is_string_v<D>,
                   .is_vector = is_vector_v<D>,
                   .is_map = is_map_v<D>,
                   .is_idx_map = is_idx_map_v<D>,
@@ -39,12 +41,23 @@ public:
   Any(T &&obj) : Base(obj), m_vtable(ctrl.get<T>()), m_info(Info::init<T>()) {}
 
   template <class T>
+    requires(!is_pair_v<T>)
   Any(std::initializer_list<T> il)
-      : Base(std::vector(il)), m_vtable(ctrl.get<std::vector<T>>()),
+      : Base(std::vector<T>(il)), m_vtable(ctrl.get<std::vector<T>>()),
         m_info(Info::init<std::vector<T>>()) {}
 
-  template <class CharT, std::size_t Size>
-  Any(CharT const (&chars)[Size]) : Any(std::string(chars)) {}
+  template <class K, class V>
+  Any(std::initializer_list<std::pair<K const, V>> il)
+      : Base(std::map<K, V>(il)), m_vtable(ctrl.get<std::map<K, V>>()),
+        m_info(Info::init<std::map<K, V>>()) {}
+
+  template <class V>
+  Any(std::initializer_list<std::pair<char const *, V>> il)
+      : Base(std::map<std::string, V>(il)),
+        m_vtable(ctrl.get<std::map<std::string, V>>()),
+        m_info(Info::init<std::map<std::string, V>>()) {}
+
+  Any(char const *chars) : Any(std::string(chars)) {}
 
   template <class T>
     requires(!std::same_as<Any, std::decay_t<T>>)
@@ -55,17 +68,32 @@ public:
     return *this;
   }
 
-  template <class T> Any &operator=(std::initializer_list<T> il) {
+  template <class T>
+    requires(!is_pair_v<T>)
+  Any &operator=(std::initializer_list<T> il) {
     Base::operator=(std::vector(il));
     this->m_vtable = std::cref(ctrl.get<std::vector<T>>());
     this->m_info = Info::init<std::vector<T>>();
     return *this;
   }
 
-  template <class CharT, std::size_t Size>
-  Any &operator=(CharT const (&chars)[Size]) {
-    return operator=(std::string(chars));
+  template <class K, class V>
+  Any &operator=(std::initializer_list<std::pair<K const, V>> il) {
+    Base::operator=(std::map<K, V>(il));
+    m_vtable(ctrl.get<std::map<K, V>>());
+    m_info(Info::init<std::map<K, V>>());
+    return *this;
   }
+
+  template <class V>
+  Any &operator=(std::initializer_list<std::pair<char const *, V>> il) {
+    Base::operator=(std::map<std::string, V>(il));
+    m_vtable(ctrl.get<std::map<std::string, V>>());
+    m_info(Info::init<std::map<std::string, V>>());
+    return *this;
+  }
+
+  Any &operator=(char const *chars) { return operator=(std::string(chars)); }
 
   template <class T> bool is() const {
     return this->vtable().type_info() == typeid(T);
