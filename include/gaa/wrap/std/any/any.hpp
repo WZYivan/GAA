@@ -38,24 +38,14 @@ public:
 
   template <class T>
     requires(!std::same_as<Any, std::decay_t<T>>)
-  Any(T &&obj) : Base(obj), m_vtable(ctrl.get<T>()), m_info(Info::init<T>()) {}
+  Any(T &&obj)
+      : Base(obj), m_vtable(vtable_ctrl().get<T>()), m_info(Info::init<T>()) {}
 
   template <class T>
     requires(!is_pair_v<T>)
   Any(std::initializer_list<T> il)
-      : Base(std::vector<T>(il)), m_vtable(ctrl.get<std::vector<T>>()),
+      : Base(std::vector<T>(il)), m_vtable(vtable_ctrl().get<std::vector<T>>()),
         m_info(Info::init<std::vector<T>>()) {}
-
-  template <class K, class V>
-  Any(std::initializer_list<std::pair<K const, V>> il)
-      : Base(std::map<K, V>(il)), m_vtable(ctrl.get<std::map<K, V>>()),
-        m_info(Info::init<std::map<K, V>>()) {}
-
-  template <class V>
-  Any(std::initializer_list<std::pair<char const *, V>> il)
-      : Base(std::map<std::string, V>(il)),
-        m_vtable(ctrl.get<std::map<std::string, V>>()),
-        m_info(Info::init<std::map<std::string, V>>()) {}
 
   Any(char const *chars) : Any(std::string(chars)) {}
 
@@ -63,7 +53,7 @@ public:
     requires(!std::same_as<Any, std::decay_t<T>>)
   Any &operator=(T &&obj) {
     Base::operator=(obj);
-    this->m_vtable = std::cref(ctrl.get<T>());
+    this->m_vtable = std::cref(vtable_ctrl().get<T>());
     this->m_info = Info::init<T>();
     return *this;
   }
@@ -72,24 +62,8 @@ public:
     requires(!is_pair_v<T>)
   Any &operator=(std::initializer_list<T> il) {
     Base::operator=(std::vector(il));
-    this->m_vtable = std::cref(ctrl.get<std::vector<T>>());
+    this->m_vtable = std::cref(vtable_ctrl().get<std::vector<T>>());
     this->m_info = Info::init<std::vector<T>>();
-    return *this;
-  }
-
-  template <class K, class V>
-  Any &operator=(std::initializer_list<std::pair<K const, V>> il) {
-    Base::operator=(std::map<K, V>(il));
-    m_vtable(ctrl.get<std::map<K, V>>());
-    m_info(Info::init<std::map<K, V>>());
-    return *this;
-  }
-
-  template <class V>
-  Any &operator=(std::initializer_list<std::pair<char const *, V>> il) {
-    Base::operator=(std::map<std::string, V>(il));
-    m_vtable(ctrl.get<std::map<std::string, V>>());
-    m_info(Info::init<std::map<std::string, V>>());
     return *this;
   }
 

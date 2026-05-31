@@ -6,8 +6,6 @@ namespace gaa {
 namespace any {
 bool is_null(Any const &any) { return any.is_null(); }
 
-Vtable_ctrl ctrl = {};
-
 Vtable const &Any::vtable() const { return m_vtable.get(); }
 
 std::string Any::format(std::string_view fmt) const {

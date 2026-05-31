@@ -42,6 +42,10 @@ public:
     vtable.plugins.insert_or_assign(key, f);
   }
 };
-extern Vtable_ctrl ctrl;
+inline Vtable_ctrl &vtable_ctrl() {
+  static Vtable_ctrl instance;
+  return instance;
+}
+// extern Vtable_ctrl ctrl;
 } // namespace any
 } // namespace gaa
