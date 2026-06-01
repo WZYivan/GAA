@@ -89,11 +89,12 @@ public:
 
   Info const &info() const;
   Vtable const &vtable() const;
+  bool is_null() const;
   std::type_info const &type_info() const;
   std::string format(std::string_view fmt = "{}") const;
-  bool is_null() const;
-  void invoke(std::string const &key, Any const &input = nullptr,
-              void *ret = nullptr) const;
+  void for_each(Callback callback) const;
+  void invoke(std::string const &key, void *input = nullptr,
+              void *output = nullptr) const;
 };
 } // namespace any
 using Any = any::Any;

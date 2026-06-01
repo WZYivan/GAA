@@ -7,23 +7,23 @@ namespace any {
 bool is_null(Any const &any) { return any.is_null(); }
 
 Vtable const &Any::vtable() const { return m_vtable.get(); }
+bool Any::is_null() const { return this->is<std::nullptr_t>(); }
+Any::Info const &Any::info() const { return this->m_info; }
 
 std::string Any::format(std::string_view fmt) const {
   return this->vtable().format(*this, fmt);
 }
-
 std::type_info const &Any::type_info() const {
   return this->vtable().type_info();
 }
-
-bool Any::is_null() const { return this->is<std::nullptr_t>(); }
-
-void Any::invoke(std::string const &key, Any const &input, void *ret) const {
-  gaa_assert(vtable().plugins.contains(key), "no plugin named {}", key);
-  vtable().plugins.at(key)(*this, input, ret);
+void Any::for_each(Callback callback) const {
+  return this->vtable().for_each(*this, callback);
 }
 
-Any::Info const &Any::info() const { return this->m_info; }
+void Any::invoke(std::string const &key, void *input, void *output) const {
+  gaa_assert(vtable().plugins.contains(key), "no plugin named {}", key);
+  vtable().plugins.at(key)(*this, input, output);
+}
 
 } // namespace any
 } // namespace gaa

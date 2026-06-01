@@ -28,4 +28,10 @@ int main() {
 
   list["sublist"] = gaa::List();
   std::println("{}", list.glimpse());
+
+  list["is_scalar"].for_each([](gaa::Any const &elem) {
+    auto const &[k, v] =
+        elem.as<typename std::map<std::string, bool>::value_type>();
+    std::println("{} => {}", k, v);
+  });
 }
