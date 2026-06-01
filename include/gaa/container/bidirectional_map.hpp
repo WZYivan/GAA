@@ -27,9 +27,13 @@ public:
 
   V const &at(K const &k) const { return this->kv().at(k); }
   K const &at(V const &v) const { return this->vk().at(v); }
+  V &at(K const &k) { return this->kv().at(k); }
+  K &at(V const &v) { return this->vk().at(v); }
 
   KV const &kv() const { return m_kv; }
   VK const &vk() const { return m_vk; }
+  KV &kv() { return m_kv; }
+  VK &vk() { return m_vk; }
 
   void erase(K const &k) {
     V const &v = this->kv().at(k);

@@ -30,6 +30,7 @@ public:
 
   bool has_deprecated() const { return !m_deprecated.empty(); }
   bool is_deprecated(T const &t) const { return m_deprecated.contains(t); }
+  std::size_t deprecated_size() const { return m_deprecated.size(); }
 
   decltype(auto) get() {
     if (this->has_deprecated()) {

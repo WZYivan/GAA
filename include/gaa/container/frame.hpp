@@ -1,78 +1,130 @@
 #pragma once
 
-#include <set>
-
 #include <gaa/container/list.hpp>
+#include <gaa/container/pool.hpp>
 #include <gaa/core/keywords.hpp>
-#include <gaa/wrap/c++/type.hpp>
-#include <gaa/wrap/std/variant.hpp>
-
-#include <gaa/core/signature/incomplete.hpp>
+#include <gaa/wrap/std/any.hpp>
 
 namespace gaa {
 class Frame {
 public:
-  using body_t = List<Index, Variants>;
-  using head_t = List<Index, String>;
-  using info_t = List<>;
-  using index_pool_t = std::set<Index>;
+  using Index = std::size_t;
+  using Indices = std::vector<Index>;
+  using Index_pool = Pool<Index>;
+  using Data = std::vector<Any>;
+  using Name = Bidirectional_map<Index, std::string>;
 
 private:
   Indices m_indices;
-  body_t m_body;
-  head_t m_head;
-  info_t m_info;
-  index_pool_t m_idx_pool;
-  Size m_size;
+  Index_pool m_idx_pool;
+  Data m_data;
+  Name m_name;
+  std::size_t m_size;
 
 public:
   ~Frame() = default;
-  Frame() = default;
+  Frame(std::size_t size);
 
-  info_t const &info() const;
-  info_t &info();
-
-  Indices const &indices() const;
-  Size size() const;
+  decltype(auto) indices() const {
+    return m_indices | std::views::filter([&](Index i) -> bool {
+             return !m_idx_pool.is_deprecated(i);
+           });
+  }
+  std::size_t rows() const;
+  std::size_t cols() const;
 
   void garbage_collect();
+  std::string glimpse() const;
 
-  template <class V> Vector<V> const &col(Index i) const {
-    gaa_assert(m_body.is<Vector<V>>, "type of index {} mismatch", i);
-    return m_body.at<Vector<V>>(i);
+  std::string const &name_of(Index i) const;
+  Index index_of(std::string const &k) const;
+
+  template <class T> std::vector<T> const &col(Index i) const {
+    gaa_assert(this->cols() > i, "index {} out of range {}", i, this->cols());
+    Any const &vec = m_data.at(i);
+    gaa_assert(vec.is<std::vector<T>>(),
+               "type mismatch, any_cast will fail (given {})",
+               typeid(std::vector<T>).name());
+    return vec.as<std::vector<T>>();
+  }
+  template <class T> std::vector<T> &col(Index i) {
+    gaa_assert(this->cols() > i, "index {} out of range {}", i, this->cols());
+    Any &vec = m_data.at(i);
+    gaa_assert(vec.is<std::vector<T>>(),
+               "type mismatch, any_cast will fail (given {})",
+               typeid(std::vector<T>).name());
+    return vec.as<std::vector<T>>();
+  }
+  template <class T> std::vector<T> const &col(std::string const &k) const {
+    return this->col<T>(this->index_of(k));
+  }
+  template <class T> std::vector<T> &col(std::string const &k) {
+    return this->col<T>(this->index_of(k));
   }
 
-  template <class V> Vector<V> &col(Index i) {
-    gaa_assert(m_body.is<Vector<V>>, "type of index {} mismatch", i);
-    return m_body.at<Vector<V>>(i);
-  }
+  template <class T>
+  void new_col(std::string const &k, std::vector<T> const &vec) {
+    auto [i, dep] = m_idx_pool.get();
 
-  template <class V> decltype(auto) append_column(Vector<V> &&v) {
-    Index idx;
-    if (m_idx_pool.empty()) {
-      idx = m_indices.size();
+    m_name.insert_or_assign(i, k);
+    if (!dep) {
+      m_indices.emplace_back(i);
+      m_data.emplace_back(vec);
     } else {
-      idx = *m_idx_pool.begin();
-      m_idx_pool.erase(m_idx_pool.begin());
+      m_data.at(i) = vec;
     }
 
-    return m_body.append(idx, std::forward<Vector<V>>(v));
+    std::vector<T> &new_col = m_data.at(i).as<std::vector<T>>();
+    if (new_col.size() != this->rows()) {
+      new_col.resize(this->rows());
+    }
   }
+  template <class T> void new_col(std::string const &k, std::vector<T> &&vec) {
+    auto [i, dep] = m_idx_pool.get();
 
-  template <class Visitor>
-  void visit_columns(this auto &&self, Visitor &&visitor) {
-    for (auto &&[key, col] : self.m_body) {
-      std::visit(visitor, col);
+    m_name.insert_or_assign(i, k);
+    if (!dep) {
+      m_indices.emplace_back(i);
+      m_data.emplace_back(std::forward<std::vector<T>>(vec));
+    } else {
+      m_data.at(i) = std::forward<std::vector<T>>(vec);
     }
   }
 
-  template <class Visitor>
-  void visit_each(this auto &&self, Visitor &&visitor) {
-    for (auto &&[key, col] : self.m_body) {
-      self.visit_columns(visitor);
-    }
-  }
+  void erase_col(Index i);
+  void erase_col(std::string const &k);
+  void rename_col(Index i, std::string const &new_name);
+  void rename_col(std::string const &k, std::string const &new_name);
 
-  String glimpse() const;
+  template <class FrameP>
+    requires std::same_as<std::decay_t<FrameP>, Frame>
+  class Row {
+  private:
+    std::reference_wrapper<FrameP> m_frame;
+    std::size_t m_row;
+
+  public:
+    ~Row() = default;
+    Row(std::size_t row, FrameP &ref) : m_frame(ref), m_row(row) {}
+
+    std::size_t size() const { return m_frame.get().cols(); }
+
+    template <class T> T &at(Index i) {
+      return m_frame.get().template col<T>(i).at(m_row);
+    }
+    template <class T> T const &at(Index i) const {
+      return m_frame.get().template col<T>(i).at(m_row);
+    }
+
+    template <class T> T &at(std::string const &k) {
+      return m_frame.get().template col<T>(k).at(m_row);
+    }
+    template <class T> T const &at(std::string const &k) const {
+      return m_frame.get().template col<T>(k).at(m_row);
+    }
+  };
+
+  Row<Frame> row(Index i);
+  Row<Frame const> row(Index i) const;
 };
 } // namespace gaa

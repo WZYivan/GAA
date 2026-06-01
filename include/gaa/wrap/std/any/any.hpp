@@ -49,6 +49,11 @@ public:
 
   Any(char const *chars) : Any(std::string(chars)) {}
 
+  Any(Any const &other);
+  Any(Any &&other);
+  Any &operator=(Any const &other);
+  Any &operator=(Any &&other);
+
   template <class T>
     requires(!std::same_as<Any, std::decay_t<T>>)
   Any &operator=(T &&obj) {
