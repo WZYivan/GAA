@@ -7,4 +7,4 @@ enum class Info {
   Iterative_Solve_Success,
   Iterative_Solve_Fail,
 };
-}
+} // namespace gaa
