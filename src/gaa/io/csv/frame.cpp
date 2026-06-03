@@ -135,4 +135,44 @@ Frame read_csv_to_frame(std::istream &is, kwargs args) {
 
   return _read_csv_to_frame(elems, literals, ignore_first_line);
 }
+
+void write_csv(std::string const &fname, Frame const &df, kwargs args) {
+  fs::path fpath{fname};
+  std::ofstream ofs{fname, std::ios::in};
+  gaa_assert(fs::exists(fpath), "create file {} fail", fpath.string());
+  return write_csv(ofs, df, args);
+}
+
+void write_csv(std::ostream &os, Frame const &df, kwargs args) {
+  gaa_assert(os.good(), "bad stream");
+
+  GAA_ARG_OR(args, separator, ',');
+  GAA_ARG_OR(args, ignore_first_line, false);
+
+  std::vector<std::string> rows;
+  rows.resize(df.rows());
+
+  for (auto col : df.indices()) {
+    Any const &col_vec = df.col(col);
+    std::size_t row = 0;
+    col_vec.for_each([&rows, &row, col](Any const &elem) -> void {
+      std::string &row_cnt = rows.at(row);
+      if (col != 0) {
+        row_cnt.append(", ");
+      }
+      row_cnt.append(elem.format());
+      ++row;
+    });
+  }
+
+  if (!ignore_first_line) {
+    auto head = df.names() | std::views::join_with(separator) |
+                std::ranges::to<std::string>();
+
+    std::println(os, "{}", head);
+  }
+  for (auto const &row : rows) {
+    std::println(os, "{}", row);
+  }
+}
 } // namespace gaa

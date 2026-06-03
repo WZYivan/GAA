@@ -1,4 +1,5 @@
 #include <gaa/io/csv.hpp>
+#include <iostream>
 #include <print>
 
 int main() {
@@ -8,5 +9,6 @@ int main() {
                  gaa::Literal_Type::Digital, gaa::Literal_Type::Digital,
                  gaa::Literal_Type::Digital},
       gaa::mkarg::ignore_first_line(false));
-  std::println("{}", csv.glimpse());
+
+  gaa::write_csv(std::cout, csv, gaa::mkarg::ignore_first_line(true));
 }

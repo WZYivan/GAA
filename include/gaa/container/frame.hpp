@@ -30,6 +30,11 @@ public:
              return !m_idx_pool.is_deprecated(i);
            });
   }
+  decltype(auto) names() const {
+    return this->indices() | std::views::transform([&](auto i) -> std::string {
+             return this->name_of(i);
+           });
+  }
   std::size_t rows() const;
   std::size_t cols() const;
 
