@@ -4,8 +4,6 @@
 
 namespace gaa {
 namespace any {
-bool is_null(Any const &any) { return any.is_null(); }
-
 Any::Any(Any const &other)
     : Base(dynamic_cast<std::any const &>(other)), m_vtable(other.m_vtable),
       m_info(other.m_info) {}
@@ -38,6 +36,13 @@ std::type_info const &Any::type_info() const {
 void Any::for_each(Callback callback) const {
   return this->vtable().for_each(*this, callback);
 }
+void Any::push_back_literal(std::string const &cnt) {
+  return this->vtable().push_back_literal(*this, cnt);
+}
+void Any::push_back_literal(std::string const &cnt, Literal_Type lt) {
+  return this->vtable().push_back_literal_2(*this, cnt, lt);
+}
+std::size_t Any::size() const { return this->vtable().size(*this); }
 
 void Any::invoke(std::string const &key, void *input, void *output) const {
   gaa_assert(vtable().plugins.contains(key), "no plugin named {}", key);

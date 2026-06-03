@@ -67,4 +67,15 @@ template <class T> struct Is_scalar {
 template <class T> inline constexpr bool is_scalar_v = Is_scalar<T>::value;
 template <class T>
 concept Is_Scalar = is_scalar_v<T>;
+
+template <class T>
+concept Has_Push_Back = requires(T &t) {
+  typename T::value_type;
+  t.push_back(std::declval<typename T::value_type>());
+};
+
+template <class T>
+concept Has_Size = requires(T &t) {
+  { t.size() } -> std::same_as<std::size_t>;
+};
 } // namespace gaa

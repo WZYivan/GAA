@@ -89,6 +89,11 @@ public:
     } else {
       m_data.at(i) = std::forward<std::vector<T>>(vec);
     }
+
+    std::vector<T> &new_col = m_data.at(i).as<std::vector<T>>();
+    if (new_col.size() != this->rows()) {
+      new_col.resize(this->rows());
+    }
   }
 
   void erase_col(Index i);
