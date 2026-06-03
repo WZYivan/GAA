@@ -16,11 +16,4 @@ external/*
 python/utils/*
 
 # private section
-scripts/*
-init.sh
-.clangd
-.clang-format
 .clang-format-llvm
-.Rhistory
-TODO.md 
-Makefile
