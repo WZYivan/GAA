@@ -29,6 +29,7 @@ struct Vtable {
   std::function<void(Any &self, std::string const &cnt)> push_back_literal;
   std::function<void(Any &self, std::string const &cnt, Literal_Type lt)>
       push_back_literal_2;
+  std::function<void(Any &self, std::size_t idx, Any const &elem)> assign_at;
 
   template <class T> static Vtable init();
 };

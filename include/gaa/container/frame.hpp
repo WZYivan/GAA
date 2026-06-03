@@ -61,6 +61,10 @@ public:
   template <class T> std::vector<T> &col(std::string const &k) {
     return this->col<T>(this->index_of(k));
   }
+  Any const &col(Index i) const;
+  Any &col(Index i);
+  Any const &col(std::string const &k) const;
+  Any &col(std::string const &k);
 
   template <class T>
   void new_col(std::string const &k, std::vector<T> const &vec) {
@@ -95,6 +99,10 @@ public:
       new_col.resize(this->rows());
     }
   }
+  template <class T> void new_col(std::string const &k) {
+    this->new_col<T>(k, std::vector<T>{});
+  }
+  void new_col(std::string const &k, Literal_Type literal);
 
   void erase_col(Index i);
   void erase_col(std::string const &k);

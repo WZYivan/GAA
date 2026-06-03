@@ -101,13 +101,16 @@ public:
 
   std::type_info const &type_info() const;
   std::string format(std::string_view fmt = "{}") const;
+  std::size_t size() const;
   void for_each(Callback callback) const;
   template <class T> void push_back(T &&elem) {
     this->vtable().push_back(*this, std::forward<T>(elem));
   }
   void push_back_literal(std::string const &cnt);
   void push_back_literal(std::string const &cnt, Literal_Type lt);
-  std::size_t size() const;
+  template <class T> void assign_at(std::size_t i, T &&elem) {
+    this->vtable().assign_at(*this, i, elem);
+  }
 
   void invoke(std::string const &key, void *input = nullptr,
               void *output = nullptr) const;
@@ -189,7 +192,19 @@ template <class T> Vtable Vtable::init() {
         } else {
           gaa_fail("{} has no member push_back", typeid(D).name());
         }
-      }};
+      },
+      .assign_at =
+          [](Any &self, std::size_t idx, Any const &elem) {
+            if constexpr (Has_At<D>) {
+              gaa_assert(elem.is<typename D::value_type>(),
+                         "expect {} to assign, given {}",
+                         typeid(typename D::value_type).name(),
+                         elem.type_info().name());
+              self.as<D>().at(idx) = elem.as<typename D::value_type>();
+            } else {
+              gaa_fail("{} has no member at", typeid(D).name());
+            }
+          }};
 }
 } // namespace any
 } // namespace gaa

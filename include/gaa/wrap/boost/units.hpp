@@ -127,6 +127,7 @@ private:
 
 public:
   ~Latitude() = default;
+  Latitude() = default;
   explicit Latitude(double val) : base_type(val) { validate(); }
 
   template <Compatible_Quantity<base_type> Q>
@@ -152,6 +153,7 @@ private:
 
 public:
   ~Longitude() = default;
+  Longitude() = default;
   explicit Longitude(double val) : base_type(val) { validate(); }
 
   template <Compatible_Quantity<base_type> Q>

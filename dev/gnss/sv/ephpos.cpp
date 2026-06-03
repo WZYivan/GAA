@@ -1,5 +1,5 @@
 #include <gaa/gnss/space/sv_pos_from_broadcast.hpp>
-#include <gaa/io/csv.hpp>
+#include <gaa/io/csv/table.hpp>
 #include <gaa/io/rinex3/nav.hpp>
 #include <sstream>
 

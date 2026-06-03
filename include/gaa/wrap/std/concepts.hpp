@@ -78,4 +78,12 @@ template <class T>
 concept Has_Size = requires(T &t) {
   { t.size() } -> std::same_as<std::size_t>;
 };
+
+template <class T>
+concept Has_At = requires(T &t) {
+  typename T::value_type;
+  requires std::same_as<
+      std::remove_cvref_t<decltype(t.at(std::declval<std::size_t>()))>,
+      typename T::value_type>;
+};
 } // namespace gaa

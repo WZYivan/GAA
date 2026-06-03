@@ -1,4 +1,5 @@
 #include <gaa/container/frame.hpp>
+#include <gaa/core/literal.hpp>
 
 namespace gaa {
 Frame::Frame(std::size_t size) : m_size(size) {}
@@ -6,6 +7,65 @@ Frame::Frame(std::size_t size) : m_size(size) {}
 std::size_t Frame::rows() const { return m_size; }
 std::size_t Frame::cols() const {
   return m_indices.size() - m_idx_pool.deprecated_size();
+}
+
+Any const &Frame::col(Index i) const { return m_data.at(i); }
+Any &Frame::col(Index i) { return m_data.at(i); }
+Any const &Frame::col(std::string const &k) const {
+  return m_data.at(this->index_of(k));
+}
+Any &Frame::col(std::string const &k) { return m_data.at(this->index_of(k)); }
+
+void Frame::new_col(std::string const &k, Literal_Type literal) {
+  using enum Literal_Type;
+  switch (literal) {
+  case Charater: {
+    this->new_col<Literal_type<Charater>>(k);
+    break;
+  }
+  case String: {
+    this->new_col<Literal_type<String>>(k);
+    break;
+  }
+  case Digital: {
+    this->new_col<Literal_type<Digital>>(k);
+    break;
+  }
+  case Integer: {
+    this->new_col<Literal_type<Integer>>(k);
+    break;
+  }
+  case Logical: {
+    this->new_col<Literal_type<Logical>>(k);
+    break;
+  }
+  case Latitude: {
+    this->new_col<Literal_type<Latitude>>(k);
+    break;
+  }
+  case Longitude: {
+    this->new_col<Literal_type<Longitude>>(k);
+    break;
+  }
+  case Radian: {
+    this->new_col<Literal_type<Radian>>(k);
+    break;
+  }
+  case Arcdeg: {
+    this->new_col<Literal_type<Arcdeg>>(k);
+    break;
+  }
+  case Arcmin: {
+    this->new_col<Literal_type<Arcmin>>(k);
+    break;
+  }
+  case Arcsec: {
+    this->new_col<Literal_type<Arcsec>>(k);
+    break;
+  }
+  default:
+    gaa_fail("unreachable default case: {}", enum2str(literal));
+  };
 }
 
 void Frame::garbage_collect() {
