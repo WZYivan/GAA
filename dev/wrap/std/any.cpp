@@ -9,4 +9,6 @@ int main() {
   vec.push_back_literal("5.5");
   vec.push_back_literal("6.6", gaa::Literal_Type::Integer);
   std::println("vec = {} [size = {}]", vec.format(), vec.size());
+
+  vec.push_back("mismatched element");
 }

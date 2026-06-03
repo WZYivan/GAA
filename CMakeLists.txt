@@ -66,10 +66,11 @@ if(GAA_EXT_VIS)
     find_package(Matplot++ REQUIRED)
 endif()
 
-include(gaaConfig)
+include(gaaLinkExpCXX)
 
 add_subdirectory(src)
 
+include(gaaConfig)
 include(gaaExport)
 include(gaaInstall)
 include(gaaUninstall)

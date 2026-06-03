@@ -23,6 +23,7 @@
 
 #define GAA_R_RHOME ""
 #define GAA_WITH_R 0
+#define GAA_LINK_WITH_CXX_EXP 1
 #define GAA_EXT_VIS 1
 #define GAA_USE_PRIVATE_3RD 0
 

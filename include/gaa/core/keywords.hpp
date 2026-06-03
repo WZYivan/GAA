@@ -5,13 +5,27 @@
 #include <string>
 
 #include <gaa/core/buildsystem/config.hpp>
+#include <gaa/core/pp.hpp>
+
+#if GAA_LINK_WITH_CXX_EXP
+#include <stacktrace>
+#endif
 
 namespace gaa {
+#if GAA_LINK_WITH_CXX_EXP
+extern void _assert_fail(char const *expr, std::source_location const &loc,
+                         std::stacktrace const &stk,
+                         std::string const &message = "");
+#endif
 extern void _assert_fail(char const *expr, std::source_location const &loc,
                          std::string const &message = "");
-}
+} // namespace gaa
 
-#define gaa_here (std::source_location::current())
+#if GAA_LINK_WITH_CXX_EXP
+#define gaa_here std::source_location::current(), std::stacktrace::current()
+#else
+#define gaa_here std::source_location::current()
+#endif
 
 #ifndef GAA_USE_STD_ASSERT
 /// runtime assert support format message and source location infomation (auto)
