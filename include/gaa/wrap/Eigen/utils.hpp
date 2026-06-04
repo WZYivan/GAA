@@ -1,3 +1,7 @@
+/*
+linalg utilities
+*/
+
 #pragma once
 
 #include <gaa/wrap/Eigen/pre.hpp>

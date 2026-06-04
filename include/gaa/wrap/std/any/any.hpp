@@ -39,6 +39,8 @@ private:
 public:
   ~Any() = default;
 
+  /// constructors
+  /// Vtable and Info will be immediately registered
   template <class T>
     requires(!std::same_as<Any, std::decay_t<T>>)
   Any(T &&obj)
@@ -76,18 +78,23 @@ public:
   }
 
   Any &operator=(char const *chars) { return operator=(std::string(chars)); }
+  /// constructors
 
+  /// predict if Any is given T
   template <class T> bool is() const {
     return this->vtable().type_info() == typeid(T);
   }
 
+  /*
+  wrap of any_cast, but always in a reference syntax, as a result, it always
+  assert
+  */
   template <class T> T &as() {
     void *ptr = std::any_cast<T>(this);
     gaa_assert(ptr != nullptr, "any cast fails, given {}, this is {}",
                typeid(T).name(), this->type_info().name());
     return *reinterpret_cast<T *>(ptr);
   }
-
   template <class T> T const &as() const {
     void const *ptr = std::any_cast<T>(this);
     gaa_assert(ptr != nullptr, "any cast fails, given {}, this is {}",
@@ -95,6 +102,7 @@ public:
     return *reinterpret_cast<T const *>(ptr);
   }
 
+  /// virtual functions, they case assertion failure when type mismatch
   Info const &info() const;
   Vtable const &vtable() const;
   bool is_null() const;
@@ -112,7 +120,10 @@ public:
   template <class T> void assign_at(std::size_t i, T &&elem) {
     this->vtable().assign_at(*this, i, elem);
   }
+  /// virtual functions
 
+  /// invoke your own plugin which is registered by
+  /// vtable_ctrl().new_plugin(...)
   void invoke(std::string const &key, void *input = nullptr,
               void *output = nullptr) const;
 };
@@ -123,6 +134,7 @@ extern Any literal_cast(std::string const &cnt, Literal_Type type);
 
 namespace any {
 template <class T> Vtable Vtable::init() {
+  /// reject reference, always in a value syntax
   using D = std::decay_t<T>;
   return Vtable{
       .plugins = {},

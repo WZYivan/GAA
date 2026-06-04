@@ -1,10 +1,20 @@
+/* support for syntax like **kwargs in python
+  in declaration: void foo(kwargs args = {})
+  is using: foo(gaa::mkargs::
+                    arg1(val1).
+                    arg2(val2));
+  you can pass arguments in an unordered way
+
+  implemented by X-Macros
+*/
+
 #pragma once
 
 #include <any>
 #include <map>
 #include <string>
 
-#include <Eigen/Dense>
+#include <Eigen/Dense> /// for Eigen::MatrixXd
 
 #include <gaa/core/keywords.hpp>
 #include <gaa/core/pp.hpp>
@@ -12,6 +22,7 @@
 
 namespace gaa::_kw {
 
+/// generate enums for each named argument
 #define GAA_KW_def_tag(TYPE, NAME) NAME,
 #define GAA_KW_value GAA_KW_def_tag
 #define GAA_KW_ref GAA_KW_def_tag
@@ -25,6 +36,7 @@ enum class tags {
 #undef GAA_KW_ref
 #undef GAA_KW_cref
 
+/// infrastructure for mpl, auto generated
 template <tags t> struct traits {
   static constexpr char const *name = "", *type_name = "";
   using passed_arg_type = int;
@@ -92,6 +104,7 @@ template <tags t> struct traits {
 #define GAA_KW_ref(TYPE, NAME) GAA_KW_arg(NAME)
 #define GAA_KW_cref(TYPE, NAME) GAA_KW_arg(NAME)
 
+/// main class to store all arguments using a std::map
 class Args {
 public:
   using map_type = std::map<tags, std::any>;
@@ -129,6 +142,7 @@ public:
 #undef GAA_KW_ref
 #undef GAA_KW_cref
 
+/// free functions as a constructor
 #define GAA_KW_arg(NAME)                                                       \
   inline Args NAME(typename traits<tags::NAME>::passed_arg_type NAME) {        \
     return Args{}.NAME(NAME);                                                  \
@@ -144,6 +158,7 @@ namespace maker {
 #undef GAA_KW_ref
 #undef GAA_KW_cref
 
+/// incomplete part
 template <tags... required_tags> class Required_tags_validator {
 public:
   using wrapped_type = Args;
@@ -163,6 +178,8 @@ public:
 
   wrapped_type const &unwrap() const { return m_args; }
 };
+/// incomplete part
+
 } // namespace gaa::_kw
 
 namespace gaa {
@@ -174,6 +191,7 @@ namespace mkarg = _kw::maker;
 template <kw_tags... required_tags>
 using kwargs_require = _kw::Required_tags_validator<required_tags...>;
 
+/// convenient macro for unwraping an argument
 #define GAA_ARG_OR(ARGS, NAME, DEFAULT)                                        \
   decltype(auto) NAME = ARGS._has_##NAME() ? ARGS.NAME() : DEFAULT
 } // namespace gaa

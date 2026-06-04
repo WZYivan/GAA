@@ -1,3 +1,7 @@
+/*
+predicator to validate shape of matrix
+*/
+
 #pragma once
 
 #include <Eigen/Dense>

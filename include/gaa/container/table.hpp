@@ -16,6 +16,8 @@
 #include <gaa/gnss/def.hpp>
 #include <gaa/wrap/boost/units.hpp>
 
+#include <gaa/core/signature/not_recommended.hpp> // using <gaa/container/frame.hpp> and <gaa/container/list.hpp>
+
 namespace gaa {
 
 enum Table_Storage_Flag : int {

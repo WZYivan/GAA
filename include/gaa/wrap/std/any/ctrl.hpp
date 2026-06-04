@@ -15,6 +15,7 @@ public:
   Vtable_ctrl() = default;
   ~Vtable_ctrl() = default;
 
+  /// auto controlled scope
   template <class T> std::type_index index() { return typeid(std::decay_t<T>); }
 
   template <class T> void init() {
@@ -36,12 +37,16 @@ public:
     }
     return Base::at(this->index<T>());
   }
+  /// auto controlled scope
 
+  /// register your plugin, managed by user, not this framework
   template <class T, class F> void new_plugin(std::string const &key, F &&f) {
     Vtable &vtable = this->get<T>();
     vtable.plugins.insert_or_assign(key, f);
   }
 };
+
+/// get the global instance of Vtable
 inline Vtable_ctrl &vtable_ctrl() {
   static Vtable_ctrl instance;
   return instance;

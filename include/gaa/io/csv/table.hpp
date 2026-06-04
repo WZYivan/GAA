@@ -2,7 +2,7 @@
 
 #include <gaa/container/table.hpp>
 #include <gaa/core/kw.hpp>
-#include <gaa/core/signature/deprecated.hpp>
+#include <gaa/core/signature/not_recommended.hpp> // using <gaa/io/csv/frame.hpp>
 
 namespace gaa {
 extern Table read_csv(std::string const &fname,

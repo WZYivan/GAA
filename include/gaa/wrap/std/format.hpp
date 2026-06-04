@@ -1,3 +1,7 @@
+/*
+dispatch of <format>, some version of gcc may not specialize for bool or range
+*/
+
 #pragma once
 
 #include <format>

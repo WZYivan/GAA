@@ -1,3 +1,7 @@
+/*
+just an alias of namespace
+*/
+
 #pragma once
 
 namespace boost {

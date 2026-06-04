@@ -14,7 +14,10 @@ namespace any {
 class Any;
 
 struct Vtable {
-  /// Plugin gives user full control
+  /*
+    Plugin gives user full control
+    You are respond for your plugin
+  */
   using Plugin =
       std::function<void(Any const &self, void *input, void *output)>;
   using Callback = std::function<void(Any const &self)>;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gaa/core/buildsystem/config.hpp>
+#include <gaa/core/signature/incomplete.hpp>
 
 #if !(GAA_WITH_R)
 #if !defined(GAA_IN_BUILDING)

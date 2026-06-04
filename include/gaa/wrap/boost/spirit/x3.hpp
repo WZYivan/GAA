@@ -1,3 +1,7 @@
+/*
+wrapper of Boost.Spirit.X3 for more convenient using
+*/
+
 #pragma once
 
 #include <ranges>
@@ -13,6 +17,7 @@ namespace gaa::spirit::x3 {
 namespace x3 = boost::spirit::x3;
 using namespace boost::spirit::x3;
 
+/// convenient function to parse std::string
 decltype(auto) parse(std::string const &str, auto rule) {
   return x3::parse(str.begin(), str.end(), rule);
 }
@@ -20,6 +25,7 @@ decltype(auto) parse(std::string const &str, auto rule) {
 decltype(auto) parse(std::string_view sv, auto rule) {
   return x3::parse(sv.begin(), sv.end(), rule);
 }
+/// convenient function to parse std::string
 
 struct _attr_str_fn {
   std::string &cnt;
@@ -45,6 +51,7 @@ struct _attr_str_gen {
     return _attr_str_fn{.cnt = cnt};
   }
 };
+/// parse content as a std::string
 inline constexpr _attr_str_gen p2str{};
 
 struct _dbl_fn {
@@ -97,6 +104,7 @@ struct _dbl_gen {
     return _dbl_range_fn{.r = r};
   }
 };
+/// parse a content as a double or push to a range<double>
 inline constexpr _dbl_gen p2dbl{};
 
 struct _itg_fn {
@@ -142,6 +150,7 @@ struct _itg_gen {
     return _itg_range_fn{.r = r};
   }
 };
+/// parse a content as an int or push to a range<int>
 inline constexpr _itg_gen p2int{};
 
 struct _chr_fn {
@@ -173,14 +182,17 @@ struct _chr_gen {
     return _chr_range_fn{.r = r};
   }
 };
+/// parse content as a char
 inline constexpr _chr_gen p2chr{};
 
+/// get N char
 template <std::size_t Size>
 inline decltype(auto) vchr = x3::repeat(Size)[x3::char_];
 
 template <std::size_t Size, std::size_t Repeat>
 inline decltype(auto) vchrs = x3::repeat(Repeat)[vchr<Size>];
 
+/// skip N char
 template <std::size_t Size>
 inline decltype(auto) skip = x3::repeat(Size)[x3::omit[x3::char_]];
 } // namespace gaa::spirit::x3

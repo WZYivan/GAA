@@ -1,8 +1,16 @@
+/*
+A runtime lexical_cast, it contains two main function: literal_detect (to figure
+out its type), and literal_cast (overloaded, both function and template) to cast
+a std::string to an Any or a given type.
+
+The literal_cast is limited in a fixed set of types, each literal-value which is
+not registered will be treated as a std::string
+*/
 #pragma once
 
 #include <string>
 
-#include <gaa/core/literal/def.hpp>
+#include <gaa/core/literal/def.hpp> // foward decl
 #include <gaa/wrap/std/any.hpp>
 
 namespace gaa {
@@ -23,6 +31,7 @@ extern Arcdeg _literal_cast_Arcdeg(std::string const &cnt);
 extern Arcmin _literal_cast_Arcmin(std::string const &cnt);
 extern Arcsec _literal_cast_Arcsec(std::string const &cnt);
 
+/// just manually override it
 template <class T> T literal_cast(std::string const &) {}
 template <>
 inline std::string literal_cast<std::string>(std::string const &cnt) {

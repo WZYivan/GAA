@@ -1,3 +1,15 @@
+/*
+wrapper of Boost.Units for some specialized unit:
+> Radian
+> Azimuth
+> Latitude
+> Longitude
+> Arcdeg
+> Arcmin
+> Arcsec
+> Angle (not impl)
+*/
+
 #pragma once
 
 #include <concepts>
@@ -22,12 +34,16 @@
 
 namespace gaa {
 namespace units {
+/// traits for mpl
 template <class Unit> struct _quantity_traits {
   using unit_type = Unit;
   constexpr static unit_type unit{};
   using base_type = boost::units::quantity<unit_type>;
 };
 
+/*
+this base type is basically for mpl of derived type
+*/
 template <class Unit>
   requires boost::units::is_unit<Unit>::value
 class _basic_quantity_t : public _quantity_traits<Unit>,
@@ -89,6 +105,7 @@ template <class Q1, class Q2>
 concept Compatible_Quantity =
     (Is_Quantity<Q1> && Is_Quantity<Q2>) &&
     (std::same_as<Q1, Q2> || std::constructible_from<Q1, Q2>);
+/// traits for mpl
 
 using Radian = _basic_quantity_t<boost::units::si::plane_angle>;
 using Arcdeg = _basic_quantity_t<boost::units::degree::plane_angle>;
@@ -120,6 +137,7 @@ public:
 
 private:
   void validate() {
+    /// reject illegal value, must in [-90, 90] deg
     gaa_assert((GAA_UNIT_validate_switch) ||
                    std::abs(this->value()) <= std::numbers::pi / 2,
                "invalid value: \'{}\'", this->value());
@@ -146,6 +164,7 @@ public:
 
 private:
   void validate() {
+    /// reject illegal value, must in [-180, 180] deg
     gaa_assert((GAA_UNIT_validate_switch) ||
                    std::abs(this->value()) <= std::numbers::pi,
                "invalid value: \'{}\'", this->value());
@@ -173,6 +192,7 @@ using units::Latitude;
 using units::Longitude;
 using units::Radian;
 
+/// convenient unit convert functions
 template <class Q> double rad(Q const &q) {
   if constexpr (std::same_as<Radian, Q>) {
     return q.value();
@@ -196,7 +216,9 @@ extern double deg(Longitude const &lon);
 extern Radian rad(double r);
 extern Latitude lat(double r);
 extern Longitude lon(double r);
+/// convenient unit convert functions
 
+/// may deprecated
 inline Radian operator""_rad(long double r) {
   return rad(static_cast<double>(r));
 }
@@ -211,4 +233,5 @@ inline Radian operator""_rad(long double r) {
       return y OP(x * y.unit);                                                 \
     }                                                                          \
   }(X, Y)
+/// may deprecated
 } // namespace gaa

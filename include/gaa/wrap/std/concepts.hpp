@@ -1,3 +1,7 @@
+/*
+extend <concepts> for recognize types or members
+*/
+
 #pragma once
 
 #include <map>
