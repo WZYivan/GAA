@@ -9,7 +9,7 @@
 - [ ] gaa/adjust/connecting_traverse
 - [ ] Angle
 
-## Inprocessing
+## In Processing
 
 - [ ] geodesy/framework (like boost::geometry)
 - [ ] docs and comments

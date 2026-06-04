@@ -100,6 +100,7 @@ public:
   bool is_null() const;
 
   std::type_info const &type_info() const;
+  std::string type_name() const;
   std::string format(std::string_view fmt = "{}") const;
   std::size_t size() const;
   void for_each(Callback callback) const;
@@ -126,6 +127,7 @@ template <class T> Vtable Vtable::init() {
   return Vtable{
       .plugins = {},
       .type_info = []() -> std::type_info const & { return typeid(D); },
+      .type_name = []() -> std::string { return demangle(typeid(D).name()); },
       .format = [](Any const &self, std::string_view fmt) -> std::string {
         if constexpr (std::formattable<D, char>) {
           void const *ptr = std::any_cast<D>(&self);
@@ -136,14 +138,14 @@ template <class T> Vtable Vtable::init() {
             return "Null";
           }
         } else {
-          return std::format("unformattable({})", typeid(D).name());
+          return std::format("unformattable({})", demangle(typeid(D).name()));
         }
       },
       .size = [](Any const &self) -> std::size_t {
         if constexpr (Has_Size<D>) {
           return self.as<D>().size();
         } else {
-          gaa_fail("{} has no member size", typeid(D).name());
+          gaa_fail("{} has no member size", demangle(typeid(D).name()));
         }
       },
       .for_each = [](Any const &self, Callback callback) -> void {
@@ -168,11 +170,11 @@ template <class T> Vtable Vtable::init() {
         if constexpr (Has_Push_Back<D>) {
           gaa_assert(elem.type_info() == typeid(typename D::value_type),
                      "push_back argument type mismatch: given {}, expect {}",
-                     elem.type_info().name(),
-                     typeid(typename D::value_type).name());
+                     demangle(elem.type_info().name()),
+                     demangle(typeid(typename D::value_type).name()));
           self.as<D>().push_back(elem.template as<typename D::value_type>());
         } else {
-          gaa_fail("{} has no member push_back", typeid(D).name());
+          gaa_fail("{} has no member push_back", demangle(typeid(D).name()));
         }
       },
       .push_back_literal = [](Any &self, std::string const &cnt) -> void {
@@ -181,7 +183,7 @@ template <class T> Vtable Vtable::init() {
               literal_cast(cnt, literal_enum_v<typename D::value_type>)
                   .template as<typename D::value_type>());
         } else {
-          gaa_fail("{} has no member push_back", typeid(D).name());
+          gaa_fail("{} has no member push_back", demangle(typeid(D).name()));
         }
       },
       .push_back_literal_2 = [](Any &self, std::string const &cnt,
@@ -190,7 +192,7 @@ template <class T> Vtable Vtable::init() {
           self.as<D>().push_back(
               literal_cast(cnt, lt).template as<typename D::value_type>());
         } else {
-          gaa_fail("{} has no member push_back", typeid(D).name());
+          gaa_fail("{} has no member push_back", demangle(typeid(D).name()));
         }
       },
       .assign_at =
@@ -202,7 +204,7 @@ template <class T> Vtable Vtable::init() {
                          elem.type_info().name());
               self.as<D>().at(idx) = elem.as<typename D::value_type>();
             } else {
-              gaa_fail("{} has no member at", typeid(D).name());
+              gaa_fail("{} has no member at", demangle(typeid(D).name()));
             }
           }};
 }

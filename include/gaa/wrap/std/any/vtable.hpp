@@ -22,6 +22,7 @@ struct Vtable {
   std::map<std::string, Plugin> plugins;
 
   std::function<std::type_info const &(void)> type_info;
+  std::function<std::string(void)> type_name;
   std::function<std::string(Any const &self, std::string_view fmt)> format;
   std::function<std::size_t(Any const &self)> size;
   std::function<void(Any const &self, Callback callback)> for_each;

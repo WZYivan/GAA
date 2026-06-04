@@ -33,6 +33,7 @@ std::string Any::format(std::string_view fmt) const {
 std::type_info const &Any::type_info() const {
   return this->vtable().type_info();
 }
+std::string Any::type_name() const { return this->vtable().type_name(); }
 void Any::for_each(Callback callback) const {
   return this->vtable().for_each(*this, callback);
 }

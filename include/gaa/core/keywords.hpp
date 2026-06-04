@@ -55,3 +55,7 @@ extern void _assert_fail(char const *expr, std::source_location const &loc,
 #define GAA_MODULE module
 #define GAA_EXPORT_MODULE(NAME) GAA_EXPORT GAA_MODULE NAME
 #endif
+
+namespace gaa {
+extern std::string demangle(const char *name);
+}
